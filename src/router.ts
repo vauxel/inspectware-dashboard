@@ -1,10 +1,12 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "@/views/Home.vue";
+import Settings from "@/views/Settings.vue";
+import NProgress from "nprogress";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
 	mode: "history",
 	base: "/dash/",
 	routes: [
@@ -13,5 +15,24 @@ export default new Router({
 			name: "home",
 			component: Home,
 		},
+		{
+			path: "/settings",
+			name: "settings",
+			component: Settings,
+		},
 	],
 });
+
+router.beforeResolve((to, from, next) => {
+	if (to.name) {
+		NProgress.start();
+	}
+
+	next();
+});
+
+router.afterEach((to, from) => {
+	NProgress.done();
+});
+
+export default router;
