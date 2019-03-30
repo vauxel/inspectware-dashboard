@@ -13,9 +13,10 @@
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import Login from "@/components/Login.vue";
-	import Sidebar from "@/components/Sidebar.vue";
-	import Topbar from "@/components/Topbar.vue";
+	import { getModule } from "vuex-module-decorators";
+	import Login from "./components/Login.vue";
+	import Sidebar from "./components/Sidebar.vue";
+	import Topbar from "./components/Topbar.vue";
 	import $ from "jquery";
 	import "bootstrap";
 
@@ -53,7 +54,6 @@
 
 	body {
 		height: 100vh;
-		display: flex;
 		background-color: $gray-100;
 	}
 
@@ -66,7 +66,6 @@
 	// Main page wrapper
 	#wrapper {
 		display: flex;
-		flex-grow: 1;
 
 		#content-wrapper {
 			width: 100%;

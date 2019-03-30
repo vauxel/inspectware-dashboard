@@ -3,6 +3,9 @@
 		<div class="login-box">
 			<div class="card shadow-sm">
 				<div class="card-body p-4">
+					<div v-show="loginError" class="alert alert-warning" role="alert">
+						<i class="fas fa-info-circle fa-sm"></i> {{ loginError }}
+					</div>
 					<div v-show="!affiliation">
 						<div class="text-center mb-5 mt-4">
 							<h1 class="h4 text-gray-900">I Am A ...</h1>
@@ -62,7 +65,7 @@
 		private password: string = "";
 
 		private setHIAffiliation(): void {
-			this.affiliation = "homeinspector";
+			this.affiliation = "inspector";
 			this.affiliationName = "Home Inspector";
 		}
 
@@ -72,12 +75,20 @@
 		}
 
 		private setREAAffiliation(): void {
-			this.affiliation = "realestateagent";
+			this.affiliation = "realtor";
 			this.affiliationName = "Real Estate Agent";
 		}
 
 		private login(): void {
-			this.$store.dispatch("attemptLogin");
+			this.$store.dispatch("attemptLogin", {
+				affiliation: this.affiliation,
+				loginname: this.email,
+				password: this.password
+			});
+		}
+
+		private get loginError(): string {
+			return this.$store.getters.getLoginFailure;
 		}
 	}
 </script>
@@ -86,6 +97,7 @@
 	@import "@/scss/include.scss";
 
 	.login-container {
+		margin-top: 10vh;
 		flex-grow: 1;
 		display: flex;
 		align-items: center;

@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "@/views/Home.vue";
-import Settings from "@/views/Settings.vue";
+import Home from "./views/Home.vue";
+import Settings from "./views/Settings.vue";
 import NProgress from "nprogress";
 
 Vue.use(Router);
