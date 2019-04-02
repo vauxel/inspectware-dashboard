@@ -3,7 +3,7 @@ import HTTP from "@/classes/http";
 
 @Module
 export default class AuthModule extends VuexModule {
-	private loggedIn: boolean = false;
+	private loggedIn: boolean = !!localStorage.getItem("authtoken");
 	private loginFailure: string = "";
 
 	private affiliation: string = "";
@@ -93,6 +93,7 @@ export default class AuthModule extends VuexModule {
 				loginname: data.loginname,
 				name: result.data.data.name,
 			});
+			localStorage.setItem("authtoken", result.data.data.token);
 		}
 	}
 }
