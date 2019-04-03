@@ -1,5 +1,12 @@
 <template>
 	<div id="wrapper">
+		<div :class="`alert alert-${level} alert-dismissible fade show fixed-top m-2`" role="alert" v-for="{message, level} in notifications" :key="message">
+			<i class="fas fa-info-circle mr-2"></i>
+			{{ message }}
+			<button type="button" class="close" v-on:click="dismissNotification">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
 		<sidebar v-if="isLoggedIn"/>
 		<div id="content-wrapper" class="d-flex flex-column" v-if="isLoggedIn">
 			<div id="content">
@@ -32,10 +39,19 @@
 	export default class extends Vue {
 		public mounted(): void {
 			globalLoad($);
+			this.$store.dispatch("readAuthToken");
 		}
 
 		private get isLoggedIn(): boolean {
 			return this.$store.getters.isLoggedIn;
+		}
+
+		private get notifications(): boolean {
+			return this.$store.getters.getNotifications;
+		}
+
+		private dismissNotification() {
+			this.$store.dispatch("removeNotification");
 		}
 	}
 </script>

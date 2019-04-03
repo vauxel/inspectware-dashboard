@@ -3,12 +3,12 @@ import HTTP from "@/classes/http";
 
 @Module
 export default class AuthModule extends VuexModule {
-	private loggedIn: boolean = false;
+	private loggedIn: boolean = !!localStorage.getItem("authtoken");
 	private loginFailure: string = "";
 
 	private affiliation: string = "";
 	private userId: string = "";
-	private loginname: string = "";
+	private loginName: string = "";
 	private name: string = "";
 	private accountId: string = "";
 
@@ -29,7 +29,7 @@ export default class AuthModule extends VuexModule {
 	}
 
 	public get getLoginName(): string {
-		return this.loginname;
+		return this.loginName;
 	}
 
 	public get getUserName(): string {
@@ -46,6 +46,11 @@ export default class AuthModule extends VuexModule {
 	}
 
 	@Mutation
+	public LOGOUT() {
+		this.loggedIn = false;
+	}
+
+	@Mutation
 	public LOGIN_FAILURE(data: string) {
 		this.loginFailure = data;
 	}
@@ -54,27 +59,48 @@ export default class AuthModule extends VuexModule {
 	public UPDATE_BASE_INFO(data: {
 		affiliation: string,
 		userId: string,
-		loginname: string,
+		loginName: string,
 		name: string,
+		accountId?: string
 	}) {
 		this.affiliation = data.affiliation;
 		this.userId = data.userId;
-		this.loginname = data.loginname;
+		this.loginName = data.loginName;
 		this.name = data.name;
+
+		if (data.accountId) {
+			this.accountId = data.accountId;
+		}
+	}
+
+	@Action
+	public readAuthToken() {
+		const authToken = localStorage.getItem("authtoken");
+
+		if (authToken) {
+			const parsedToken = JSON.parse(window.atob(authToken.split(".")[1]));
+			this.context.commit("UPDATE_BASE_INFO", {
+				affiliation: parsedToken.affiliation,
+				userId: parsedToken.id,
+				loginName: parsedToken.loginName,
+				name: parsedToken.name,
+				accountId: parsedToken.accountId
+			});
+		}
 	}
 
 	@Action
 	public async attemptLogin(data: {
 		affiliation: string,
-		loginname: string,
-		password: string,
+		loginName: string,
+		password: string
 	}) {
 		let result;
 
 		try {
 			result = await HTTP.post("auth/login", {
 				affiliation: data.affiliation,
-				loginname: data.loginname,
+				loginName: data.loginName,
 				password: data.password,
 			});
 		} catch (error) {
@@ -85,14 +111,23 @@ export default class AuthModule extends VuexModule {
 		if (!result.data.success) {
 			this.context.commit("LOGIN_FAILURE", result.data.error.message);
 		} else {
-			console.log(result);
+			localStorage.setItem("authtoken", result.data.data.token);
+			this.context.dispatch("readAuthToken");
 			this.context.commit("LOGIN");
-			this.context.commit("UPDATE_BASE_INFO", {
-				affiliation: data.affiliation,
-				userId: result.data.data.userId,
-				loginname: data.loginname,
-				name: result.data.data.name,
+			this.context.dispatch("addNotification", {
+				message: "You have been successfully logged in! Welcome, " + this.name + ".",
+				level: "success"
 			});
 		}
+	}
+
+	@Action
+	public logout() {
+		localStorage.removeItem("authtoken");
+		this.context.commit("LOGOUT");
+		this.context.dispatch("addNotification", {
+			message: "You have been successfully logged out!",
+			level: "success"
+		});
 	}
 }

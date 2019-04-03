@@ -82,7 +82,7 @@
 		private login(): void {
 			this.$store.dispatch("attemptLogin", {
 				affiliation: this.affiliation,
-				loginname: this.email,
+				loginName: this.email,
 				password: this.password
 			});
 		}
