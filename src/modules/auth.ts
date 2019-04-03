@@ -118,6 +118,7 @@ export default class AuthModule extends VuexModule {
 				message: "You have been successfully logged in! Welcome, " + this.name + ".",
 				level: "success"
 			});
+			localStorage.setItem("authtoken", result.data.data.token);
 		}
 	}
 
