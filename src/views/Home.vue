@@ -152,7 +152,7 @@
 
 	@Component
 	export default class Home extends Vue {
-		public mounted(): void {
+		public mounted() {
 			this.initInspectionsCalendar();
 		}
 

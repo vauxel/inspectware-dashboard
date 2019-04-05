@@ -72,7 +72,7 @@
 
 	@Component
 	export default class Metrics extends Vue {
-		public mounted(): void {
+		public mounted() {
 			this.initInspectionCountChart();
 		}
 
