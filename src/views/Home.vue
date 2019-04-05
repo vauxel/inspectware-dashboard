@@ -71,10 +71,10 @@
 					</div>
 					<!-- Card Body -->
 					<div class="table-responsive">
-						<table class="table text-nowrap m-0">
+						<table class="table m-0">
 							<tbody>
-								<tr>
-									<td class="w-100">
+								<tr class="d-flex flex-wrap-reverse">
+									<td class="flex-fill">
 										<div class="d-flex align-items-center">
 											<router-link class="icon-circle bg-success mr-3" to="/inspections/id">
 												<i class="fas fa-home text-white"></i>
@@ -85,7 +85,25 @@
 											</div>
 										</div>
 									</td>
-									<td class="align-middle"><span class="badge badge-info">April 1st, 2019 @ 5:00 PM</span></td>
+									<td class="d-flex align-items-center justify-content-sm-end flex-fill">
+										<span class="text-sm font-weight-bold">April 1st, 2019 @ 5:00 PM</span>
+									</td>
+								</tr>
+								<tr class="d-flex flex-wrap-reverse">
+									<td class="flex-fill">
+										<div class="d-flex align-items-center">
+											<router-link class="icon-circle bg-success mr-3" to="/inspections/id">
+												<i class="fas fa-home text-white"></i>
+											</router-link>
+											<div>
+												<router-link class="font-weight-bold text-dark" to="/inspections/id">5000 sq/ft Home Inspection</router-link>
+												<div class="text-muted text-xs text-uppercase font-weight-bold"><i class="fas fa-fw fa-plus-square"></i> New Inspection</div>
+											</div>
+										</div>
+									</td>
+									<td class="d-flex align-items-center justify-content-sm-end flex-fill">
+										<span class="text-sm font-weight-bold">April 1st, 2019 @ 5:00 PM</span>
+									</td>
 								</tr>
 							</tbody>
 						</table>

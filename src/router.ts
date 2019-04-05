@@ -13,17 +13,17 @@ const router = new Router({
 	routes: [
 		{
 			path: "/",
-			name: "home",
+			name: "Home",
 			component: Home,
 		},
 		{
 			path: "/",
-			name: "metrics",
+			name: "Metrics",
 			component: Metrics,
 		},
 		{
 			path: "/settings",
-			name: "settings",
+			name: "Settings",
 			component: Settings,
 		},
 	],
@@ -39,6 +39,7 @@ router.beforeResolve((to, from, next) => {
 
 router.afterEach((to, from) => {
 	NProgress.done();
+	document.title = "inspectware | " + to.name;
 });
 
 export default router;

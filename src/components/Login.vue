@@ -23,28 +23,27 @@
 					</div>
 					<div v-show="affiliation">
 						<div class="text-center mb-5 mt-4">
-							<i v-if="affiliation == 'homeinspector'" class="fas fa-hard-hat fa-4x mb-4"></i>
+							<i v-if="affiliation == 'inspector'" class="fas fa-hard-hat fa-4x mb-4"></i>
 							<i v-if="affiliation == 'client'" class="fas fa-user fa-4x mb-4"></i>
-							<i v-if="affiliation == 'realestateagent'" class="fas fa-sign fa-4x mb-4"></i>
+							<i v-if="affiliation == 'realtor'" class="fas fa-sign fa-4x mb-4"></i>
 							<h1 class="h4 text-gray-900">I Am A: <i>{{ affiliationName }}</i></h1>
 							<span class="text-muted font-weight-light">Enter your login credentials below to access your account</span>
 						</div>
-						<form class="user">
+						<form class="user" v-on:submit.prevent="login">
 							<div class="form-group">
-								<input type="email" class="form-control form-control-user" placeholder="Email Address" v-model="email">
+								<input type="email" class="form-control form-control-user" placeholder="Email Address" v-bind:class="{ 'is-invalid': invalidEmail }" v-model="email" v-on:change="invalidEmail = false">
+								<div class="invalid-feedback">Please enter a valid email</div>
 							</div>
 							<div class="form-group">
-								<input type="password" class="form-control form-control-user" placeholder="Password" v-model="password">
+								<input type="password" class="form-control form-control-user" placeholder="Password" v-bind:class="{ 'is-invalid': invalidPassword }" v-model="password" v-on:change="invalidPassword = false">
+								<div class="invalid-feedback">Please enter a password</div>
 							</div>
-							<div class="form-group">
-								<div class="custom-control custom-checkbox small">
-									<input type="checkbox" class="custom-control-input" id="customCheck">
-									<label class="custom-control-label" for="customCheck">Remember Me</label>
-								</div>
-							</div>
-							<a href="#" class="btn btn-primary btn-user btn-block" v-on:click="login">
+							<button type="submit" class="btn btn-primary btn-user btn-block">
 								Login <i class="fas fa-angle-double-right fa-sm"></i>
-							</a>
+							</button>
+							<button type="button" class="btn btn-secondary btn-user btn-block" v-on:click="clearAffiliation">
+								Go Back <i class="fas fa-undo fa-sm"></i>
+							</button>
 						</form>
 					</div>
 				</div>
@@ -63,6 +62,21 @@
 		private affiliationName: string = "";
 		private email: string = "";
 		private password: string = "";
+		private invalidEmail: boolean = false;
+		private invalidPassword: boolean = false;
+
+		private clearAffiliation(): void {
+			this.affiliation = "";
+			this.affiliationName = "";
+
+			if (this.invalidEmail) {
+				this.invalidEmail = false;
+			}
+
+			if (this.invalidPassword) {
+				this.invalidPassword = false;
+			}
+		}
 
 		private setHIAffiliation(): void {
 			this.affiliation = "inspector";
@@ -80,11 +94,24 @@
 		}
 
 		private login(): void {
-			this.$store.dispatch("attemptLogin", {
-				affiliation: this.affiliation,
-				loginName: this.email,
-				password: this.password
-			});
+			this.invalidEmail = false;
+			this.invalidPassword = false;
+
+			if (this.email === "" || !(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email))) {
+				this.invalidEmail = true;
+			}
+
+			if (this.password === "") {
+				this.invalidPassword = true;
+			}
+
+			if (!this.invalidEmail && !this.invalidPassword) {
+				this.$store.dispatch("attemptLogin", {
+					affiliation: this.affiliation,
+					loginName: this.email,
+					password: this.password
+				});
+			}
 		}
 
 		private get loginError(): string {

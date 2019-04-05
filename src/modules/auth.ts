@@ -1,9 +1,10 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
+import Router from "../router";
 import HTTP from "@/classes/http";
 
 @Module
 export default class AuthModule extends VuexModule {
-	private loggedIn: boolean = !!localStorage.getItem("authtoken");
+	private loggedIn: boolean = !!localStorage.getItem("auth_token");
 	private loginFailure: string = "";
 
 	private affiliation: string = "";
@@ -75,7 +76,7 @@ export default class AuthModule extends VuexModule {
 
 	@Action
 	public readAuthToken() {
-		const authToken = localStorage.getItem("authtoken");
+		const authToken = localStorage.getItem("auth_token");
 
 		if (authToken) {
 			const parsedToken = JSON.parse(window.atob(authToken.split(".")[1]));
@@ -95,6 +96,7 @@ export default class AuthModule extends VuexModule {
 		loginName: string,
 		password: string
 	}) {
+		this.context.commit("LOGIN_FAILURE", "");
 		let result;
 
 		try {
@@ -111,24 +113,27 @@ export default class AuthModule extends VuexModule {
 		if (!result.data.success) {
 			this.context.commit("LOGIN_FAILURE", result.data.error.message);
 		} else {
-			localStorage.setItem("authtoken", result.data.data.token);
+			localStorage.setItem("auth_token", result.data.data.token);
 			this.context.dispatch("readAuthToken");
 			this.context.commit("LOGIN");
 			this.context.dispatch("addNotification", {
 				message: "You have been successfully logged in! Welcome, " + this.name + ".",
 				level: "success"
 			});
-			localStorage.setItem("authtoken", result.data.data.token);
 		}
 	}
 
 	@Action
-	public logout() {
-		localStorage.removeItem("authtoken");
+	public logout(data: {
+		message: string,
+		compulsory: boolean
+	}) {
+		localStorage.removeItem("auth_token");
 		this.context.commit("LOGOUT");
+		Router.push("/");
 		this.context.dispatch("addNotification", {
-			message: "You have been successfully logged out!",
-			level: "success"
+			message: data.message ? data.message : "You have been successfully logged out!",
+			level: !data.compulsory ? "success" : "warning"
 		});
 	}
 }
