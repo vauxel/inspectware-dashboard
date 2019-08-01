@@ -1,103 +1,66 @@
 <template>
 	<div class="container-fluid">
-		<!-- Page Heading -->
-		<div class="d-sm-flex align-items-center justify-content-between mb-4">
-			<h1 class="h3 mb-0 text-gray-800">Settings</h1>
-		</div>
-
-		<!-- Content Row -->
-		<div class="row">
-			<!-- User Info Settings -->
-			<div class="col-xl-6">
-				<div class="card shadow mb-4">
-					<!-- Card Header -->
-					<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-						<h6 class="m-0 font-weight-bold"><i class="fas fa-id-badge"></i> User Info Settings</h6>
-						<button form="userSettings" class="btn btn-sm btn-primary btn-icon-split shadow-sm" >
-							<span class="icon"><i class="fas fa-save fa-sm"></i></span>
-							<span class="text d-none d-sm-inline-block">Save Changes</span>
-						</button>
-					</div>
-					<!-- Card Body -->
-					<div class="card-body">
-						<div class="alert alert-danger" role="alert" v-show="userInfoError">{{ userInfoError }}</div>
-						<form id="userSettings" v-on:submit.prevent="saveUserInformation">
-							<div class="form-group">
-								<label for="firstName">First Name</label>
-								<input type="text" class="form-control" id="firstName" v-model="firstName" disabled>
-							</div>
-							<div class="form-group">
-								<label for="lastName">Last Name</label>
-								<input type="text" class="form-control" id="lastName" v-model="lastName" disabled>
-							</div>
-							<div class="form-group">
-								<label for="emailAddress">Email Address</label>
-								<input type="email" class="form-control" id="emailAddress" placeholder="Enter an email address" v-bind:class="{ 'is-invalid': invalidEmail }" v-model="emailAddress">
-								<div class="invalid-feedback">Please enter a valid email</div>
-							</div>
-
-							<div class="form-group">
-								<label for="phoneNumber">Phone Number</label>
-								<masked-input
-									type="text"
-									id="phoneNumber"
-									class="form-control"
-									v-model="phoneNumber"
-									:mask="['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]"
-									:guide="true"
-									placeholderChar="_"
-									v-bind:class="{ 'is-invalid': invalidPhone }">
-								</masked-input>
-								<div class="invalid-feedback">Please enter a valid phone number</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-
-			<!-- Security Settings -->
-			<div class="col-xl-6">
-				<div class="card shadow mb-4">
-					<!-- Card Header -->
-					<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-						<h6 class="m-0 font-weight-bold"><i class="fas fa-shield-alt"></i> Security Settings</h6>
-						<button form="securitySettings" class="btn btn-sm btn-primary btn-icon-split shadow-sm" >
-							<span class="icon"><i class="fas fa-save fa-sm"></i></span>
-							<span class="text d-none d-sm-inline-block">Save Changes</span>
-						</button>
-					</div>
-					<!-- Card Body -->
-					<div class="card-body">
-						<div class="alert alert-danger" role="alert" v-show="securityError">{{ securityError }}</div>
-						<form id="securitySettings" v-on:submit.prevent="saveSecurity">
-							<div class="form-group">
-								<label for="currentPassword">Current Password</label>
-								<input type="password" class="form-control" id="currentPassword" placeholder="Enter your current password" required v-bind:class="{ 'is-invalid': invalidPassword }" v-model="currentPassword">
-								<div class="invalid-feedback">The current password is incorrect</div>
-							</div>
-							<div class="form-group">
-								<label for="newPassword1">New Password</label>
-								<input type="password" class="form-control" id="newPassword1" placeholder="Enter a new password" required v-bind:class="{ 'is-invalid': invalidNewPassword }" v-model="newPassword1">
-								<div class="invalid-feedback">
-									<span>Please supply a valid new password:</span>
-									<ul>
-										<li>Longer than 8 characters</li>
-										<li>Atleast one uppercase letter [A-Z]</li>
-										<li>Atleast one lowercase letter [a-z]</li>
-										<li>Atleast one number [0-9]</li>
-									</ul>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="newPassword2">Repeat New Password</label>
-								<input type="password" class="form-control" id="newPassword2" placeholder="Enter a new password again" required v-bind:class="{ 'is-invalid': passwordNoMatch }" v-model="newPassword2">
-								<div class="invalid-feedback">The new passwords don't match</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
+		<Row :gutter="15">
+			<Col span="12">
+				<Card>
+					<p slot="title">
+						<i class="fas fa-fw fa-user"></i>
+						User Info Settings
+					</p>
+					<Button type="primary" size="small" slot="extra" @click="saveUserInformation">
+						<i class="fas fa-fw fa-save"></i>
+						Save Changes
+					</Button>
+					<Form ref="userInfoForm" :model="userInfo" :rules="userInfoRules" :label-width="135">
+						<FormItem label="First Name" prop="firstName">
+							<Input v-model="userInfo.firstName" placeholder="Enter your first name" disabled></Input>
+						</FormItem>
+						<FormItem label="Last Name" prop="lastName">
+							<Input v-model="userInfo.lastName" placeholder="Enter your last name" disabled></Input>
+						</FormItem>
+						<FormItem label="Email Address" prop="email">
+							<Input v-model="userInfo.email" placeholder="Enter your email address"></Input>
+						</FormItem>
+						<FormItem label="Phone Number" prop="phone">
+							<masked-input
+								type="text"
+								class="ivu-input"
+								v-model="userInfo.phone"
+								:mask="['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]"
+								:guide="true"
+								placeholderChar="_">
+							</masked-input>
+						</FormItem>
+						<FormItem label="Confirm Password" prop="confirmPass">
+							<Input type="password" v-model="userInfo.confirmPass" placeholder="Enter your password to confirm changes"></Input>
+						</FormItem>
+					</Form>
+				</Card>
+			</Col>
+			<Col span="12">
+				<Card>
+					<p slot="title">
+						<i class="fas fa-fw fa-shield-alt"></i>
+						Security Settings
+					</p>
+					<Button type="primary" size="small" slot="extra" @click="saveSecurity">
+						<i class="fas fa-fw fa-save"></i>
+						Save Changes
+					</Button>
+					<Form ref="securityForm" :model="security" :rules="securityRules" :label-width="160">
+						<FormItem label="Current Password" prop="currentPass">
+							<Input type="password" v-model="security.currentPass" placeholder="Enter your current password"></Input>
+						</FormItem>
+						<FormItem label="New Password" prop="newPass1">
+							<Input type="password" v-model="security.newPass1" placeholder="Enter a new password"></Input>
+						</FormItem>
+						<FormItem label="Repeat New Password" prop="newPass2">
+							<Input type="password" v-model="security.newPass2" placeholder="Enter the new password again"></Input>
+						</FormItem>
+					</Form>
+				</Card>
+			</Col>
+		</Row>
 	</div>
 </template>
 
@@ -112,77 +75,129 @@
 		}
 	})
 	export default class Settings extends Vue {
-		private currentPassword: string = "";
-		private newPassword1: string = "";
-		private newPassword2: string = "";
-		private firstName: string = "";
-		private lastName: string = "";
-		private emailAddress: string = "";
-		private phoneNumber: string = "";
+		private userInfo = {
+			firstName: "",
+			lastName: "",
+			email: "",
+			phone: "",
+			confirmPass: ""
+		};
 
-		private invalidPassword: boolean = false;
-		private securityError: string = "";
-		private userInfoError: string = "";
+		private security = {
+			currentPass: "",
+			newPass1: "",
+			newPass2: ""
+		};
+
+		private userInfoRules = {
+			email: [
+				{ message: "The email cannot be empty", trigger: "blur" },
+				{ type: "email", message: "Invalid email format", trigger: "blur" }
+			],
+			phone: [
+				{ message: "The phone number cannot be empty", trigger: "blur" }
+			],
+			confirmPass: [
+				{ required: true, message: "You must enter your password to save your changes", trigger: "blur" }
+			]
+		};
+
+		private securityRules = {
+			currentPass: [
+				{ required: true, message: "The current password cannot be empty", trigger: "blur" }
+			],
+			newPass1: [
+				{ required: true, validator: this.validateNewPass1, trigger: "change" }
+			],
+			newPass2: [
+				{ required: true, validator: this.validateNewPass2, trigger: "change" }
+			]
+		};
 
 		public mounted() {
 			this.getUserInformation();
 		}
 
-		private get invalidNewPassword(): boolean {
-			return this.newPassword1 !== "" && !(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.newPassword1));
+		private validateNewPass1(rule: any, value: any, callback: Function) {
+			if (value === "") {
+				callback(new Error("Please enter a new password"));
+			} else if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/.test(this.security.newPass1))) {
+				callback(new Error("The new password must be atleast 8 character long, atleast one lowercase letter, atleast one uppercase letter, and atleast one number"));
+			} else {
+				callback();
+			}
 		}
 
-		private get passwordNoMatch(): boolean {
-			return this.newPassword1 !== "" && this.newPassword2 !== "" && this.newPassword1 !== this.newPassword2;
-		}
-
-		private get invalidEmail(): boolean {
-			return this.emailAddress === "" || !(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.emailAddress));
-		}
-
-		private get invalidPhone(): boolean {
-			return this.phoneNumber === "" || !(/^(\+0?1\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/.test(this.phoneNumber));
+		private validateNewPass2(rule: any, value: any, callback: Function) {
+			if (value === "") {
+				callback(new Error("Please enter the new password again"));
+			} else if (value !== this.security.newPass1) {
+				callback(new Error("The two passwords do not match"));
+			} else {
+				callback();
+			}
 		}
 
 		private async getUserInformation() {
 			const result = await HTTP.get("/auth/user_info");
-			this.firstName = result.data.data.firstName;
-			this.lastName = result.data.data.lastName;
-			this.emailAddress = result.data.data.email;
-			this.phoneNumber = result.data.data.phone;
+			this.userInfo.firstName = result.data.data.firstName;
+			this.userInfo.lastName = result.data.data.lastName;
+			this.userInfo.email = result.data.data.email;
+			this.userInfo.phone = result.data.data.phone;
 		}
 
 		private async saveUserInformation() {
+			let valid: boolean = await this.$refs["userInfoForm"].validate();
 
-		}
-
-		private async saveSecurity() {
-			if (this.currentPassword === "" || this.newPassword1 === "" || this.newPassword2 === "" || this.newPassword1 !== this.newPassword2 || this.invalidNewPassword) {
+			if (!valid) {
 				return;
 			}
 
-			this.invalidPassword = false;
-
-			const result = await HTTP.post("/auth/update_pass", {
-				current: this.currentPassword,
-				new: this.newPassword1
+			const result = await HTTP.post("/user/update_info", {
+				email: this.userInfo.email,
+				phone: this.userInfo.phone
 			});
 
 			if (result.data.success) {
-				this.$store.dispatch("addNotification", {
-					message: "Your password has been successfully changed",
-					level: "success"
+				this.$Notice.info({
+					title: "User Info Updated",
+					desc: "Your user information has been successfully updated"
 				});
 
-				this.currentPassword = "";
-				this.newPassword1 = "";
-				this.newPassword2 = "";
-				this.invalidPassword = false;
+				this.userInfo.confirmPass = "";
 			} else {
+				this.$Message.error(result.data.error.message);
+
 				if (result.data.error.message === "Incorrect current password") {
-					this.invalidPassword = true;
-				} else {
-					this.securityError = result.data.error.message;
+					this.$refs["userInfoForm"].$children[this.$refs["userInfoForm"].$children.length - 1].error = "The password you entered is incorrect";
+				}
+			}
+		}
+
+		private async saveSecurity() {
+			let valid: boolean = await this.$refs["securityForm"].validate();
+
+			if (!valid) {
+				return;
+			}
+
+			const result = await HTTP.post("/auth/update_pass", {
+				current: this.security.currentPass,
+				new: this.security.newPass1
+			});
+
+			if (result.data.success) {
+				this.$Notice.info({
+					title: "Password Updated",
+					desc: "Your password has been successfully changed"
+				});
+
+				this.$refs["securityForm"].resetFields();
+			} else {
+				this.$Message.error(result.data.error.message);
+
+				if (result.data.error.message === "Incorrect current password") {
+					this.$refs["securityForm"].$children[0].error = "The password you entered is incorrect";
 				}
 			}
 		}

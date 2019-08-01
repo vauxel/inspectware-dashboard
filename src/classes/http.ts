@@ -3,7 +3,7 @@ import NProgress from "nprogress";
 import VuexStore from "../store";
 
 const instance = Axios.create({
-	baseURL: "http://localhost:4040/api/",
+	baseURL: "http://" + window.location.hostname + ":4040/api/",
 });
 
 instance.interceptors.request.use((config) => {

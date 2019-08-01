@@ -1,130 +1,31 @@
 <template>
-	<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-		<!-- Sidebar Toggle (Topbar) -->
-		<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-			<i class="fa fa-bars"></i>
-		</button>
-
-		<!-- Topbar Search -->
-		<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-			<div class="input-group">
-				<input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-				<div class="input-group-append">
-					<button class="btn btn-primary" type="button">
-						<i class="fas fa-search fa-sm"></i>
-					</button>
-				</div>
-			</div>
-		</form>
-
-		<!-- Topbar Navbar -->
-		<ul class="navbar-nav ml-auto">
-
-			<!-- Nav Item - Search Dropdown (Visible Only XS) -->
-			<li class="nav-item dropdown no-arrow d-sm-none">
-				<a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="fas fa-search fa-fw"></i>
-				</a>
-				<!-- Dropdown - Messages -->
-				<div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-					<form class="form-inline mr-auto w-100 navbar-search">
-						<div class="input-group">
-							<input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-							<div class="input-group-append">
-								<button class="btn btn-primary" type="button">
-									<i class="fas fa-search fa-sm"></i>
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</li>
-
-			<!-- Nav Item - Alerts -->
-			<li class="nav-item dropdown no-arrow mx-1">
-				<a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="fas fa-bell fa-fw"></i>
-					<!-- Counter - Alerts -->
-					<span class="badge badge-danger badge-counter">3+</span>
-				</a>
-				<!-- Dropdown - Alerts -->
-				<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-					<h6 class="dropdown-header">
-						Activity Log
-					</h6>
-					<a class="dropdown-item d-flex align-items-center" href="#">
-						<div class="mr-3">
-							<div class="icon-circle bg-primary">
-								<i class="fas fa-file-alt text-white"></i>
-							</div>
-						</div>
-						<div>
-							<div class="small text-gray-500">December 12, 2019</div>
-							<span class="font-weight-bold">A new monthly report is ready to download!</span>
-						</div>
-					</a>
-					<a class="dropdown-item d-flex align-items-center" href="#">
-						<div class="mr-3">
-							<div class="icon-circle bg-success">
-								<i class="fas fa-donate text-white"></i>
-							</div>
-						</div>
-						<div>
-							<div class="small text-gray-500">December 7, 2019</div>
-							$290.29 has been deposited into your account!
-						</div>
-					</a>
-					<a class="dropdown-item d-flex align-items-center" href="#">
-						<div class="mr-3">
-							<div class="icon-circle bg-warning">
-								<i class="fas fa-exclamation-triangle text-white"></i>
-							</div>
-						</div>
-						<div>
-							<div class="small text-gray-500">December 2, 2019</div>
-							Spending Alert: We've noticed unusually high spending for your account.
-						</div>
-					</a>
-					<a class="dropdown-item text-center small text-gray-500" href="#">Show All Notifications</a>
-				</div>
-			</li>
-
-			<div class="topbar-divider d-none d-sm-block"></div>
-
-			<!-- Nav Item - User Information -->
-			<li class="nav-item dropdown no-arrow">
-				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ userName }}</span>
-					<img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
-				</a>
-				<!-- Dropdown - User Information -->
-				<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-					<router-link class="dropdown-item" to="/profile">
-						<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-						Profile
-					</router-link>
-					<router-link class="dropdown-item" to="/settings">
-						<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-						Settings
-					</router-link>
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" v-on:click="logout">
-						<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-						Logout
-					</a>
-				</div>
-			</li>
-		</ul>
+	<nav id="topbar">
+		<div class="text-2xl font-semibold border-2 border-gray-200 bg-gray-100 px-2 rounded-lg">{{ $route.name }}</div>
+		<div class="topbar-items">
+			<div class="topbar-items-toggler" @click="toggleDropdown"><i class="fas fa-fw fa-bars"></i></div>
+			<ul class="topbar-items-list" v-bind:class="{ toggled: dropdownToggled }">
+				<li class="topbar-item">
+					<Button to="/settings">Settings</Button>
+				</li>
+				<li class="topbar-item">
+					<Button @click="logout">Logout</Button>
+				</li>
+			</ul>
+		</div>
 	</nav>
 </template>
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import "bootstrap";
 
 	@Component
 	export default class Topbar extends Vue {
+		private dropdownToggled = false;
+
+		private toggleDropdown() {
+			this.dropdownToggled = !this.dropdownToggled;
+		}
+
 		private logout() {
 			this.$store.dispatch("logout");
 		}
@@ -138,173 +39,63 @@
 <style scoped lang="scss">
 	@import "@/scss/include.scss";
 
-	.sidebar,
-	.topbar {
-		.nav-item {
-			&.dropdown {
-				.dropdown-toggle {
-					&::after {
-						width: 1rem;
-						text-align: center;
-						float: right;
-						vertical-align: 0;
-						border: 0;
-						font-weight: 900;
-						content: '\f105';
-						font-family: 'Font Awesome 5 Free';
-					}
-				}
+	#topbar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 50px;
+		padding-left: 10px;
+		padding-right: 20px;
+		background-color: #ffffff;
+		box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 
-				&.show {
-					.dropdown-toggle::after {
-						content: '\f107';
-					}
+		.topbar-items {
+			.topbar-items-toggler {
+				padding: 5px;
+				border-radius: 5px;
+				display: none;
+
+				&:hover {
+					color: $blue;
+					cursor: pointer;
 				}
 			}
 
-			.nav-link {
-				position: relative;
-				
-				.badge-counter {
+			.topbar-items-list {
+				z-index: 100;
+
+				.topbar-item {
+					display: inline-block;
+					margin-left: 5px;
+				}
+			}
+
+			@include respond-below(sm) {
+				.topbar-items-toggler {
+					display: inline-block;
+				}
+
+				.topbar-items-list {
+					display: none;
+					flex-direction: column;
+					align-items: center;
 					position: absolute;
-					transform: scale(0.7);
-					transform-origin: top right;
-					right: .25rem;
-					margin-top: -.25rem;
-				}
+					right: 20px;
+					background-color: $white;
+					padding: 10px;
+					box-shadow: 0 2px 3px rgba(10,10,10,.1),0 0 0 1px rgba(10,10,10,.1);
+					border-radius: 5px;
 
-				.img-profile {
-					height: 2rem;
-					width: 2rem;
-				}
-			}
-		}
-	}
+					&.toggled {
+						display: flex;
+					}
 
-	// Topbar
-	.topbar {
-		height: $topbar-base-height;
-		#sidebarToggleTop {
-			height: 2.5rem;
-			width: 2.5rem;
-			&:hover {
-				background-color: $gray-200;
-			}
-			&:active {
-				background-color: $gray-300;
-			}
-		}
-		.navbar-search {
-			width: 25rem;
-			input {
-				font-size: 0.85rem;
-			}
-		}
-		.topbar-divider {
-			width: 0;
-			border-right: 1px solid $border-color;
-			height: calc(#{$topbar-base-height} - 2rem);
-			margin: auto 1rem;
-		}
-		.nav-item {
-			.nav-link {
-				height: $topbar-base-height;
-				display: flex;
-				align-items: center;
-				padding: 0 0.75rem;
-				&:focus {
-					outline: none;
-				}
-			}
-			&:focus {
-				outline: none;
-			}
-		}
-		.dropdown {
-			position: static;
-			.dropdown-menu {
-				width: calc(100% - #{$grid-gutter-width});
-				right: $grid-gutter-width / 2;
-			}
-		}
-		.dropdown-list {
-			padding: 0;
-			border: none;
-			overflow: hidden;
-			.dropdown-header {
-				background-color: $primary;
-				border: 1px solid $primary;
-				padding-top: 0.75rem;
-				padding-bottom: 0.75rem;
-				color: $white;
-			}
-			.dropdown-item {
-				white-space: normal;
-				padding-top: 0.5rem;
-				padding-bottom: 0.5rem;
-				border-left: 1px solid $border-color;
-				border-right: 1px solid $border-color;
-				border-bottom: 1px solid $border-color;
-				line-height: 1.3rem;
-				.dropdown-list-image {
-					position: relative;
-					height: 2.5rem;
-					width: 2.5rem;
-					img {
-						height: 2.5rem;
-						width: 2.5rem;
-					}
-					.status-indicator {
-						background-color: $gray-200;
-						height: 0.75rem;
-						width: 0.75rem;
-						border-radius: 100%;
-						position: absolute;
-						bottom: 0;
-						right: 0;
-						border: .125rem solid $white;
-					}
-				}
-				.text-truncate {
-					max-width: 10rem;
-				}
-				&:active {
-					background-color: $gray-200;
-					color: $gray-900;
-				}
-			}
-		}
-		@include media-breakpoint-up(sm) {
-			.dropdown {
-				position: relative;
-				.dropdown-menu {
-					width: auto;
-					right: 0;
-				}
-			}
-			.dropdown-list {
-				width: 20rem !important;
-				.dropdown-item {
-					.text-truncate {
-						max-width: 13.375rem;
-					}
-				}
-			}
-		}
-	}
+					.topbar-item {
+						margin-left: 0px;
 
-	.topbar.navbar-dark {}
-
-	.topbar.navbar-light {
-		.navbar-nav {
-			.nav-item {
-				.nav-link {
-					color: $gray-400;
-					&:hover {
-						color: $gray-500;
-					}
-					&:active {
-						color: $gray-600;
+						&:not(:last-child) {
+							margin-bottom: 10px;
+						}
 					}
 				}
 			}

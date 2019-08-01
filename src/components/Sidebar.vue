@@ -1,506 +1,257 @@
 <template>
 	<!-- Sidebar -->
-	<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-		<!-- Sidebar - Brand -->
-		<router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/">
-			<div class="sidebar-brand-icon">
-				<i class="fas fa-info"></i>
+	<div id="sidebar" v-bind:class="{ toggled: shouldCollapse }">
+		<div class="sidebar-panel">
+			<div class="sidebar-branding">
+				<div class="sidebar-branding-text">inspectware</div>
+				<div class="sidebar-branding-text-alt">i</div>
 			</div>
-			<div class="sidebar-brand-text mx-3">inspectware</div>
-		</router-link>
-		<!-- Divider -->
-		<hr class="sidebar-divider my-0">
-		<!-- Nav Item - Dashboard -->
-		<li class="nav-item active">
-			<router-link class="nav-link" to="/">
-				<i class="fas fa-fw fa-tachometer-alt"></i>
-				<span>Dashboard</span>
-			</router-link>
-		</li>
-		<!-- Divider -->
-		<hr class="sidebar-divider">
-		<!-- Heading -->
-		<div class="sidebar-heading">
-			Inspections Management
-		</div>
-		<li class="nav-item">
-			<router-link class="nav-link" to="/inspections">
-				<i class="fas fa-fw fa-clipboard-list"></i>
-				<span>Inspection Statuses</span>
-			</router-link>
-		</li>
-		<li class="nav-item">
-			<router-link class="nav-link" to="/invoices">
-				<i class="fas fa-fw fa-file-invoice-dollar"></i>
-				<span>Invoices</span>
-			</router-link>
-		</li>
-		<!-- Divider -->
-		<hr class="sidebar-divider">
-		<!-- Heading -->
-		<div class="sidebar-heading">
-			Clientele &amp; Realtors
-		</div>
-		<li class="nav-item">
-			<router-link class="nav-link" to="/clients">
-				<i class="fas fa-fw fa-users"></i>
-				<span>Clients</span>
-			</router-link>
-		</li>
-		<li class="nav-item">
-			<router-link class="nav-link" to="/realtors">
-				<i class="fas fa-fw fa-sign"></i>
-				<span>Realtors</span>
-			</router-link>
-		</li>
-		<!-- Divider -->
-		<hr class="sidebar-divider mb-0">
-		<!-- Nav Item - Pages Collapse Menu -->
-		<li class="nav-item">
-			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMetrics" aria-expanded="true" aria-controls="collapseMetrics">
-				<i class="fas fa-fw fa-chart-bar"></i>
-				<span>Metrics</span>
-			</a>
-			<div id="collapseMetrics" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-				<div class="bg-white py-2 collapse-inner rounded">
-					<h6 class="collapse-header">Metrics Categories:</h6>
-					<router-link class="collapse-item" to="/metrics/inspection">Inspection Metrics</router-link>
-					<router-link class="collapse-item" to="/metrics/users">Realtor &amp; Client Metrics</router-link>
-				</div>
+			<div class="sidebar-content">
+				<ul class="sidebar-section">
+					<li class="sidebar-item">
+						<router-link to="/"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</router-link>
+					</li>
+				</ul>
+				<div class="sidebar-label">Inspections Management</div>
+				<ul class="sidebar-section">
+					<li class="sidebar-item">
+						<router-link to="/inspections"><i class="fas fa-fw fa-clipboard-list"></i> Inspections</router-link>
+					</li>
+					<li class="sidebar-item">
+						<router-link to="/invoices"><i class="fas fa-fw fa-file-invoice-dollar"></i> Invoices</router-link>
+					</li>
+				</ul>
+				<div class="sidebar-label">Clientele & Realtors</div>
+				<ul class="sidebar-section">
+					<li class="sidebar-item">
+						<router-link to="/clients"><i class="fas fa-fw fa-users"></i> Clients</router-link>
+					</li>
+					<li class="sidebar-item">
+						<router-link to="/realtors"><i class="fas fa-fw fa-sign"></i> Realtors</router-link>
+					</li>
+				</ul>
 			</div>
-		</li>
-		<!-- Divider -->
-		<hr class="sidebar-divider d-none d-md-block">
-		<!-- Sidebar Toggler (Sidebar) -->
-		<div class="text-center d-none d-md-inline">
-			<button class="rounded-circle border-0" id="sidebarToggle"></button>
 		</div>
-	</ul>
+		<div class="sidebar-toggler" @click="toggleSidebar"></div>
+	</div>
 </template>
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import "bootstrap";
 
 	@Component
-	export default class Sidebar extends Vue {}
+	export default class Sidebar extends Vue {
+		private isToggled = false;
+		private isSmallScreen = false;
+
+		private toggleSidebar() {
+			this.isToggled = !this.isToggled;
+		}
+
+		private get shouldCollapse(): boolean {
+			return this.isToggled || this.isSmallScreen;
+		}
+
+		private onResize() {
+			this.isSmallScreen = (window.innerWidth <= 768);
+		}
+
+		created() {
+			window.addEventListener('resize', this.onResize);
+
+			if (window.innerWidth <= 768) {
+				this.isSmallScreen = true;
+			}
+		}
+
+		beforeDestroy() {
+			window.removeEventListener('resize', this.onResize);
+		}
+	}
 </script>
 
 <style scoped lang="scss">
 	@import "@/scss/include.scss";
 
-	.sidebar,
-	.topbar {
-		.nav-item {
-			&.dropdown {
-				.dropdown-toggle {
-					&::after {
-						width: 1rem;
-						text-align: center;
-						float: right;
-						vertical-align: 0;
-						border: 0;
-						font-weight: 900;
-						content: '\f105';
-						font-family: 'Font Awesome 5 Free';
-					}
-				}
+	#sidebar {
+		flex: 0 0 250px;
+		display: flex;
+		transition: flex-basis 200ms ease-in-out;
 
-				&.show {
-					.dropdown-toggle::after {
-						content: '\f107';
-					}
-				}
-			}
-
-			.nav-link {
-				position: relative;
-				
-				.badge-counter {
-					position: absolute;
-					transform: scale(0.7);
-					transform-origin: top right;
-					right: .25rem;
-					margin-top: -.25rem;
-				}
-
-				.img-profile {
-					height: 2rem;
-					width: 2rem;
-				}
-			}
-		}
-	}
-
-	// Sidebar
-	.sidebar {
-		width: $sidebar-collapsed-width;
-		min-height: 100vh;
-		.nav-item {
-			position: relative;
-			&:last-child {
-				margin-bottom: 1rem;
-			}
-			.nav-link {
-				text-align: center;
-				padding: 0.75rem 1rem;
-				width: $sidebar-collapsed-width;
-				span {
-					font-size: 0.65rem;
-					display: block;
-				}
-			}
-			&.active {
-				.nav-link {
-					font-weight: 700;
-				}
-			}
-			// Accordion
-			.collapse {
-				position: absolute;
-				left: calc(#{$sidebar-collapsed-width} + #{$grid-gutter-width} / 2);
-				z-index: 1;
-				top: 2px;
-				// Grow In Animation
-				@extend .animated--grow-in;
-				.collapse-inner {
-					border-radius: $border-radius;
-					box-shadow: $box-shadow;
-				}
-			}
-			.collapsing {
-				display: none;
-				transition: none;
-			}
-			.collapse,
-			.collapsing {
-				.collapse-inner {
-					padding: .5rem 0;
-					min-width: 10rem;
-					font-size: $dropdown-font-size;
-					margin: 0 0 1rem 0;
-					.collapse-header {
-						margin: 0;
-						white-space: nowrap;
-						padding: .5rem 1.5rem;
-						text-transform: uppercase;
-						font-weight: 800;
-						font-size: 0.65rem;
-						color: $gray-500;
-					}
-					.collapse-item {
-						padding: 0.5rem 1rem;
-						margin: 0 0.5rem;
-						display: block;
-						color: $gray-900;
-						text-decoration: none;
-						border-radius: $border-radius;
-						white-space: nowrap;
-						&:hover {
-							background-color: $gray-200;
-						}
-						&:active {
-							background-color: $gray-300;
-						}
-						&.active {
-							color: $primary;
-							font-weight: 700;
-						}
-					}
-				}
-			}
-		}
-		#sidebarToggle {
-			width: 2.5rem;
-			height: 2.5rem;
-			text-align: center;
-			margin-bottom: 1rem;
-			cursor: pointer;
-			&::after {
-				font-weight: 900;
-				content: '\f104';
-				font-family: 'Font Awesome 5 Free';
-				margin-right: 0.1rem;
-			}
-			&:hover {
-				text-decoration: none;
-			}
-			&:focus {
-				outline: none;
-			}
-		}
 		&.toggled {
-			width: 0 !important;
-			overflow: hidden;
-			#sidebarToggle::after {
-				content: '\f105';
-				font-family: 'Font Awesome 5 Free';
-				margin-left: 0.25rem;
-			}
-		}
-		.sidebar-brand {
-			height: $topbar-base-height;
-			text-decoration: none;
-			font-size: 1rem;
-			font-weight: 800;
-			padding: 1.5rem 1rem;
-			text-align: center;
-			letter-spacing: 0.05rem;
-			z-index: 1;
-
-			.sidebar-brand-icon i {
-				font-size: 2rem;
-			}
-			.sidebar-brand-text {
-				display: none;
-			}
-		}
-		hr.sidebar-divider {
-			margin: 0 1rem 1rem;
-		}
-		.sidebar-heading {
-			text-align: center;
-			padding: 0 1rem;
-			font-weight: 800;
-			font-size: 0.65rem;
-			@extend .text-uppercase;
-		}
-	}
-
-	@include media-breakpoint-up(md) {
-		.sidebar {
-			width: $sidebar-base-width !important;
-			.nav-item {
-				// Accordion
-				.collapse {
-					position: relative;
-					left: 0;
-					z-index: 1;
-					top: 0;
-					animation: none;
-					.collapse-inner {
-						border-radius: 0;
-						box-shadow: none;
-					}
-				}
-				.collapsing {
-					display: block;
-					transition: $transition-collapse;
-				}
-				.collapse,
-				.collapsing {
-					margin: 0 1rem;
-				}
-				.nav-link {
-					display: block;
-					width: 100%;
-					text-align: left;
-					padding: 1rem;
-					width: $sidebar-base-width;
-					i {
-						font-size: 0.85rem;
-						margin-right: 0.25rem;
-					}
-					span {
-						font-size: 0.85rem;
-						display: inline;
-					}
-					// Accordion Arrow Icon
-					&[data-toggle="collapse"] {
-						&::after {
-							width: 1rem;
-							text-align: center;
-							float: right;
-							vertical-align: 0;
-							border: 0;
-							font-weight: 900;
-							content: '\f107';
-							font-family: 'Font Awesome 5 Free';
-						}
-						&.collapsed::after {
-							content: '\f105';
-						}
-					}
-				}
-			}
-			.sidebar-brand {
-				.sidebar-brand-icon i {
-					display: none;
-				}
-				.sidebar-brand-text {
-					display: inline;
-				}
-			}
-			.sidebar-heading {
-				text-align: left;
-			}
-			&.toggled {
-				overflow: visible;
-				width: $sidebar-collapsed-width !important;
-				.nav-item {
-					// Accordion
-					.collapse {
-						position: absolute;
-						left: calc(#{$sidebar-collapsed-width} + #{$grid-gutter-width} / 2);
-						z-index: 1;
-						top: 2px;
-						// Grow In Animation for Toggled State
-						animation-name: growIn;
-						animation-duration: 200ms;
-						animation-timing-function: transform cubic-bezier(.18,1.25,.4,1), opacity cubic-bezier(0,1,.4,1);
-						.collapse-inner {
-							box-shadow: $box-shadow;
-							border-radius: $border-radius;
-						}
-					}
-					.collapsing {
-						display: none;
-						transition: none;
-					}
-					.collapse,
-					.collapsing {
-						margin: 0;
-					}
-					&:last-child {
-						margin-bottom: 1rem;
-					}
-					.nav-link {
-						text-align: center;
-						padding: 0.75rem 1rem;
-						width: $sidebar-collapsed-width;
-						span {
-							font-size: 0.65rem;
-							display: block;
-						}
-						i {
-							margin-right: 0;
-						}
-						&[data-toggle="collapse"]::after {
-							display: none;
-						}
-					}
-				}
-				.sidebar-brand {
-					.sidebar-brand-icon i {
-						display: inline;
-						font-size: 2rem;
-					}
-					.sidebar-brand-text {
-						display: none;
-					}
-				}
-				.sidebar-heading {
+			flex-basis: 125px;
+				
+			.sidebar-panel .sidebar-content {
+				.sidebar-label {
 					text-align: center;
 				}
-			}
-		}
-	}
 
-	// Sidebar Color Variants
+				.sidebar-section .sidebar-item a {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
 
-	// Sidebar Light
-	.sidebar-light {
-		.sidebar-brand {
-			color: $gray-700;
-		}
-		hr.sidebar-divider {
-			border-top: 1px solid $gray-200;
-		}
-		.sidebar-heading {
-			color: $gray-500;
-		}
-		.nav-item {
-			.nav-link {
-				color: $gray-600;
-				i {
-					color: $gray-400;
-				}
-				&:active,
-				&:focus,
-				&:hover {
-					color: $gray-700;
-					i {
-						color: $gray-700;
-					}
-				}
-				// Accordion
-				&[data-toggle="collapse"]::after {
-					color: $gray-500;
-				}
-			}
-			&.active {
-				.nav-link {
-					color: $gray-700;
-					i {
-						color: $gray-700;
+					.fas {
+						display: block;
+						padding-bottom: 3px;
 					}
 				}
 			}
-		}
-		// Color the sidebar toggler
-		#sidebarToggle {
-			background-color: $gray-200;
-			&::after {
-				color: $gray-500;
+
+			.sidebar-toggler {
+				left: 125px;
+				cursor: e-resize;
+
+				&::before {
+					content: "\f054";
+				}
 			}
+		}
+
+		.sidebar-panel {
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+			background-color: $primary;
+			background-image: linear-gradient(180deg, $primary 10%, $primary-darker 100%);
+
+			.sidebar-branding {
+				color: $white;
+				font-weight: bolder;
+				background-color: $primary-darker;
+				padding: 10px 0px;
+				flex: 0 0 50px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+
+				.sidebar-branding-text {
+					font-size: 1.25em;
+				}
+
+				.sidebar-branding-text-alt {
+					font-size: 2em;
+					display: none;
+					background-color: $primary;
+					border-radius: 5px;
+					width: 50%;
+				}
+			}
+
+			.sidebar-content {
+				overflow-y: auto;
+				flex-grow: 1;
+
+				.sidebar-section {
+					.sidebar-item {
+						padding: 0px 10px;
+						margin: 15px 0px;
+
+						a {
+							display: block;
+							padding: 10px;
+							color: rgba($white, 0.8);
+							border-radius: 5px;
+							outline: none;
+
+							.fas {
+								color: rgba($white, 0.4);
+								margin-right: 0.25em;
+							}
+
+							&:hover {
+								background-color: $primary-lighter;
+								color: rgba($white, 1);
+
+								.fas {
+									color: $white;
+								}
+							}
+
+							&.router-link-exact-active {
+								background-color: $primary-lighter;
+								color: $white;
+								font-weight: 600;
+
+								.fas {
+									color: $white;
+								}
+							}
+						}
+					}
+				}
+
+				.sidebar-label {
+					text-transform: uppercase;
+					font-weight: 600;
+					font-size: 0.75em;
+					color: rgba($white, 0.5);
+					margin: 5px 0px;
+					padding: 0px 20px;
+				}
+			}
+		}
+
+		.sidebar-toggler {
+			cursor: w-resize;
+			border-left: 3px solid rgba($primary-lighter, 0.7);
+			transition: opacity 0.25s ease-in-out 0s;
+			opacity: 0;
+			padding-left: 3px;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 250px;
+			transition: left 200ms ease-in-out;
+
 			&:hover {
-				background-color: $gray-300;
+				opacity: 1;
 			}
-		}
-	}
 
-	// Sidebar Dark
-	.sidebar-dark {
-		.sidebar-brand {
-			color: $white;
-		}
-		hr.sidebar-divider {
-			border-top: 1px solid fade-out($white, 0.85);
-		}
-		.sidebar-heading {
-			color: fade-out($white, 0.6);
-		}
-		.nav-item {
-			.nav-link {
-				color: fade-out($white, 0.2);
-				i {
-					color: fade-out($white, 0.7);
-				}
-				&:active,
-				&:focus,
-				&:hover {
-					color: $white;
-					i {
-						color: $white;
-					}
-				}
-				// Accordion
-				&[data-toggle="collapse"]::after {
-					color: fade-out($white, 0.5);
-				}
-			}
-			&.active {
-				.nav-link {
-					color: $white;
-					i {
-						color: $white;
-					}
-				}
+			&::before {
+				position: relative;
+				top: calc(50% - 1em);
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				content: "\f053";
+				color: rgba($primary-lighter, 0.7);
 			}
 		}
-		// Color the sidebar toggler
-		#sidebarToggle {
-			background-color: fade-out($white, 0.8);
-			&::after {
-				color: fade-out($white, 0.5);
+
+		@include respond-below(sm) {
+			font-size: 0.75em;
+
+			.fas {
+				font-size: 1.5em;
 			}
-			&:hover {
-				background-color: fade-out($white, 0.75);
+
+			.sidebar-toggler {
+				display: none;
 			}
-		}
-		&.toggled {
-			#sidebarToggle::after {
-				color: fade-out($white, 0.5);
+
+			.sidebar-branding-text {
+				display: none;
+			}
+
+			.sidebar-branding-text-alt {
+				display: block !important;
+			}
+
+			.sidebar-label {
+				padding: 0px 10px !important;
+			}
+
+			.sidebar-item {
+				padding: 0px 5px !important;
+
+				a {
+					padding: 10px 0px !important;
+				}
+			}
+
+			&.toggled {
+				flex-basis: 70px;
 			}
 		}
 	}

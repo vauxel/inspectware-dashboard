@@ -10,7 +10,6 @@
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import "bootstrap";
 
 	@Component
 	export default class Footer extends Vue {}

@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Settings from "./views/Settings.vue";
-import Metrics from "./views/Metrics.vue";
+import Inspections from "./views/Inspections.vue";
 import NProgress from "nprogress";
 
 Vue.use(Router);
@@ -17,14 +17,14 @@ const router = new Router({
 			component: Home,
 		},
 		{
-			path: "/",
-			name: "Metrics",
-			component: Metrics,
-		},
-		{
 			path: "/settings",
 			name: "Settings",
 			component: Settings,
+		},
+		{
+			path: "/inspections",
+			name: "Inspection Statuses",
+			component: Inspections,
 		},
 	],
 });

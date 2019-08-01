@@ -1,52 +1,46 @@
 <template>
 	<div class="login-container">
 		<div class="login-box">
-			<div class="card shadow-sm">
-				<div class="card-body p-4">
-					<div v-show="loginError" class="alert alert-warning" role="alert">
-						<i class="fas fa-info-circle fa-sm"></i> {{ loginError }}
-					</div>
-					<div v-show="!affiliation">
-						<div class="text-center mb-5 mt-4">
-							<h1 class="h4 text-gray-900">I Am A ...</h1>
-							<span class="text-muted font-weight-light">Choose your affiliation from the options below</span>
-						</div>
-						<a href="#" class="btn btn-primary btn-block btn-affiliation" v-on:click="setHIAffiliation">
-							<i class="fas fa-hard-hat border border-white rounded-circle p-2 mr-2"></i> Home Inspector
-						</a>
-						<a href="#" class="btn btn-primary btn-block btn-affiliation" v-on:click="setClientAffiliation">
-							<i class="fas fa-user border border-white rounded-circle p-2 mr-2"></i> Client
-						</a>
-						<a href="#" class="btn btn-primary btn-block btn-affiliation" v-on:click="setREAAffiliation">
-							<i class="fas fa-sign border border-white rounded-circle p-2 mr-2"></i> Real Estate Agent
-						</a>
-					</div>
-					<div v-show="affiliation">
-						<div class="text-center mb-5 mt-4">
-							<i v-if="affiliation == 'inspector'" class="fas fa-hard-hat fa-4x mb-4"></i>
-							<i v-if="affiliation == 'client'" class="fas fa-user fa-4x mb-4"></i>
-							<i v-if="affiliation == 'realtor'" class="fas fa-sign fa-4x mb-4"></i>
-							<h1 class="h4 text-gray-900">I Am A: <i>{{ affiliationName }}</i></h1>
-							<span class="text-muted font-weight-light">Enter your login credentials below to access your account</span>
-						</div>
-						<form class="user" v-on:submit.prevent="login">
-							<div class="form-group">
-								<input type="email" class="form-control form-control-user" placeholder="Email Address" v-bind:class="{ 'is-invalid': invalidEmail }" v-model="email" v-on:change="invalidEmail = false">
-								<div class="invalid-feedback">Please enter a valid email</div>
-							</div>
-							<div class="form-group">
-								<input type="password" class="form-control form-control-user" placeholder="Password" v-bind:class="{ 'is-invalid': invalidPassword }" v-model="password" v-on:change="invalidPassword = false">
-								<div class="invalid-feedback">Please enter a password</div>
-							</div>
-							<button type="submit" class="btn btn-primary btn-user btn-block">
-								Login <i class="fas fa-angle-double-right fa-sm"></i>
-							</button>
-							<button type="button" class="btn btn-secondary btn-user btn-block" v-on:click="clearAffiliation">
-								Go Back <i class="fas fa-undo fa-sm"></i>
-							</button>
-						</form>
-					</div>
+			<div v-show="!affiliation">
+				<div class="text-center mb-5 mt-4">
+					<h1 class="h4 text-gray-900">I Am A ...</h1>
+					<div>Choose your affiliation from the options below</div>
 				</div>
+				<div class="flex justify-around">
+					<button class="affiliation-btn" @click="setHIAffiliation">
+						<i class="fas fa-3x fa-hard-hat"></i>
+						Home Inspector
+					</button>
+					<button class="affiliation-btn" @click="setClientAffiliation">
+						<i class="fas fa-3x fa-user"></i>
+						Client
+					</button>
+					<button class="affiliation-btn" @click="setREAAffiliation">
+						<i class="fas fa-3x fa-sign"></i>
+						Real Estate Agent
+					</button>
+				</div>
+			</div>
+			<div v-show="affiliation">
+				<div class="text-center mb-5 mt-4">
+					<i v-if="affiliation == 'inspector'" class="fas fa-hard-hat fa-4x mb-4"></i>
+					<i v-if="affiliation == 'client'" class="fas fa-user fa-4x mb-4"></i>
+					<i v-if="affiliation == 'realtor'" class="fas fa-sign fa-4x mb-4"></i>
+					<h1 class="h4 text-gray-900">I Am A: <i>{{ affiliationName }}</i></h1>
+					<span class="text-muted font-weight-light">Enter your login credentials below to access your account</span>
+				</div>
+				<Form ref="loginForm" :model="loginInfo" :rules="loginRules">
+					<FormItem label="Email Address" prop="email">
+						<Input type="email" v-model="loginInfo.email" placeholder="Enter your email address"></Input>
+					</FormItem>
+					<FormItem label="Password" prop="password">
+						<Input type="password" v-model="loginInfo.password" placeholder="Enter your password"></Input>
+					</FormItem>
+					<FormItem>
+						<Button type="primary" long @click="login">Log In</Button>
+					</FormItem>
+					<Button long @click="clearAffiliation">Go Back</Button>
+				</Form>
 			</div>
 		</div>
 	</div>
@@ -54,28 +48,31 @@
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import "bootstrap";
 
 	@Component
 	export default class Login extends Vue {
 		private affiliation: string = "";
 		private affiliationName: string = "";
-		private email: string = "";
-		private password: string = "";
-		private invalidEmail: boolean = false;
-		private invalidPassword: boolean = false;
+
+		private loginInfo = {
+			email: "",
+			password: ""
+		};
+
+		private loginRules = {
+			email: [
+				{ required: true, message: "You must enter an email", trigger: "blur" },
+				{ type: "email", message: "Invalid email format", trigger: "blur" }
+			],
+			password: [
+				{ required: true, message: "You must enter a password", trigger: "blur" }
+			]
+		};
 
 		private clearAffiliation(): void {
 			this.affiliation = "";
 			this.affiliationName = "";
-
-			if (this.invalidEmail) {
-				this.invalidEmail = false;
-			}
-
-			if (this.invalidPassword) {
-				this.invalidPassword = false;
-			}
+			this.$refs["loginForm"].resetFields();
 		}
 
 		private setHIAffiliation(): void {
@@ -93,25 +90,18 @@
 			this.affiliationName = "Real Estate Agent";
 		}
 
-		private login(): void {
-			this.invalidEmail = false;
-			this.invalidPassword = false;
+		private async login() {
+			let valid: boolean = await this.$refs["loginForm"].validate();
 
-			if (this.email === "" || !(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email))) {
-				this.invalidEmail = true;
+			if (!valid) {
+				return;
 			}
 
-			if (this.password === "") {
-				this.invalidPassword = true;
-			}
-
-			if (!this.invalidEmail && !this.invalidPassword) {
-				this.$store.dispatch("attemptLogin", {
-					affiliation: this.affiliation,
-					loginName: this.email,
-					password: this.password
-				});
-			}
+			this.$store.dispatch("attemptLogin", {
+				affiliation: this.affiliation,
+				loginName: this.loginInfo.email,
+				password: this.loginInfo.password
+			});
 		}
 
 		private get loginError(): string {
@@ -124,26 +114,43 @@
 	@import "@/scss/include.scss";
 
 	.login-container {
-		margin-top: 10vh;
 		flex-grow: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		background-color: $primary;
 
 		.login-box {
 			flex-grow: 1;
 			max-width: 500px;
-			margin: 1rem;
-		}
-	}
+			padding: 30px;
+			background-color: $white;
+			box-shadow: $shadow-1;
+			border-radius: 5px;
 
-	.btn-affiliation {
-		padding: 1rem;
-		text-align: left;
-		font-weight: bold;
+			.affiliation-btn {
+				flex: 1;
+				background: $primary;
+				border-radius: 5px;
+				color: $grey-1;
+				padding: 20px 10px;
+				margin: 0px 5px;
+				font-weight: 600;
+				border: 2px solid $primary-darker;
+				transition: all 150ms ease-in-out;
 
-		+ .btn-affiliation {
-			margin-top: 1rem;
+				&:hover {
+					background-color: $primary-darker;
+					box-shadow: $shadow-2;
+				}
+
+				.fas {
+					display: block;
+					padding-bottom: 10px;
+					margin-bottom: 5px;
+					border-bottom: 2px solid $grey-1;
+				}
+			}
 		}
 	}
 
