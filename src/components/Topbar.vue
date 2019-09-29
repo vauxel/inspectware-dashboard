@@ -1,6 +1,6 @@
 <template>
 	<nav id="topbar">
-		<div class="text-2xl font-semibold border-2 border-gray-200 bg-gray-100 px-2 rounded-lg">{{ $route.name }}</div>
+		<div class="text-2xl font-semibold">{{ $route.name }}</div>
 		<div class="topbar-items">
 			<div class="topbar-items-toggler" @click="toggleDropdown"><i class="fas fa-fw fa-bars"></i></div>
 			<ul class="topbar-items-list" v-bind:class="{ toggled: dropdownToggled }">

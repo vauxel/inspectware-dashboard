@@ -30,6 +30,12 @@
 						<router-link to="/realtors"><i class="fas fa-fw fa-sign"></i> Realtors</router-link>
 					</li>
 				</ul>
+				<div class="sidebar-label">Preferences</div>
+				<ul class="sidebar-section">
+					<li class="sidebar-item">
+						<router-link to="/availability"><i class="fas fa-fw fa-calendar-alt"></i> Availability</router-link>
+					</li>
+				</ul>
 			</div>
 		</div>
 		<div class="sidebar-toggler" @click="toggleSidebar"></div>

@@ -55,8 +55,6 @@
 
 		private year = 1970;
 		private month = 0;
-		
-		private eventDetails = {};
 
 		private monthNames = [
 			"January",
@@ -73,20 +71,22 @@
 			"December"
 		];
 
-		private monthDays = [
-			31,
-			(this.year % 4 === 0) ? 29 : 28,
-			31,
-			30,
-			31,
-			30,
-			31,
-			31,
-			30,
-			31,
-			30,
-			31
-		];
+		private get monthDays() {
+			return [
+				31,
+				(this.year % 4 === 0) ? 29 : 28,
+				31,
+				30,
+				31,
+				30,
+				31,
+				31,
+				30,
+				31,
+				30,
+				31
+			];
+		}
 
 		created() {
 			let date = new Date();
@@ -120,7 +120,7 @@
 					day = i - startDay + 1;
 
 					let currentDate = new Date();
-					if (this.month === currentDate.getMonth() && day === currentDate.getDate()) {
+					if (this.year === currentDate.getFullYear() && this.month === currentDate.getMonth() && day === currentDate.getDate()) {
 						today = true;
 					}
 
@@ -330,12 +330,6 @@
 								border-radius: 6px;
 								transition: border-left 100ms ease-in-out;
 								cursor: pointer;
-								
-								div {
-									white-space: nowrap;
-									overflow-x: hidden;
-									text-overflow: ellipsis;
-								}
 
 								&:hover {
 									border-left: 6px solid rgba($primary, 0.70);
@@ -343,6 +337,12 @@
 
 								&:not(:last-of-type) {
 									margin-bottom: 5px;
+								}
+
+								div {
+									white-space: nowrap;
+									overflow-x: hidden;
+									text-overflow: ellipsis;
 								}
 							}
 						}

@@ -110,7 +110,7 @@ export default class AuthModule extends VuexModule {
 			return;
 		}
 
-		if (!result.data.success) {
+		if (result.data.status != 200) {
 			this.context.commit("LOGIN_FAILURE", result.data.error.message);
 		} else {
 			localStorage.setItem("auth_token", result.data.data.token);

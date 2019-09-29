@@ -22,7 +22,7 @@
 		components: {
 			Login,
 			Sidebar,
-			Topbar,
+			Topbar
 		},
 	})
 	export default class extends Vue {
@@ -69,6 +69,7 @@
 		#content-wrapper {
 			flex-grow: 1;
 			overflow-y: auto;
+			overflow-x: hidden;
 
 			#content {
 				padding: 20px;

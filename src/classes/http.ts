@@ -10,7 +10,7 @@ instance.interceptors.request.use((config) => {
 	NProgress.start();
 
 	if (localStorage.getItem("auth_token")) {
-		config.headers.authorization = localStorage.getItem("auth_token");
+		config.headers.Authorization = "Bearer " + localStorage.getItem("auth_token");
 	}
 
 	return config;
@@ -24,13 +24,14 @@ instance.interceptors.response.use((response) => {
 	return response;
 }, (error) => {
 	NProgress.done();
+	console.log(error);
 
-	if (error.response.status == 401 && !error.response.data.success) {
+	if (error.response.status == 401) {
 		VuexStore.dispatch("logout", {
 			message: "You are unauthorized to make that request without sufficient authentication.",
 			compulsory: true
 		});
-		return error.response;
+		return Promise.reject(error);
 	}
 
 	return Promise.reject(error);

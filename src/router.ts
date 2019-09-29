@@ -3,6 +3,8 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Settings from "./views/Settings.vue";
 import Inspections from "./views/Inspections.vue";
+import Inspection from "./views/Inspection.vue";
+import Availability from "./views/Availability.vue";
 import NProgress from "nprogress";
 
 Vue.use(Router);
@@ -25,6 +27,16 @@ const router = new Router({
 			path: "/inspections",
 			name: "Inspection Statuses",
 			component: Inspections,
+		},
+		{
+			path: "/inspections/:id",
+			name: "Inspection Details",
+			component: Inspection,
+		},
+		{
+			path: "/availability",
+			name: "Availability",
+			component: Availability,
 		},
 	],
 });

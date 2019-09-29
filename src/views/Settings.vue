@@ -158,7 +158,7 @@
 				phone: this.userInfo.phone
 			});
 
-			if (result.data.success) {
+			if (result.data.status != 200) {
 				this.$Notice.info({
 					title: "User Info Updated",
 					desc: "Your user information has been successfully updated"
@@ -186,7 +186,7 @@
 				new: this.security.newPass1
 			});
 
-			if (result.data.success) {
+			if (result.data.status != 200) {
 				this.$Notice.info({
 					title: "Password Updated",
 					desc: "Your password has been successfully changed"
