@@ -8,10 +8,10 @@
 			<div class="available-days">
 				<div class="available-day" v-for="(day, weekday) in timeslots" :key="weekday">
 					<div class="available-day-header">{{ weekday }}</div>
-					<ul class="day-timeslot" v-for="time in sortDay(day)" :key="time">
+					<div class="day-timeslot" v-for="time in sortDay(day)" :key="time">
 						<i class="fas fa-fw fa-clock"></i> {{ formatTime(time) }}
 						<button class="timeslot-delete" @click="deleteAvailTimeslotHelper(weekday, time)"><i class="far fa-trash-alt"></i></button>
-					</ul>
+					</div>
 					<Poptip placement="bottom" :width="225">
 						<Button type="dashed" long style="margin-top: 5px;"><i class="far fa-plus-square"></i> Add Timeslot</Button>
 						<div slot="content">
@@ -43,13 +43,26 @@
 		<Card>
 			<p slot="title">
 				<i class="fas fa-fw fa-business-time"></i>
-				Time Off
+				Toggle Time Off
 			</p>
+			<div class="timeoff-days">
+				<div class="timeoff-day" v-for="(day, index) in timeoffDays" :key="index">
+					<div class="timeoff-day-date">{{ day.date.format("MMMM Do") }}</div>
+					<div class="timeoff-day-weekday">{{ day.date.format("dddd") }}</div>
+					<div class="timeoff-day-times">
+						<div class="day-timeslot timeoff-timeslot" v-for="(selected, time) in day.timeslots" :key="time" @click="toggleTimeoff(day.date, time, selected)">
+							<i class="fas fa-fw fa-clock"></i> {{ formatTime(time) }}
+							<div class="timeoff-indicator" :data-blocked="'' + selected"></div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</Card>
 	</div>
 </template>
 
 <script lang="ts">
+	import moment from "moment";
 	import { Component, Vue } from "vue-property-decorator";
 	import HTTP from "../classes/http";
 
@@ -73,8 +86,37 @@
 			"sunday": []
 		};
 
+		private timeoff: {date: string, time: number}[] = [];
+
 		public mounted() {
 			this.getTimeslots();
+			this.getTimeoff();
+		}
+
+		private get timeoffDays(): {date: moment.Moment, timeslots: number[]}[] {
+			const today = new Date();
+			const year = today.getFullYear();
+			const month = today.getMonth();
+			const day = today.getDate();
+			let days: {date: moment.Moment, timeslots: number[]}[] = [];
+
+			for (let i = 0; i < 30; i++) {
+				let newDate = moment().add(i, "days")
+				let timeslotsList: number[] = (this.timeslots as any)[newDate.format("dddd").toLowerCase()];
+				let timeslotsObject: any = {};
+				for (let i = 0; i < timeslotsList.length; i++) {
+					timeslotsObject[timeslotsList[i]] = this.timeoff.find(
+						timeoff => timeoff.date == newDate.format("YYYYMMDD") && timeoff.time == timeslotsList[i]
+					) != undefined;
+				}
+
+				days.push({
+					"date": newDate,
+					"timeslots": timeslotsObject
+				});
+			}
+
+			return days;
 		}
 
 		private sortDay(day: number[]): number[] {
@@ -90,6 +132,11 @@
 			this.timeslots["friday"] = result.data.data["friday"];
 			this.timeslots["saturday"] = result.data.data["saturday"];
 			this.timeslots["sunday"] = result.data.data["sunday"];
+		}
+
+		private async getTimeoff() {
+			const result = await HTTP.get("/prefs/timeoff");
+			this.timeoff = result.data.data;
 		}
 
 		private formatTime(time: number): string {
@@ -143,6 +190,36 @@
 				(this.timeslots as any)[weekday].splice((this.timeslots as any)[weekday].indexOf(time), 1);
 			}
 		}
+
+		private toggleTimeoff(date: moment.Moment, time: number, current: boolean) {
+			if (current == true) {
+				this.removeTimeoff(date, time);
+			} else if (current == false) {
+				this.addTimeoff(date, time);
+			}
+		}
+
+		private async addTimeoff(date: moment.Moment, time: number) {
+			const dateString = date.format("YYYYMMDD");
+			const result = await HTTP.post("prefs/timeoff", {
+				date: dateString,
+				time
+			});
+
+			if (result.status == 200) {
+				this.timeoff.push({date: dateString, time: time});
+			}
+		}
+
+		private async removeTimeoff(date: moment.Moment, time: number) {
+			const dateString = date.format("YYYYMMDD");
+			const result = await HTTP.delete("prefs/timeoff/" + dateString + "/" + time);
+			if (result.status == 200) {
+				this.timeoff.splice(this.timeoff.findIndex(
+					timeoff => timeoff.date == dateString && timeoff.time == time
+				), 1);
+			}
+		}
 	}
 </script>
 
@@ -181,6 +258,56 @@
 
 			&:hover {
 				color: $red;
+			}
+		}
+	}
+
+	.timeoff-days {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		grid-gap: 10px;
+
+		.timeoff-day {
+			border: 2px solid $grey-2;
+			border-radius: 5px;
+			padding: 5px;
+
+			.timeoff-day-date {
+				font-size: $text-lg;
+				font-weight: 600;
+				line-height: 1.25;
+			}
+
+			.timeoff-day-weekday {
+				font-size: $text-sm;
+				color: $grey-6;
+			}
+
+			.timeoff-day-times {
+				margin: 10px 5px 5px 5px;
+			}
+
+			.timeoff-timeslot {
+				cursor: pointer;
+
+				&:hover {
+					background-color: $grey-2;
+				}
+
+				.timeoff-indicator {
+					float: right;
+					font-weight: 600;
+
+					&[data-blocked="true"]:after {
+						content: "UNAVAIL";
+						color: $red;
+					}
+
+					&[data-blocked="false"]:after {
+						content: "AVAIL";
+						color: $green;
+					}
+				}
 			}
 		}
 	}
