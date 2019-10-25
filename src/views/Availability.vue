@@ -101,7 +101,7 @@
 			let days: {date: moment.Moment, timeslots: number[]}[] = [];
 
 			for (let i = 0; i < 30; i++) {
-				let newDate = moment().add(i, "days")
+				let newDate = moment().add(i, "days");
 				let timeslotsList: number[] = (this.timeslots as any)[newDate.format("dddd").toLowerCase()];
 				let timeslotsObject: any = {};
 				for (let i = 0; i < timeslotsList.length; i++) {
@@ -140,26 +140,27 @@
 		}
 
 		private formatTime(time: number): string {
-			let hour = Math.floor(time / 100);
-			let minute = time % 100;
-			let period;
-
-			if (hour > 12) {
-				hour -= 12;
-				period = "PM";
-			} else {
-				period = "AM";
-			}
-
+			let hour = Math.floor(time / 60);
+			let minute = time % 60;
+			let period = hour < 12 || hour == 24 ? "AM" : "PM";
+			hour = hour % 12 || 12;
 			return `${("" + hour).padStart(2, '0')}:${("" + minute).padStart(2, '0')} ${period}`;
 		}
 
 		private async addAvailTimeslot(weekday: string) {
-			let hour = ("" + (this.newTimeslot.period == "AM" ? this.newTimeslot.hour : this.newTimeslot.hour + 12)).padStart(2, '0');
-			let minute = ("" + this.newTimeslot.minute).padStart(2, '0');
-			let hourNum = parseInt(hour + minute);
+			let hour = parseInt(this.newTimeslot.hour);
 
-			if ((this.timeslots as any)[weekday].includes(hourNum)) {
+			if (this.newTimeslot.period == "PM" && hour < 12) {
+				hour += 12;
+			}
+
+			if (this.newTimeslot.period == "AM" && hour == 12) {
+				hour -= 12;
+			}
+
+			let timestamp = (hour * 60) + parseInt(this.newTimeslot.minute);
+
+			if ((this.timeslots as any)[weekday].includes(timestamp)) {
 				this.$Modal.error({
 					title: "Duplicate Timeslot",
 					content: "The timeslot you selected already exists!"
@@ -167,11 +168,11 @@
 			} else {
 				const result = await HTTP.post("prefs/timeslots", {
 					day: weekday,
-					time: hourNum
+					time: timestamp
 				});
 
 				if (result.status == 200) {
-					(this.timeslots as any)[weekday].push(hourNum);
+					(this.timeslots as any)[weekday].push(timestamp);
 				}
 			}
 		}
