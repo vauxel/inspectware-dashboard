@@ -56,7 +56,7 @@
 				display: none;
 
 				&:hover {
-					color: $blue;
+					color: $color_blue;
 					cursor: pointer;
 				}
 			}
@@ -81,7 +81,7 @@
 					align-items: center;
 					position: absolute;
 					right: 20px;
-					background-color: $white;
+					background-color: $color_white;
 					padding: 10px;
 					box-shadow: 0 2px 3px rgba(10,10,10,.1),0 0 0 1px rgba(10,10,10,.1);
 					border-radius: 5px;

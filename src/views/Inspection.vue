@@ -43,23 +43,25 @@
 		private mapCenter = {lat: 35.700064, lng: -78.755007 };
 		private map: Mapbox.Map;
 
-		private address = "2609 Dockery Ln, Raleigh, NC 27606";
-		private id = "98sdf02";
+		private address = "";
+		private id = "";
 		private client1 = {
-			name: "John Doe"
+			name: ""
 		};
 		private client2 = {
-			name: "Jane Doe"
+			name: ""
 		};
 		private sellRealtor = {
-			name: "Austin Villee"
+			name: ""
 		};
 		private buyRealtor = {
-			name: "Jack Smith"
+			name: ""
 		};
 		private previewImage = "https://photos.zillowstatic.com/cc_ft_768/ISni89iuad9ntt1000000000.webp";
 
 		mounted() {
+			this.getGeneralInfo();
+
 			Mapbox.accessToken = this.accessToken;
 
 			this.map = new Mapbox.Map({
@@ -83,6 +85,24 @@
 
 		private get gMapsLink(): string {
 			return "//www.google.com/maps/dir//" + this.address.replace(/\ /g, "+");
+		}
+
+		private async getGeneralInfo() {
+			try {
+				const result = await HTTP.get("/inspection/general_info", {
+					params: { id: this.$route.params.id }
+				});
+
+				this.id = result.data.data.id;
+				this.address = result.data.data.address;
+				this.client1 = result.data.data.client1;
+				this.client2 = result.data.data.client2;
+				this.sellRealtor = result.data.data.realtor_selling;
+				this.buyRealtor = result.data.data.realtor_buying;
+			} catch {
+				// TODO: push "inspection not found" notification
+				this.$router.push("/");
+			}
 		}
 	}
 </script>
@@ -109,7 +129,7 @@
 	.inspection-overview {
 		flex-grow: 1;
 		display: flex;
-		background-color: $white;
+		background-color: $color_white;
 		box-shadow: $shadow-1;
 		padding: 10px;
 		margin-right: 10px;
@@ -129,18 +149,18 @@
 			margin-left: 15px;
 
 			.inspection-address {
-				font-size: $text-3xl;
+				font-size: $font-size_3xl;
 				font-weight: 600;
-				border-bottom: 2px solid $grey-3;
+				border-bottom: 2px solid $color_grey-3;
 				margin-bottom: 5px;
 				padding-bottom: 5px;
 			}
 
 			.inspection-detail {
 				.inspection-detail-key {
-					color: $grey-6;
+					color: $color_grey-6;
 					text-transform: uppercase;
-					font-size: $text-sm;
+					font-size: $font-size_sm;
 					margin-right: 7.5px;
 					font-style: italic;
 				}
@@ -155,7 +175,7 @@
 	.inspection-actions {
 		display: flex;
 		flex-direction: column;
-		background-color: $white;
+		background-color: $color_white;
 		box-shadow: $shadow-1;
 		padding: 10px;
 		justify-content: space-around;
@@ -181,7 +201,7 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50% 50% 10% 50%;
-		background-color: $primary;
+		background-color: $color_primary;
 		rotate: 45deg;
 		transform: rotate(45deg);
 
@@ -191,12 +211,12 @@
 			font-weight: 900;
 			width: 24px;
 			height: 24px;
-			color: $grey-1;	
+			color: $color_grey-1;	
 			text-align: center;
 			line-height: 24px;
 			position: absolute;
 			margin: 8px 0 0 8px;
-			background-color: $primary-darker;
+			background-color: $color_primary-darker;
 			border-radius: 50%;
 			transform: rotate(-45deg);
 		}

@@ -1,0 +1,29 @@
+.panel {
+    margin-bottom: 2rem;
+    background-color: $color_white;
+    border: 1px solid $color_grey-4;
+    border-radius: 5px;
+    overflow: hidden;
+
+    .panel-head {
+        border-bottom: 1px solid $color_grey-4;
+        display: flex;
+        justify-content: space-between;
+        background-color: $color_white-1;
+
+        .panel-title {
+            padding: 1rem;
+            font-size: $font-size_lg;
+            font-weight: $font-weight_semibold;
+        }
+        
+        .panel-options {
+            padding: 1rem;
+            border-left: 1px solid $color_grey-4;
+        }
+    }
+
+    .panel-body {
+        padding: 1rem;
+    }
+}

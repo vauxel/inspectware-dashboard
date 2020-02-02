@@ -1,44 +1,48 @@
 <template>
 	<div class="container-fluid">
-		<Row :gutter="20" class="mb-3">
-			<Col :md="24" :lg="8">
-				<div class="flex items-center p-4 shadow-sm rounded border border-gray-400 mb-3 bg-white">
-					<div class="pl-3 pr-6">
-						<i class="fas fa-calendar fa-2x"></i>
+		<div class="panel">
+			<div class="panel-head">
+				<div class="panel-title">
+					<i class="fas fa-fw fa-chart-bar"></i>
+					Quick Stats
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="stats-row">
+					<div class="stats-item">
+						<i class="stats-icon fas fa-fw fa-calendar fa-2x"></i>
+						<div class="stats-details">
+							<div class="stats-name">Inspections (Past Month)</div>
+							<div class="stats-value">123</div>
+						</div>
 					</div>
-					<div class="border-l border-gray-400 pl-6">
-						<div class="text-xs font-semibold uppercase text-gray-600">Inspections (Past Month)</div>
-						<div class="text-3xl font-bold">123</div>
+					<div class="stats-item">
+						<i class="stats-icon fas fa-fw fa-coins fa-2x"></i>
+						<div class="stats-details">
+							<div class="stats-name">Revenue (Past Month)</div>
+							<div class="stats-value">$1,234</div>
+						</div>
+					</div>
+					<div class="stats-item">
+						<i class="stats-icon fas fa-fw fa-clipboard-list fa-2x"></i>
+						<div class="stats-details">
+							<div class="stats-name">Upcoming Inspections</div>
+							<div class="stats-value">20</div>
+						</div>
 					</div>
 				</div>
-			</Col>
-			<Col :md="24" :lg="8">
-				<div class="flex items-center p-4 shadow-sm rounded border border-gray-400 mb-3 bg-white">
-					<div class="pl-3 pr-6">
-						<i class="fas fa-coins fa-2x"></i>
-					</div>
-					<div class="border-l border-gray-400 pl-6">
-						<div class="text-xs font-semibold uppercase text-gray-600">Revenue (Past Month)</div>
-						<div class="text-3xl font-bold">$1,234</div>
-					</div>
-				</div>
-			</Col>
-			<Col :md="24" :lg="8">
-				<div class="flex items-center p-4 shadow-sm rounded border border-gray-400 bg-white">
-					<div class="pl-3 pr-6">
-						<i class="fas fa-clipboard-list fa-2x"></i>
-					</div>
-					<div class="border-l border-gray-400 pl-6">
-						<div class="text-xs font-semibold uppercase text-gray-600">Upcoming Inspections</div>
-						<div class="text-3xl font-bold">20</div>
-					</div>
-				</div>
-			</Col>
-		</Row>
+			</div>
+		</div>
 
-		<Row class="mb-6">
-			<div class="font-bold uppercase mb-3 pb-1 border-b-2 border-gray-300">Activity Log</div>
-			<ul class="shadow border border-gray-300 border-b-4 bg-white">
+		<div class="panel">
+			<div class="panel-head">
+				<div class="panel-title">
+					<i class="fas fa-fw fa-clipboard-list"></i>
+					Activity Log
+				</div>
+			</div>
+			<div class="panel-body">
+				<ul class="shadow border border-gray-300 border-b-4 bg-white">
 				<li class="flex items-center p-4 border-b border-gray-300">
 					<div class="bg-gray-200 p-2 rounded-lg"><i class="fas fa-fw fa-plus fa-lg"></i></div>
 					<div class="flex-grow mx-3 text-lg italic">New inspection booked for 2609 Dockery Ln, Raleigh, NC 27606</div>
@@ -50,18 +54,28 @@
 					<div class="bg-gray-200 py-1 px-3 rounded-full text-sm font-semibold">April 1 2019 @ 2:00 PM</div>
 				</li>
 			</ul>
-		</Row>
+			</div>
+		</div>
 
-		<Row>
-			<div class="font-bold uppercase mb-3 pb-1 border-b-2 border-gray-300">Inspections Calendar</div>
-			<Calendar :events="calendarEvents"></Calendar>
-		</Row>
+		<div class="panel">
+			<div class="panel-head">
+				<div class="panel-title">
+					<i class="far fa-fw fa-calendar"></i>
+					Inspections Calendar
+				</div>
+			</div>
+			<div class="panel-body">
+				<Calendar :events="calendarEvents"></Calendar>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
 	import Calendar from "../components/Calendar.vue";
+	import HTTP from "../classes/http";
+	import moment from "moment";
 
 	@Component({
 		components: {
@@ -97,59 +111,87 @@
 			},
 		];
 
-		private calendarEvents = {
-			20190730: [
-				{
-					id: "7as9d2",
-					address: "2609 Dockery Ln, Raleigh, NC 27606",
-					time: 1030,
-					client: "John Doe",
-					agent: "Austin Villee"
-				},
-				{
-					id: "7as9d2",
-					address: "2609 Dockery Ln, Raleigh, NC 27606",
-					time: 1230,
-					client: "Jack Smith",
-					agent: "Adam Lastname"
+		private calendarEvents = {};
+
+		public mounted() {
+			this.getCalendarInspections();
+		}
+
+		private async getCalendarInspections() {
+			const result = await HTTP.get("/inspector/inspections", {
+				params: {
+					from: moment().format("YYYYMMDD"),
+					until: moment().add("months", 1).date(0).format("YYYYMMDD")
 				}
-			],
-			20190821: [
-				{
-					id: "7as9d2",
-					address: "2609 Dockery Ln, Raleigh, NC 27606",
-					time: 1030,
-					client: "John Doe",
-					agent: "Austin Villee"
+			});
+
+			let inspections: any = {};
+
+			for (const inspection of result.data.data) {
+				let date = inspection.date;
+				delete inspection.date;
+				
+				if (!inspections[date]) {
+					inspections[date] = [];
 				}
-			],
-			20190808: [
-				{
-					id: "7as9d2",
-					address: "2609 Dockery Ln, Raleigh, NC 27606",
-					time: 1030,
-					client: "John Doe",
-					agent: "Adam Smith"
-				},
-				{
-					id: "7as9d2",
-					address: "2609 Dockery Ln, Raleigh, NC 27606",
-					time: 1030,
-					client: "John Doe",
-					agent: "Adam Smith"
-				},
-				{
-					id: "7as9d2",
-					address: "2609 Dockery Ln, Raleigh, NC 27606",
-					time: 1030,
-					client: "John Doe",
-					agent: "Adam Smith"
-				}
-			]
-		};
+
+				inspections[date].push(inspection);
+			}
+
+			this.calendarEvents = inspections;
+		}
 	}
 </script>
 
 <style scoped lang="scss">
 	@import "@/scss/include.scss";
+
+	.stats-row {
+		display: flex;
+		justify-content: space-around;
+
+		.stats-item {
+			display: flex;
+
+			.stats-icon {
+				display: block;
+				align-self: center;
+			}
+
+			.stats-details {
+				margin-left: 1rem;
+				padding: 0.5rem 0 0.5rem 1rem;
+				border-left: 2px solid $font_color_dark;
+				flex-grow: 1;
+
+				.stats-name {
+					font-size: $font-size_sm;
+					color: $color-grey-6;
+					text-transform: uppercase;
+					font-weight: $font-weight_semibold;
+				}
+
+				.stats-value {
+					font-weight: $font-weight_bold;
+					font-size: $font-size_xl;
+				}
+			}
+		}
+	}
+
+	@include respond-below(md) {
+		.stats-row {
+			flex-direction: column;
+			align-items: left;
+			margin: -0.5rem 0;
+
+			.stats-item {
+				margin: 0.5rem 0;
+
+				.stats-details {
+					text-align: right;
+				}
+			}
+		}
+	}
 </style>

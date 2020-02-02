@@ -3,12 +3,12 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./registerServiceWorker";
-import iView from "iview";
-import locale from "iview/dist/locale/en-US";
+import ViewUI from "view-design";
+import locale from "view-design/dist/locale/en-US";
 
 Vue.config.productionTip = false;
 
-Vue.use(iView, { locale });
+Vue.use(ViewUI, { locale });
 
 new Vue({
 	router,

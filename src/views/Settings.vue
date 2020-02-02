@@ -2,40 +2,46 @@
 	<div class="container-fluid">
 		<Row :gutter="15">
 			<Col span="12">
-				<Card>
-					<p slot="title">
-						<i class="fas fa-fw fa-user"></i>
-						User Info Settings
-					</p>
-					<Button type="primary" size="small" slot="extra" @click="saveUserInformation">
-						<i class="fas fa-fw fa-save"></i>
-						Save Changes
-					</Button>
-					<Form ref="userInfoForm" :model="userInfo" :rules="userInfoRules" :label-width="135">
-						<FormItem label="First Name" prop="firstName">
-							<Input v-model="userInfo.firstName" placeholder="Enter your first name" disabled></Input>
-						</FormItem>
-						<FormItem label="Last Name" prop="lastName">
-							<Input v-model="userInfo.lastName" placeholder="Enter your last name" disabled></Input>
-						</FormItem>
-						<FormItem label="Email Address" prop="email">
-							<Input v-model="userInfo.email" placeholder="Enter your email address"></Input>
-						</FormItem>
-						<FormItem label="Phone Number" prop="phone">
-							<masked-input
-								type="text"
-								class="ivu-input"
-								v-model="userInfo.phone"
-								:mask="['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]"
-								:guide="true"
-								placeholderChar="_">
-							</masked-input>
-						</FormItem>
-						<FormItem label="Confirm Password" prop="confirmPass">
-							<Input type="password" v-model="userInfo.confirmPass" placeholder="Enter your password to confirm changes"></Input>
-						</FormItem>
-					</Form>
-				</Card>
+				<div class="panel">
+					<div class="panel-head">
+						<div class="panel-title">
+							<i class="fas fa-fw fa-user"></i>
+							User Info Settings
+						</div>
+						<div class="panel-options">
+							<Button type="primary" size="small" @click="saveUserInformation">
+								<i class="fas fa-fw fa-save"></i>
+								Save Changes
+							</Button>
+						</div>
+					</div>
+					<div class="panel-body">
+						<Form ref="userInfoForm" :model="userInfo" :rules="userInfoRules" label-position="top">
+							<FormItem label="First Name" prop="firstName">
+								<Input v-model="userInfo.firstName" placeholder="Enter your first name" disabled></Input>
+							</FormItem>
+							<FormItem label="Last Name" prop="lastName">
+								<Input v-model="userInfo.lastName" placeholder="Enter your last name" disabled></Input>
+							</FormItem>
+							<FormItem label="Email Address" prop="email">
+								<Input v-model="userInfo.email" placeholder="Enter your email address"></Input>
+							</FormItem>
+							<FormItem label="Phone Number" prop="phone">
+								<masked-input
+									type="text"
+									class="ivu-input"
+									v-model="userInfo.phone"
+									:mask="['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]"
+									:guide="true"
+									placeholderChar="_">
+								</masked-input>
+							</FormItem>
+							<FormItem label="Confirm Password" prop="confirmPass">
+								<Input type="password" v-model="userInfo.confirmPass" placeholder="Enter your password to confirm changes"></Input>
+							</FormItem>
+						</Form>
+					</div>
+				</div>
 			</Col>
 			<Col span="12">
 				<Card>
@@ -47,7 +53,7 @@
 						<i class="fas fa-fw fa-save"></i>
 						Save Changes
 					</Button>
-					<Form ref="securityForm" :model="security" :rules="securityRules" :label-width="160">
+					<Form ref="securityForm" :model="security" :rules="securityRules" label-position="top">
 						<FormItem label="Current Password" prop="currentPass">
 							<Input type="password" v-model="security.currentPass" placeholder="Enter your current password"></Input>
 						</FormItem>

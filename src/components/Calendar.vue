@@ -30,11 +30,11 @@
 									<span class="date-eventcount"><i class="fas fa-clipboard-list"></i> {{ eventsForDay(x, y).length }}</span>
 								</div>
 								<ul class="date-events">
-									<li class="date-event" v-for="event in eventsForDay(x, y)" :key="event">
+									<li class="date-event" v-for="event in eventsForDay(x, y)" :key="event.id">
 										<div class="text-xs font-bold"><i class="fas fa-fw fa-clock"></i> {{ formatTime(event.time) }}</div>
 										<div><i class="fas fa-fw fa-home fa-sm"></i> {{ event.address }}</div>
 										<div class="text-sm"><i class="fas fa-fw fa-user"></i> {{ event.client }}</div>
-										<div class="text-sm"><i class="fas fa-fw fa-sign"></i> {{ event.agent }}</div>
+										<div class="text-sm"><i class="fas fa-fw fa-sign"></i> {{ event.realtor }}</div>
 									</li>
 								</ul>
 							</div>
@@ -208,15 +208,10 @@
 		}
 
 		private formatTime(time: number) {
-			let hour = Math.floor(time / 100);
-
-			if (hour > 12) {
-				hour -= 12;
-			}
-
-			let minute = time % 100;
-			let period = hour < 12 ? "AM" : "PM"
-
+			let hour = Math.floor(time / 60);
+			let minute = time % 60;
+			let period = hour < 12 || hour == 24 ? "AM" : "PM";
+			hour = hour % 12 || 12;
 			return `${("" + hour).padStart(2, '0')}:${("" + minute).padStart(2, '0')} ${period}`;
 		}
 	}
@@ -236,8 +231,8 @@
 			.calendar-month {
 				font-weight: 700;
 				font-size: 1.5rem;
-				background-color: $grey-1;
-				border: 2px solid $grey-2;
+				background-color: $color_grey-1;
+				border: 2px solid $color_grey-2;
 				border-radius: 5px;
 				padding: 2.5px 10px;
 			}
@@ -261,7 +256,7 @@
 					.date {
 						display: flex;
 						flex-direction: column;
-						border-top: 3px solid $grey-3;
+						border-top: 3px solid $color_grey-3;
 						padding: 5px;
 						margin-left: 5px;
 						margin-right: 5px;
@@ -290,12 +285,12 @@
 
 						&.date-inactive {
 							.date-header, .date-events {
-								color: $grey-5;
+								color: $color_grey-5;
 							}
 						}
 
 						&:not(.date-inactive) .date-header {
-							color: $grey-6;
+							color: $color_grey-6;
 						}
 
 						.date-header {
@@ -324,15 +319,15 @@
 							transition: color 100ms ease-in-out;
 
 							.date-event {
-								border-left: 4px solid rgba($primary, 0.50);
-								background-color: $grey-2;
+								border-left: 4px solid rgba($color_primary, 0.50);
+								background-color: $color_grey-2;
 								padding: 2.5px 5px;
 								border-radius: 6px;
 								transition: border-left 100ms ease-in-out;
 								cursor: pointer;
 
 								&:hover {
-									border-left: 6px solid rgba($primary, 0.70);
+									border-left: 6px solid rgba($color_primary, 0.70);
 								}
 
 								&:not(:last-of-type) {

@@ -118,13 +118,13 @@
 			flex-grow: 1;
 			display: flex;
 			flex-direction: column;
-			background-color: $primary;
-			background-image: linear-gradient(180deg, $primary 10%, $primary-darker 100%);
+			background-color: $color_primary;
+			background-image: linear-gradient(180deg, $color_primary 10%, $color_primary-darker 100%);
 
 			.sidebar-branding {
-				color: $white;
+				color: $color_white;
 				font-weight: bolder;
-				background-color: $primary-darker;
+				background-color: $color_primary-darker;
 				padding: 10px 0px;
 				flex: 0 0 50px;
 				display: flex;
@@ -139,7 +139,7 @@
 				.sidebar-branding-text-alt {
 					font-size: 2em;
 					display: none;
-					background-color: $primary;
+					background-color: $color_primary;
 					border-radius: 5px;
 					width: 50%;
 				}
@@ -157,31 +157,31 @@
 						a {
 							display: block;
 							padding: 10px;
-							color: rgba($white, 0.8);
+							color: rgba($color_white, 0.8);
 							border-radius: 5px;
 							outline: none;
 
 							.fas {
-								color: rgba($white, 0.4);
+								color: rgba($color_white, 0.4);
 								margin-right: 0.25em;
 							}
 
 							&:hover {
-								background-color: $primary-lighter;
-								color: rgba($white, 1);
+								background-color: $color_primary-lighter;
+								color: rgba($color_white, 1);
 
 								.fas {
-									color: $white;
+									color: $color_white;
 								}
 							}
 
 							&.router-link-exact-active {
-								background-color: $primary-lighter;
-								color: $white;
+								background-color: $color_primary-lighter;
+								color: $color_white;
 								font-weight: 600;
 
 								.fas {
-									color: $white;
+									color: $color_white;
 								}
 							}
 						}
@@ -192,7 +192,7 @@
 					text-transform: uppercase;
 					font-weight: 600;
 					font-size: 0.75em;
-					color: rgba($white, 0.5);
+					color: rgba($color_white, 0.5);
 					margin: 5px 0px;
 					padding: 0px 20px;
 				}
@@ -201,7 +201,7 @@
 
 		.sidebar-toggler {
 			cursor: w-resize;
-			border-left: 3px solid rgba($primary-lighter, 0.7);
+			border-left: 3px solid rgba($color_primary-lighter, 0.7);
 			transition: opacity 0.25s ease-in-out 0s;
 			opacity: 0;
 			padding-left: 3px;
@@ -221,7 +221,7 @@
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
 				content: "\f053";
-				color: rgba($primary-lighter, 0.7);
+				color: rgba($color_primary-lighter, 0.7);
 			}
 		}
 

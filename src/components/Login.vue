@@ -118,29 +118,29 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: $primary;
+		background-color: $color_primary;
 
 		.login-box {
 			flex-grow: 1;
 			max-width: 500px;
 			padding: 30px;
-			background-color: $white;
+			background-color: $color_white;
 			box-shadow: $shadow-1;
 			border-radius: 5px;
 
 			.affiliation-btn {
 				flex: 1;
-				background: $primary;
+				background: $color_primary;
 				border-radius: 5px;
-				color: $grey-1;
+				color: $color_grey-1;
 				padding: 20px 10px;
 				margin: 0px 5px;
 				font-weight: 600;
-				border: 2px solid $primary-darker;
+				border: 2px solid $color_primary-darker;
 				transition: all 150ms ease-in-out;
 
 				&:hover {
-					background-color: $primary-darker;
+					background-color: $color_primary-darker;
 					box-shadow: $shadow-2;
 				}
 
@@ -148,7 +148,7 @@
 					display: block;
 					padding-bottom: 10px;
 					margin-bottom: 5px;
-					border-bottom: 2px solid $grey-1;
+					border-bottom: 2px solid $color_grey-1;
 				}
 			}
 		}

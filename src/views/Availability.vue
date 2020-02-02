@@ -124,7 +124,7 @@
 		}
 
 		private async getTimeslots() {
-			const result = await HTTP.get("/prefs/timeslots");
+			const result = await HTTP.get("/inspector/timeslots");
 			this.timeslots["monday"] = result.data.data["monday"];
 			this.timeslots["tuesday"] = result.data.data["tuesday"];
 			this.timeslots["wednesday"] = result.data.data["wednesday"];
@@ -135,7 +135,7 @@
 		}
 
 		private async getTimeoff() {
-			const result = await HTTP.get("/prefs/timeoff");
+			const result = await HTTP.get("/inspector/timeoff");
 			this.timeoff = result.data.data;
 		}
 
@@ -166,7 +166,7 @@
 					content: "The timeslot you selected already exists!"
 				});
 			} else {
-				const result = await HTTP.post("prefs/timeslots", {
+				const result = await HTTP.post("/inspector/timeslots", {
 					day: weekday,
 					time: timestamp
 				});
@@ -186,7 +186,7 @@
 		}
 
 		private async deleteAvailTimeslot(weekday: string, time: number) {
-			const result = await HTTP.delete("prefs/timeslots/" + weekday + "/" + time);
+			const result = await HTTP.delete("/inspector/timeslots/" + weekday + "/" + time);
 			if (result.status == 200) {
 				(this.timeslots as any)[weekday].splice((this.timeslots as any)[weekday].indexOf(time), 1);
 			}
@@ -202,7 +202,7 @@
 
 		private async addTimeoff(date: moment.Moment, time: number) {
 			const dateString = date.format("YYYYMMDD");
-			const result = await HTTP.post("prefs/timeoff", {
+			const result = await HTTP.post("/inspector/timeoff", {
 				date: dateString,
 				time
 			});
@@ -214,7 +214,7 @@
 
 		private async removeTimeoff(date: moment.Moment, time: number) {
 			const dateString = date.format("YYYYMMDD");
-			const result = await HTTP.delete("prefs/timeoff/" + dateString + "/" + time);
+			const result = await HTTP.delete("/inspector/timeoff/" + dateString + "/" + time);
 			if (result.status == 200) {
 				this.timeoff.splice(this.timeoff.findIndex(
 					timeoff => timeoff.date == dateString && timeoff.time == time
@@ -241,7 +241,7 @@
 				text-transform: capitalize;
 				font-weight: 600;
 				text-align: center;
-				border-bottom: 2px solid $grey-2;
+				border-bottom: 2px solid $color_grey-2;
 				padding-bottom: 10px;
 				margin: 15px 0px 10px 0px;
 			}
@@ -249,7 +249,7 @@
 	}
 
 	.day-timeslot {
-		background-color: $white-3;
+		background-color: $color_white-3;
 		border-radius: 10px;
 		margin-bottom: 10px;
 		padding: 10px;
@@ -258,7 +258,7 @@
 			float: right;
 
 			&:hover {
-				color: $red;
+				color: $color_red;
 			}
 		}
 	}
@@ -269,19 +269,19 @@
 		grid-gap: 10px;
 
 		.timeoff-day {
-			border: 2px solid $grey-2;
+			border: 2px solid $color_grey-2;
 			border-radius: 5px;
 			padding: 5px;
 
 			.timeoff-day-date {
-				font-size: $text-lg;
+				font-size: $font-size_lg;
 				font-weight: 600;
 				line-height: 1.25;
 			}
 
 			.timeoff-day-weekday {
-				font-size: $text-sm;
-				color: $grey-6;
+				font-size: $font-size_sm;
+				color: $color_grey-6;
 			}
 
 			.timeoff-day-times {
@@ -292,7 +292,7 @@
 				cursor: pointer;
 
 				&:hover {
-					background-color: $grey-2;
+					background-color: $color_grey-2;
 				}
 
 				.timeoff-indicator {
@@ -301,12 +301,12 @@
 
 					&[data-blocked="true"]:after {
 						content: "UNAVAIL";
-						color: $red;
+						color: $color_red;
 					}
 
 					&[data-blocked="false"]:after {
 						content: "AVAIL";
-						color: $green;
+						color: $color_green;
 					}
 				}
 			}

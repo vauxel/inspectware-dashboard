@@ -48,18 +48,16 @@
 	@import url("https://use.fontawesome.com/releases/v5.8.1/css/all.css");
 	@import "@/scss/include.scss";
 
-	html, body {
-		font-size: 14px !important;
-		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+	@import "~view-design/dist/styles/iview.css";
+
+	html {
+		font-size: 62.5%;
 	}
 
 	body {
-		background-color: $white-1 !important;
-		color: $text !important;
+		font-size: $font-size_base !important;
+		color: $font_color_dark !important;
 	}
-
-	@import "~tailwindcss/dist/tailwind.css";
-	@import "~iview/dist/styles/iview.css";
 
 	#wrapper {
 		position: relative;
@@ -70,14 +68,11 @@
 			flex-grow: 1;
 			overflow-y: auto;
 			overflow-x: hidden;
+			background-color: $color_grey-1;
 
 			#content {
-				padding: 20px;
+				padding: 2rem;
 			}
 		}
-	}
-
-	.ivu-table, .ivu-form, .ivu-form-item-label, .ivu-input, .ivu-btn {
-		font-size: 14px !important;
 	}
 </style>

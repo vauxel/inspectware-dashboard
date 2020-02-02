@@ -11,6 +11,7 @@
 		"emitDecoratorMetadata": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
+		"suppressImplicitAnyIndexErrors": true,
 		"sourceMap": true,
 		"baseUrl": "src",
 		"types": [

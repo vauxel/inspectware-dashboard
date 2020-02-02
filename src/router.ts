@@ -6,6 +6,7 @@ import Inspections from "./views/Inspections.vue";
 import Inspection from "./views/Inspection.vue";
 import Availability from "./views/Availability.vue";
 import NProgress from "nprogress";
+import auth from "./modules/auth";
 
 Vue.use(Router);
 
@@ -15,7 +16,7 @@ const router = new Router({
 	routes: [
 		{
 			path: "/",
-			name: "Home",
+			name: "Dashboard",
 			component: Home,
 		},
 		{

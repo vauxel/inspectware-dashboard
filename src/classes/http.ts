@@ -24,14 +24,13 @@ instance.interceptors.response.use((response) => {
 	return response;
 }, (error) => {
 	NProgress.done();
-	console.log(error);
+	console.error(error);
 
 	if (error.response.status == 401) {
 		VuexStore.dispatch("logout", {
 			message: "You are unauthorized to make that request without sufficient authentication.",
 			compulsory: true
 		});
-		return Promise.reject(error);
 	}
 
 	return Promise.reject(error);
