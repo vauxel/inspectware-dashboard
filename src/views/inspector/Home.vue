@@ -73,8 +73,8 @@
 
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
-	import Calendar from "../components/Calendar.vue";
-	import HTTP from "../classes/http";
+	import Calendar from "../../components/inspector/Calendar.vue";
+	import HTTP from "../../classes/http";
 	import moment from "moment";
 
 	@Component({

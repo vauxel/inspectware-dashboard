@@ -1,44 +1,53 @@
 import Vue from "vue";
-import Router from "vue-router";
-import Home from "./views/Home.vue";
-import Settings from "./views/Settings.vue";
-import Inspections from "./views/Inspections.vue";
-import Inspection from "./views/Inspection.vue";
-import Availability from "./views/Availability.vue";
+import VueRouter from "vue-router";
+import Login from "./views/Login.vue";
+import InspectorDashboard from "./views/inspector/Dashboard.vue";
+import InspectorHome from "./views/inspector/Home.vue";
+import InspectorSettings from "./views/inspector/Settings.vue";
+import InspectorInspections from "./views/inspector/Inspections.vue";
+import InspectorInspection from "./views/inspector/Inspection.vue";
+import InspectorAvailability from "./views/inspector/Availability.vue";
 import NProgress from "nprogress";
 import auth from "./modules/auth";
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-const router = new Router({
+const router = new VueRouter({
 	mode: "history",
 	base: "/dash/",
 	routes: [
 		{
-			path: "/",
-			name: "Dashboard",
-			component: Home,
-		},
-		{
-			path: "/settings",
-			name: "Settings",
-			component: Settings,
-		},
-		{
-			path: "/inspections",
-			name: "Inspection Statuses",
-			component: Inspections,
-		},
-		{
-			path: "/inspections/:id",
-			name: "Inspection Details",
-			component: Inspection,
-		},
-		{
-			path: "/availability",
-			name: "Availability",
-			component: Availability,
-		},
+			path: "/inspector",
+			name: "Inspector Dashboard",
+			component: InspectorDashboard,
+			children: [
+				{
+					path: "/",
+					name: "Inspector Dashboard Home",
+					component: InspectorHome,
+				},
+				{
+					path: "/settings",
+					name: "Settings",
+					component: InspectorSettings,
+				},
+				{
+					path: "/inspections",
+					name: "Inspection Statuses",
+					component: InspectorInspections,
+				},
+				{
+					path: "/inspections/:id",
+					name: "Inspection Details",
+					component: InspectorInspection,
+				},
+				{
+					path: "/availability",
+					name: "Availability",
+					component: InspectorAvailability,
+				}
+			]
+		}
 	],
 });
 

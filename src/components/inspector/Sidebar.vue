@@ -9,7 +9,7 @@
 			<div class="sidebar-content">
 				<ul class="sidebar-section">
 					<li class="sidebar-item">
-						<router-link to="/"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</router-link>
+						<router-link to="/inspector"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</router-link>
 					</li>
 				</ul>
 				<div class="sidebar-label">Inspections Management</div>

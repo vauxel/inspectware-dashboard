@@ -34,7 +34,7 @@
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
 	import Mapbox from "mapbox-gl";
-	import HTTP from "../classes/http";
+	import HTTP from "../../classes/http";
 
 	@Component({})
 	export default class Inspection extends Vue {

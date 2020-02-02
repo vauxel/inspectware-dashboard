@@ -64,7 +64,7 @@
 <script lang="ts">
 	import moment from "moment";
 	import { Component, Vue } from "vue-property-decorator";
-	import HTTP from "../classes/http";
+	import HTTP from "../../classes/http";
 
 	@Component({})
 	export default class Availability extends Vue {

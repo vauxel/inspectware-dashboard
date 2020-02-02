@@ -73,7 +73,7 @@
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
 	import MaskedInput from "vue-text-mask";
-	import HTTP from "../classes/http";
+	import HTTP from "../../classes/http";
 
 	@Component({
 		components: {

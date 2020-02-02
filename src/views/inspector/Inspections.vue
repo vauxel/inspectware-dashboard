@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
-	import HTTP from "../classes/http";
+	import HTTP from "../../classes/http";
 
 	@Component({})
 	export default class Inspections extends Vue {

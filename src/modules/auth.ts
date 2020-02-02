@@ -25,6 +25,18 @@ export default class AuthModule extends VuexModule {
 		return this.affiliation;
 	}
 
+	public get isInspector(): boolean {
+		return this.affiliation === "inspector";
+	}
+
+	public get isClient(): boolean {
+		return this.affiliation === "client";
+	}
+
+	public get isRealtor(): boolean {
+		return this.affiliation === "realtor";
+	}
+
 	public get getUserId(): string {
 		return this.userId;
 	}
@@ -114,12 +126,15 @@ export default class AuthModule extends VuexModule {
 			this.context.commit("LOGIN_FAILURE", result.data.error.message);
 		} else {
 			localStorage.setItem("auth_token", result.data.data.token);
+
 			this.context.dispatch("readAuthToken");
 			this.context.commit("LOGIN");
 			this.context.dispatch("addNotification", {
 				message: "You have been successfully logged in! Welcome, " + this.name + ".",
 				level: "success"
 			});
+
+			Router.push(`/${data.affiliation}`);
 		}
 	}
 
