@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Login from "./views/Login.vue";
 import InspectorDashboard from "./views/inspector/Dashboard.vue";
 import InspectorHome from "./views/inspector/Home.vue";
 import InspectorSettings from "./views/inspector/Settings.vue";
@@ -22,27 +21,27 @@ const router = new VueRouter({
 			component: InspectorDashboard,
 			children: [
 				{
-					path: "/",
+					path: "",
 					name: "Inspector Dashboard Home",
 					component: InspectorHome,
 				},
 				{
-					path: "/settings",
+					path: "settings",
 					name: "Settings",
 					component: InspectorSettings,
 				},
 				{
-					path: "/inspections",
+					path: "inspections",
 					name: "Inspection Statuses",
 					component: InspectorInspections,
 				},
 				{
-					path: "/inspections/:id",
+					path: "inspections/:id",
 					name: "Inspection Details",
 					component: InspectorInspection,
 				},
 				{
-					path: "/availability",
+					path: "availability",
 					name: "Availability",
 					component: InspectorAvailability,
 				}

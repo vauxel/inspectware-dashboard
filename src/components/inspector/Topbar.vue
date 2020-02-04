@@ -1,11 +1,11 @@
 <template>
 	<nav id="topbar">
-		<div class="text-2xl font-semibold">{{ $route.name }}</div>
+		<div class="topbar-title">{{ $route.name }}</div>
 		<div class="topbar-items">
 			<div class="topbar-items-toggler" @click="toggleDropdown"><i class="fas fa-fw fa-bars"></i></div>
 			<ul class="topbar-items-list" v-bind:class="{ toggled: dropdownToggled }">
 				<li class="topbar-item">
-					<Button to="/settings">Settings</Button>
+					<Button to="/inspector/settings">Settings</Button>
 				</li>
 				<li class="topbar-item">
 					<Button @click="logout">Logout</Button>
@@ -44,14 +44,18 @@
 		justify-content: space-between;
 		align-items: center;
 		height: 50px;
-		padding-left: 10px;
-		padding-right: 20px;
-		background-color: #ffffff;
+		padding: 0 2rem;
+		background-color: $color_white;
 		box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+		.topbar-title {
+			font-size: $font-size_xl;
+			font-weight: $font-weight_semibold;
+		}
 
 		.topbar-items {
 			.topbar-items-toggler {
-				padding: 5px;
+				padding: 0.5rem;
 				border-radius: 5px;
 				display: none;
 
@@ -66,7 +70,7 @@
 
 				.topbar-item {
 					display: inline-block;
-					margin-left: 5px;
+					margin-left: 0.5rem;
 				}
 			}
 
@@ -80,9 +84,9 @@
 					flex-direction: column;
 					align-items: center;
 					position: absolute;
-					right: 20px;
+					right: 2rem;
 					background-color: $color_white;
-					padding: 10px;
+					padding: 1rem;
 					box-shadow: 0 2px 3px rgba(10,10,10,.1),0 0 0 1px rgba(10,10,10,.1);
 					border-radius: 5px;
 
@@ -91,10 +95,10 @@
 					}
 
 					.topbar-item {
-						margin-left: 0px;
+						margin-left: 0;
 
 						&:not(:last-child) {
-							margin-bottom: 10px;
+							margin-bottom: 1rem;
 						}
 					}
 				}

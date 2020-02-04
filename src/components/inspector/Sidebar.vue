@@ -15,25 +15,25 @@
 				<div class="sidebar-label">Inspections Management</div>
 				<ul class="sidebar-section">
 					<li class="sidebar-item">
-						<router-link to="/inspections"><i class="fas fa-fw fa-clipboard-list"></i> Inspections</router-link>
+						<router-link to="/inspector/inspections"><i class="fas fa-fw fa-clipboard-list"></i> Inspections</router-link>
 					</li>
 					<li class="sidebar-item">
-						<router-link to="/invoices"><i class="fas fa-fw fa-file-invoice-dollar"></i> Invoices</router-link>
+						<router-link to="/inspector/invoices"><i class="fas fa-fw fa-file-invoice-dollar"></i> Invoices</router-link>
 					</li>
 				</ul>
 				<div class="sidebar-label">Clientele & Realtors</div>
 				<ul class="sidebar-section">
 					<li class="sidebar-item">
-						<router-link to="/clients"><i class="fas fa-fw fa-users"></i> Clients</router-link>
+						<router-link to="/inspector/clients"><i class="fas fa-fw fa-users"></i> Clients</router-link>
 					</li>
 					<li class="sidebar-item">
-						<router-link to="/realtors"><i class="fas fa-fw fa-sign"></i> Realtors</router-link>
+						<router-link to="/inspector/realtors"><i class="fas fa-fw fa-sign"></i> Realtors</router-link>
 					</li>
 				</ul>
 				<div class="sidebar-label">Preferences</div>
 				<ul class="sidebar-section">
 					<li class="sidebar-item">
-						<router-link to="/availability"><i class="fas fa-fw fa-calendar-alt"></i> Availability</router-link>
+						<router-link to="/inspector/availability"><i class="fas fa-fw fa-calendar-alt"></i> Availability</router-link>
 					</li>
 				</ul>
 			</div>
