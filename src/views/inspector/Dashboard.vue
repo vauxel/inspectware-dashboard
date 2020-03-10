@@ -2,7 +2,6 @@
     <div class="perspective-view" id="inspector-dashboard">
         <sidebar/>
         <div id="content-wrapper">
-            <topbar/>
             <div id="content">
                 <router-view/>
             </div>
@@ -13,12 +12,10 @@
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
 	import Sidebar from "../../components/inspector/Sidebar.vue";
-	import Topbar from "../../components/inspector/Topbar.vue";
 
 	@Component({
 		components: {
-			Sidebar,
-			Topbar
+			Sidebar
 		},
 	})
 	export default class Dashboard extends Vue {
@@ -30,6 +27,6 @@
 	}
 </script>
 
-<style scoped lang="scss">
-	@import "@/scss/include.scss";
+<style scoped lang="less">
+	@import "../../less/include.less";
 </style>

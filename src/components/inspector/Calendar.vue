@@ -217,8 +217,8 @@
 	}
 </script>
 
-<style scoped lang="scss">
-	@import "@/scss/include.scss";
+<style scoped lang="less">
+	@import "../../less/include.less";
 
 	.calendar {
 		.calendar-header {
@@ -231,8 +231,8 @@
 			.calendar-month {
 				font-weight: 700;
 				font-size: 1.5rem;
-				background-color: $color_grey-1;
-				border: 2px solid $color_grey-2;
+				background-color: @color_grey-1;
+				border: 2px solid @color_grey-2;
 				border-radius: 5px;
 				padding: 2.5px 10px;
 			}
@@ -256,7 +256,7 @@
 					.date {
 						display: flex;
 						flex-direction: column;
-						border-top: 3px solid $color_grey-3;
+						border-top: 3px solid @color_grey-3;
 						padding: 5px;
 						margin-left: 5px;
 						margin-right: 5px;
@@ -285,12 +285,12 @@
 
 						&.date-inactive {
 							.date-header, .date-events {
-								color: $color_grey-5;
+								color: @color_grey-5;
 							}
 						}
 
 						&:not(.date-inactive) .date-header {
-							color: $color_grey-6;
+							color: @color_grey-6;
 						}
 
 						.date-header {
@@ -319,15 +319,15 @@
 							transition: color 100ms ease-in-out;
 
 							.date-event {
-								border-left: 4px solid rgba($color_primary, 0.50);
-								background-color: $color_grey-2;
+								border-left: 4px solid rgba(@color_primary, 0.50);
+								background-color: @color_grey-2;
 								padding: 2.5px 5px;
 								border-radius: 6px;
 								transition: border-left 100ms ease-in-out;
 								cursor: pointer;
 
 								&:hover {
-									border-left: 6px solid rgba($color_primary, 0.70);
+									border-left: 6px solid rgba(@color_primary, 0.70);
 								}
 
 								&:not(:last-of-type) {
@@ -346,7 +346,7 @@
 			}
 		}
 
-		@include respond-below(md) {
+		@media (max-width: @breakpoint-md) {
 			.calendar-header {
 				flex-direction: column;
 				justify-content: center;

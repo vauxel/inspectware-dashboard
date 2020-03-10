@@ -15,8 +15,8 @@
 	export default class Footer extends Vue {}
 </script>
 
-<style scoped lang="scss">
-	@import "@/scss/include.scss";
+<style scoped lang="less">
+	@import "../less/include.less";
 	
 	footer.sticky-footer {
 		padding: 2rem 0;

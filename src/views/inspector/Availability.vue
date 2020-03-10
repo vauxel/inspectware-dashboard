@@ -224,8 +224,8 @@
 	}
 </script>
 
-<style scoped lang="scss">
-	@import "@/scss/include.scss";
+<style scoped lang="less">
+	@import "../../less/include.less";
 
 	.available-days {
 		display: flex;
@@ -241,7 +241,7 @@
 				text-transform: capitalize;
 				font-weight: 600;
 				text-align: center;
-				border-bottom: 2px solid $color_grey-2;
+				border-bottom: 2px solid @color_grey-2;
 				padding-bottom: 10px;
 				margin: 15px 0px 10px 0px;
 			}
@@ -249,7 +249,7 @@
 	}
 
 	.day-timeslot {
-		background-color: $color_white-3;
+		background-color: @color_white-3;
 		border-radius: 10px;
 		margin-bottom: 10px;
 		padding: 10px;
@@ -258,7 +258,7 @@
 			float: right;
 
 			&:hover {
-				color: $color_red;
+				color: @color_red;
 			}
 		}
 	}
@@ -269,19 +269,19 @@
 		grid-gap: 10px;
 
 		.timeoff-day {
-			border: 2px solid $color_grey-2;
+			border: 2px solid @color_grey-2;
 			border-radius: 5px;
 			padding: 5px;
 
 			.timeoff-day-date {
-				font-size: $font-size_lg;
+				font-size: @font-size_lg;
 				font-weight: 600;
 				line-height: 1.25;
 			}
 
 			.timeoff-day-weekday {
-				font-size: $font-size_sm;
-				color: $color_grey-6;
+				font-size: @font-size_sm;
+				color: @color_grey-6;
 			}
 
 			.timeoff-day-times {
@@ -292,7 +292,7 @@
 				cursor: pointer;
 
 				&:hover {
-					background-color: $color_grey-2;
+					background-color: @color_grey-2;
 				}
 
 				.timeoff-indicator {
@@ -301,12 +301,12 @@
 
 					&[data-blocked="true"]:after {
 						content: "UNAVAIL";
-						color: $color_red;
+						color: @color_red;
 					}
 
 					&[data-blocked="false"]:after {
 						content: "AVAIL";
-						color: $color_green;
+						color: @color_green;
 					}
 				}
 			}
@@ -314,7 +314,7 @@
 	}
 </style>
 
-<style lang="scss">
+<style lang="less">
 	.ivu-poptip-body-content {
 		overflow: visible;
 	}

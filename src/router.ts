@@ -32,7 +32,7 @@ const router = new VueRouter({
 				},
 				{
 					path: "inspections",
-					name: "Inspection Statuses",
+					name: "Inspection List",
 					component: InspectorInspections,
 				},
 				{

@@ -42,10 +42,11 @@
 	}
 </script>
 
-<style lang="scss">
-	@import url("https://use.fontawesome.com/releases/v5.8.1/css/all.css");
-	@import "@/scss/include.scss";
+<style lang="less">
+	@import "less/include.less";
 
+	@import "~@fortawesome/fontawesome-free/css/fontawesome.min.css";
+	@import "~@fortawesome/fontawesome-free/css/solid.min.css";
 	@import "~view-design/dist/styles/iview.css";
 
 	html {
@@ -53,8 +54,8 @@
 	}
 
 	body {
-		font-size: $font-size_base !important;
-		color: $font_color_dark !important;
+		font-size: @font-size_base !important;
+		color: @font_color_dark !important;
 	}
 	
 	html, body {
@@ -77,10 +78,11 @@
 			flex-grow: 1;
 			overflow-y: auto;
 			overflow-x: hidden;
-			background-color: $color_grey-1;
+			background-color: @color_grey-1;
 
 			#content {
 				padding: 2rem;
+				position: relative;
 			}
 		}
 	}

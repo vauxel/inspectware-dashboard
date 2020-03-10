@@ -153,7 +153,7 @@
 		}
 
 		private async saveUserInformation() {
-			let valid: boolean = await this.$refs["userInfoForm"].validate();
+			let valid: boolean = await (this.$refs["userInfoForm"] as any).validate();
 
 			if (!valid) {
 				return;
@@ -175,13 +175,13 @@
 				this.$Message.error(result.data.error.message);
 
 				if (result.data.error.message === "Incorrect current password") {
-					this.$refs["userInfoForm"].$children[this.$refs["userInfoForm"].$children.length - 1].error = "The password you entered is incorrect";
+					(this.$refs["userInfoForm"] as any).$children[(this.$refs["userInfoForm"] as any).$children.length - 1].error = "The password you entered is incorrect";
 				}
 			}
 		}
 
 		private async saveSecurity() {
-			let valid: boolean = await this.$refs["securityForm"].validate();
+			let valid: boolean = await (this.$refs["securityForm"] as any).validate();
 
 			if (!valid) {
 				return;
@@ -198,12 +198,12 @@
 					desc: "Your password has been successfully changed"
 				});
 
-				this.$refs["securityForm"].resetFields();
+				(this.$refs["securityForm"] as any).resetFields();
 			} else {
 				this.$Message.error(result.data.error.message);
 
 				if (result.data.error.message === "Incorrect current password") {
-					this.$refs["securityForm"].$children[0].error = "The password you entered is incorrect";
+					(this.$refs["securityForm"] as any).$children[0].error = "The password you entered is incorrect";
 				}
 			}
 		}

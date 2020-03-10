@@ -36,10 +36,10 @@
 					<FormItem label="Password" prop="password">
 						<Input type="password" v-model="loginInfo.password" placeholder="Enter your password" @keyup.enter.native="login"/>
 					</FormItem>
-					<FormItem>
-						<Button type="primary" long @click="login">Log In</Button>
-					</FormItem>
-					<Button long @click="clearAffiliation">Go Back</Button>
+					<div class="equal-width-buttons">
+						<Button type="primary" @click="login">Log In</Button>
+						<Button @click="clearAffiliation">Go Back</Button>
+					</div>
 				</Form>
 			</div>
 		</div>
@@ -72,7 +72,7 @@
 		private clearAffiliation(): void {
 			this.affiliation = "";
 			this.affiliationName = "";
-			this.$refs["loginForm"].resetFields();
+			(this.$refs["loginForm"] as any).resetFields();
 		}
 
 		private setHIAffiliation(): void {
@@ -91,7 +91,7 @@
 		}
 
 		private async login() {
-			let valid: boolean = await this.$refs["loginForm"].validate();
+			let valid: boolean = await (this.$refs["loginForm"] as any).validate();
 
 			if (!valid) {
 				return;
@@ -110,8 +110,8 @@
 	}
 </script>
 
-<style scoped lang="scss">
-	@import "@/scss/include.scss";
+<style scoped lang="less">
+	@import "../less/include.less";
 
 	.login-container {
 		width: 100%;
@@ -120,7 +120,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: $color_primary;
+		background-color: @color_primary;
 
 		&::after {
 			content: '';
@@ -141,8 +141,8 @@
 			max-width: 550px;
 			padding: 4rem;
 			margin: 4rem;
-			background-color: $color_white;
-			box-shadow: $shadow-2;
+			background-color: @color_white;
+			box-shadow: @shadow-2;
 			border-radius: 5px;
 
 			&::before {
@@ -151,25 +151,25 @@
 				top: -3rem;
 				left: 50%;
 				transform: translateX(-50%);
-				font-weight: $font-weight_bold;
+				font-weight: @font-weight_bold;
 				font-style: italic;
-				font-size: $font-size_xl;
-				color: $font_color_dark;
-				background-color: $color_white;
+				font-size: @font-size_xl;
+				color: @font_color_dark;
+				background-color: @color_white;
 				padding: 1rem 2rem;
 				border-radius: 10px;
-				box-shadow: $shadow-1;
+				box-shadow: @shadow-1;
 			}
 		}
 
 		.login-header {
 			margin-bottom: 3rem;
 			padding-bottom: 2rem;
-			border-bottom: 2px solid $color-grey-3;
+			border-bottom: 2px solid @color_grey-3;
 
 			.login-header-title {
-				font-weight: $font-weight_bold;
-				font-size: $font-size_4xl;
+				font-weight: @font-weight_bold;
+				font-size: @font-size_4xl;
 			}
 
 			.login-header-subtitle {
@@ -181,17 +181,17 @@
 			.login-affiliation-btn {
 				position: relative;
 				width: 100%;
-				background: $color_primary;
+				background: @color_primary;
 				border-radius: 5px;
-				color: $font_color_light;
+				color: @font_color_light;
 				padding: 1rem 0;
 				margin: 0px 5px;
 				font-weight: 600;
-				border: 2px solid $color_primary-darker;
+				border: 2px solid @color_primary-darker;
 
 				&:hover {
-					background-color: $color_primary-darker;
-					box-shadow: $shadow-2;
+					background-color: @color_primary-darker;
+					box-shadow: @shadow-2;
 					cursor: pointer;
 				}
 
@@ -217,9 +217,9 @@
 			position: absolute;
 			top: -3rem;
 			left: -3rem;
-			background-color: $color_white;
+			background-color: @color_white;
 			padding: 1.5rem;
-			box-shadow: $shadow-1;
+			box-shadow: @shadow-1;
 			border-radius: 50%;
 			box-sizing: content-box;
 		}

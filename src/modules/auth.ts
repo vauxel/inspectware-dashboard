@@ -1,6 +1,6 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 import Router from "../router";
-import HTTP from "@/classes/http";
+import HTTP from "../classes/http";
 
 @Module
 export default class AuthModule extends VuexModule {
