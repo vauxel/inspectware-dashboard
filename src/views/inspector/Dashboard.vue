@@ -11,7 +11,7 @@
 
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
-	import Sidebar from "../../components/inspector/Sidebar.vue";
+	import Sidebar from "@/components/inspector/Sidebar.vue";
 
 	@Component({
 		components: {
@@ -27,6 +27,6 @@
 	}
 </script>
 
-<style scoped lang="less">
-	@import "../../less/include.less";
+<style scoped lang="scss">
+	@import "@/scss/include.scss";
 </style>

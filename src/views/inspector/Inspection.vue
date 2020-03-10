@@ -145,7 +145,7 @@
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
 	import Mapbox from "mapbox-gl";
-	import HTTP from "../../classes/http";
+	import HTTP from "@/classes/http";
 
 	@Component({})
 	export default class Inspection extends Vue {
@@ -217,10 +217,10 @@
 	}
 </script>
 
-<style scoped lang="less">
-	@import "../../less/include.less";
+<style scoped lang="scss">
+	@import "@/scss/include.scss";
 
-	@inspection-person-avatar-size: 48px;
+	$inspection-person-avatar-size: 48px;
 
 	.expand-content {
 		margin: -2rem;
@@ -233,7 +233,7 @@
 	#map {
 		height: 250px;
 		position: relative;
-		box-shadow: @shadow-1;
+		box-shadow: $shadow-1;
 
 		&:hover {
 			.inspection-header:not(:hover),
@@ -257,35 +257,35 @@
 		max-height: 125px;
 		border-top-left-radius: 5px;
 		border-bottom-left-radius: 5px;
-		box-shadow: @shadow-2;
+		box-shadow: $shadow-2;
 	}
 
 	.inspection-overview {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		background-color: @color_white;
-		box-shadow: @shadow-1;
+		background-color: $color_white;
+		box-shadow: $shadow-1;
 		padding: 1rem;
 		border-top-right-radius: 5px;
 		border-bottom-right-radius: 5px;
 
 		.inspection-address {
-			font-size: @font-size_3xl;
-			font-weight: @font-weight_bold;
+			font-size: $font-size_3xl;
+			font-weight: $font-weight_bold;
 		}
 
 		.inspection-detail {
 			.inspection-detail-key {
-				color: @color_grey-6;
+				color: $color_grey-6;
 				text-transform: uppercase;
-				font-size: @font-size_sm;
+				font-size: $font-size_sm;
 				margin-right: 0.75rem;
 				font-style: italic;
 			}
 
 			.inspection-detail-value {
-				font-weight: @font-weight_bold;
+				font-weight: $font-weight_bold;
 			}
 		}
 	}
@@ -302,7 +302,7 @@
 		z-index: 2;
 
 		> a, button {
-			box-shadow: @shadow-2;
+			box-shadow: $shadow-2;
 
 			&:not(:last-of-type) {
 				margin-bottom: 1.5rem;
@@ -312,7 +312,7 @@
 
 	.inspection-header,
 	.inspection-actions {
-		transition: @transition-length_normal opacity;
+		transition: $transition-length_normal opacity;
 
 		&:hover {
 			opacity: 1;
@@ -325,8 +325,8 @@
 		justify-content: center;
 		margin-bottom: 2rem;
 		padding: 1rem;
-		background-color: @color_primary;
-		box-shadow: @shadow-1;
+		background-color: $color_primary;
+		box-shadow: $shadow-1;
 		border-radius: 5px;
 
 		.inspection-status {
@@ -334,11 +334,11 @@
 			min-width: 180px;
 			margin: 0 0.5rem;
 			padding: 0.5rem 0.5rem 0.5rem 1rem;
-			background-color: @color_primary-darker;
+			background-color: $color_primary-darker;
 			border-radius: 5px;
-			color: @color_white;
+			color: $color_white;
 			line-height: 3rem;
-			font-weight: @font-weight_semibold;
+			font-weight: $font-weight_semibold;
 
 			&::after {
 				content: '';
@@ -349,7 +349,7 @@
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
 				font-size: 1.5rem;
-				color: @color_white;
+				color: $color_white;
 				border-radius: 5px;
 				text-align: center;
 				line-height: 3rem;
@@ -359,14 +359,14 @@
 			&[data-status-state="incomplete"] {
 				&::after {
 					content: '\f00d';
-					background-color: @color_red;
+					background-color: $color_red;
 				}
 			}
 
 			&[data-status-state="complete"] {
 				&::after {
 					content: '\f00c';
-					background-color: @color_green;
+					background-color: $color_green;
 				}
 			}
 		}
@@ -391,23 +391,23 @@
 				height: 2.5rem;
 				line-height: 2.5rem;
 				text-align: center;
-				background-color: @color_primary-lighter;
-				color: @color_white;
-				box-shadow: @shadow-1;
+				background-color: $color_primary-lighter;
+				color: $color_white;
+				box-shadow: $shadow-1;
 				border-radius: 50%;
-				transition: background-color @transition-length_normal;
+				transition: background-color $transition-length_normal;
 			}
 
 			&[data-role="inspector"]::before {
-				.fa-icon("\f807");
+				@include fa-icon("\f807");
 			}
 
 			&[data-role="client"]::before {
-				.fa-icon("\f007");
+				@include fa-icon("\f007");
 			}
 
 			&[data-role="realtor"]::before {
-				.fa-icon("\f4d9");
+				@include fa-icon("\f4d9");
 			}
 
 			a {
@@ -416,24 +416,24 @@
 
 			> a:hover {
 				.inspection-person-avatar {
-					background-color: @color_primary-darker;
+					background-color: $color_primary-darker;
 					margin-right: 1.25rem;
 				}
 			}
 
 			.inspection-person-avatar {
-				width: @inspection-person-avatar-size;
-				height: @inspection-person-avatar-size;
-				background-color: @color_primary;
-				line-height: @inspection-person-avatar-size;
+				width: $inspection-person-avatar-size;
+				height: $inspection-person-avatar-size;
+				background-color: $color_primary;
+				line-height: $inspection-person-avatar-size;
 				text-align: center;
-				color: @color_white;
-				font-weight: @font-weight_bold;
+				color: $color_white;
+				font-weight: $font-weight_bold;
 				display: inline-block;
 				border-radius: 25%;
 				margin-right: 1rem;
 				vertical-align: middle;
-				transition: margin-right @transition-length_normal, background-color @transition-length_normal;
+				transition: margin-right $transition-length_normal, background-color $transition-length_normal;
 			}
 
 			.inspection-person-details {
@@ -442,21 +442,21 @@
 			}
 
 			.inspection-person-name {
-				font-size: @font-size_lg;
-				font-weight: @font-weight_semibold;
-				transition: color @transition-length_normal;
+				font-size: $font-size_lg;
+				font-weight: $font-weight_semibold;
+				transition: color $transition-length_normal;
 			}
 
 			.inspection-person-role {
-				font-size: @font-size_sm;
-				color: @color_grey-6;
+				font-size: $font-size_sm;
+				color: $color_grey-6;
 			}
 
 			.inspection-person-contact {
 				margin-top: 1rem;
-				background-color: @color_white-3;
+				background-color: $color_white-3;
 				border-radius: 5px;
-				font-size: @font-size_sm;
+				font-size: $font-size_sm;
 				padding: 1rem;
 			}
 
@@ -478,13 +478,13 @@
 				margin-bottom: 0.25rem;
 
 				&::before {
-					.fa-icon("\f199");
+					@include fa-icon("\f199");
 				}
 			}
 
 			.inspection-person-phone {
 				&::before {
-					.fa-icon("\f87b");
+					@include fa-icon("\f87b");
 				}
 			}
 		}
@@ -492,20 +492,20 @@
 
 	.inspection-reports {
 		.inspection-report {
-			background-color: @color_white-2;
+			background-color: $color_white-2;
 			border-radius: 5px;
 			padding: 1rem;
 			position: relative;
 
 			.inspection-report-title {
-				font-size: @font-size_lg;
-				font-weight: @font-weight_semibold;
+				font-size: $font-size_lg;
+				font-weight: $font-weight_semibold;
 			}
 
 			.inspection-report-author,
 			.inspection-report-date {
-				font-size: @font-size_sm;
-				color: @color_grey-6;
+				font-size: $font-size_sm;
+				color: $color_grey-6;
 			}
 
 			.inspection-report-view {
@@ -514,7 +514,7 @@
 				right: 1rem;
 
 				&::before {
-					.fa-icon("\f06e");
+					@include fa-icon("\f06e");
 					text-decoration: none;
 				}
 			}
@@ -522,8 +522,8 @@
 	}
 </style>
 
-<style lang="less">
-	@import "../../less/include.less";
+<style lang="scss">
+	@import "@/scss/include.scss";
 
 	.map-pin-container {
 		position: relative;
@@ -537,20 +537,20 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50% 50% 10% 50%;
-		background-color: @color_primary;
+		background-color: $color_primary;
 		rotate: 45deg;
 		transform: rotate(45deg);
 
 		&:after {
-			.fa-icon('\f015');
+			@include fa-icon('\f015');
 			width: 24px;
 			height: 24px;
-			color: @color_grey-1;	
+			color: $color_grey-1;	
 			text-align: center;
 			line-height: 24px;
 			position: absolute;
 			margin: 8px 0 0 8px;
-			background-color: @color_primary-darker;
+			background-color: $color_primary-darker;
 			border-radius: 50%;
 			transform: rotate(-45deg);
 		}

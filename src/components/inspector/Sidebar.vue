@@ -88,8 +88,8 @@
 	}
 </script>
 
-<style scoped lang="less">
-	@import "../../less/include.less";
+<style scoped lang="scss">
+	@import "@/scss/include.scss";
 
 	#sidebar {
 		flex: 0 0 250px;
@@ -136,13 +136,13 @@
 			flex-grow: 1;
 			display: flex;
 			flex-direction: column;
-			background-color: @color_primary;
-			background-image: linear-gradient(180deg, @color_primary 10%, @color_primary-darker 100%);
+			background-color: $color_primary;
+			background-image: linear-gradient(180deg, $color_primary 10%, $color_primary-darker 100%);
 
 			.sidebar-branding {
-				color: @color_white;
+				color: $color_white;
 				font-weight: bolder;
-				background-color: @color_primary-darker;
+				background-color: $color_primary-darker;
 				padding: 10px 0px;
 				flex: 0 0 50px;
 				display: flex;
@@ -157,7 +157,7 @@
 				.sidebar-branding-text-alt {
 					font-size: 2em;
 					display: none;
-					background-color: @color_primary;
+					background-color: $color_primary;
 					border-radius: 5px;
 					width: 50%;
 				}
@@ -175,31 +175,31 @@
 						a {
 							display: block;
 							padding: 10px;
-							color: rgba(@color_white, 0.8);
+							color: rgba($color_white, 0.8);
 							border-radius: 5px;
 							outline: none;
 
 							.fas {
-								color: rgba(@color_white, 0.4);
+								color: rgba($color_white, 0.4);
 								margin-right: 0.25em;
 							}
 
 							&:hover {
-								background-color: @color_primary-lighter;
-								color: rgba(@color_white, 1);
+								background-color: $color_primary-lighter;
+								color: rgba($color_white, 1);
 
 								.fas {
-									color: @color_white;
+									color: $color_white;
 								}
 							}
 
 							&.router-link-exact-active {
-								background-color: @color_primary-lighter;
-								color: @color_white;
+								background-color: $color_primary-lighter;
+								color: $color_white;
 								font-weight: 600;
 
 								.fas {
-									color: @color_white;
+									color: $color_white;
 								}
 							}
 						}
@@ -208,9 +208,9 @@
 
 				.sidebar-label {
 					text-transform: uppercase;
-					font-weight: @font-weight_bold;
+					font-weight: $font-weight_bold;
 					font-size: 0.75em;
-					color: rgba(@color_white, 0.5);
+					color: rgba($color_white, 0.5);
 					margin: 5px 0px;
 					padding: 0px 20px;
 				}
@@ -227,18 +227,18 @@
 					a {
 						display: block;
 						padding: 0.75rem;
-						color: rgba(@color_white, 0.8);
+						color: rgba($color_white, 0.8);
 						outline: none;
-						border: 2px solid @color_primary;
+						border: 2px solid $color_primary;
 						border-radius: 5px;
 						margin: 0.25rem;
 						text-transform: uppercase;
-						font-weight: @font-weight_bold;
+						font-weight: $font-weight_bold;
 						font-size: 0.75em;
 
 						&:hover {
-							background-color: @color_primary;
-							color: rgba(@color_white, 1);
+							background-color: $color_primary;
+							color: rgba($color_white, 1);
 						}
 					}
 				}
@@ -247,7 +247,7 @@
 
 		.sidebar-toggler {
 			cursor: w-resize;
-			border-left: 3px solid rgba(@color_primary-lighter, 0.7);
+			border-left: 3px solid rgba($color_primary-lighter, 0.7);
 			transition: opacity 0.25s ease-in-out 0s;
 			opacity: 0;
 			padding-left: 3px;
@@ -268,11 +268,11 @@
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
 				content: "\f053";
-				color: rgba(@color_primary-lighter, 0.7);
+				color: rgba($color_primary-lighter, 0.7);
 			}
 		}
 
-		@media (max-width: @breakpoint-sm) {
+		@media (max-width: $breakpoint-sm) {
 			font-size: 0.75em;
 
 			.fas {

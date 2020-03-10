@@ -73,8 +73,8 @@
 
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
-	import Calendar from "../../components/inspector/Calendar.vue";
-	import HTTP from "../../classes/http";
+	import Calendar from "@/components/inspector/Calendar.vue";
+	import HTTP from "@/classes/http";
 	import moment from "moment";
 
 	@Component({
@@ -138,8 +138,8 @@
 	}
 </script>
 
-<style scoped lang="less">
-	@import "../../less/include.less";
+<style scoped lang="scss">
+	@import "@/scss/include.scss";
 
 	.stats-row {
 		display: flex;
@@ -156,25 +156,25 @@
 			.stats-details {
 				margin-left: 1rem;
 				padding: 0.5rem 0 0.5rem 1rem;
-				border-left: 2px solid @font_color_dark;
+				border-left: 2px solid $font_color_dark;
 				flex-grow: 1;
 
 				.stats-name {
-					font-size: @font-size_sm;
-					color: @color_grey-6;
+					font-size: $font-size_sm;
+					color: $color_grey-6;
 					text-transform: uppercase;
-					font-weight: @font-weight_semibold;
+					font-weight: $font-weight_semibold;
 				}
 
 				.stats-value {
-					font-weight: @font-weight_bold;
-					font-size: @font-size_xl;
+					font-weight: $font-weight_bold;
+					font-size: $font-size_xl;
 				}
 			}
 		}
 	}
 
-	@media (max-width: @breakpoint-md) {
+	@media (max-width: $breakpoint-md) {
 		.stats-row {
 			flex-direction: column;
 			align-items: left;

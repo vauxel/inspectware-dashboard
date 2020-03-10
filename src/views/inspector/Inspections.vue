@@ -46,8 +46,8 @@
 
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
-	import DataTable from "../../components/DataTable.vue";
-	import HTTP from "../../classes/http";
+	import DataTable from "@/components/DataTable.vue";
+	import HTTP from "@/classes/http";
 	import moment from "moment";
 
 	@Component({
@@ -105,11 +105,11 @@
 	}
 </script>
 
-<style scoped lang="less">
-	@import "../../less/include.less";
+<style scoped lang="scss">
+	@import "@/scss/include.scss";
 
-	@color_pending-approval: @color_blue;
-	@content_pending-approval: "APPROVAL";
+	$color_pending-approval: $color_blue;
+	$content_pending-approval: "APPROVAL";
 
 	::v-deep .inspection-row {
 		padding: 1rem;
@@ -127,15 +127,15 @@
 			.inspection-state {
 				&::before {
 					margin-right: 0.5rem;
-					color: @font_color_light;
-					font-weight: @font-weight_bold;
+					color: $font_color_light;
+					font-weight: $font-weight_bold;
 					writing-mode: vertical-rl;
 					padding: 0.5rem 0;
 					text-align: center;
 					transform: rotate(180deg);
 					line-height: 2.5rem;
 					display: block;
-					font-size: @font-size_xs;
+					font-size: $font-size_xs;
 					width: 2.5rem;
 					border-top-right-radius: 5px;
 					border-bottom-right-radius: 5px;
@@ -144,8 +144,8 @@
 
 				&[data-state="PENDING_APPROVAL"] {
 					&::before {
-						content: @content_pending-approval;
-						background-color: @color_pending-approval;
+						content: $content_pending-approval;
+						background-color: $color_pending-approval;
 					}
 				}
 			}
@@ -166,9 +166,9 @@
 				}
 
 				&::after {
-					.fa-icon("\f245");
+					@include fa-icon("\f245");
 					font-size: 3rem;
-					color: @color_grey-1;
+					color: $color_grey-1;
 					position: absolute;
 					top: 50%;
 					left: 50%;
@@ -195,20 +195,20 @@
 				height: 100%;
 				border-top-right-radius: 5px;
 				border-bottom-right-radius: 5px;
-				border: 1px solid @color_grey-3;
+				border: 1px solid $color_grey-3;
 			}
 
 			.inspection-fields {
 				margin-left: 1rem;
 
 				.inspection-address {
-					font-weight: @font-weight_semibold;
-					font-size: @font-size_xl;
+					font-weight: $font-weight_semibold;
+					font-size: $font-size_xl;
 					margin-bottom: 1rem;
 
 					&::before {
-						.fa-icon("\f015");
-						color: @color_grey-5;
+						@include fa-icon("\f015");
+						color: $color_grey-5;
 						border-radius: 5px;
 						margin-right: 0.5rem;
 					}
@@ -217,12 +217,12 @@
 				.inspection-field {
 					display: inline-block;
 					margin-right: 3rem;
-					border-bottom: 2px solid @color_grey-3;
+					border-bottom: 2px solid $color_grey-3;
 					padding-right: 0.5rem;
 
 					&::before {
 						padding: 0 0.5rem;
-						color: @color_grey-5;
+						color: $color_grey-5;
 						border-top-left-radius: 5px;
 						border-top-right-radius: 5px;
 					}
@@ -230,35 +230,35 @@
 
 				.inspection-date {
 					&::before {
-						.fa-icon("\f073");
+						@include fa-icon("\f073");
 					}
 				}
 
 				.inspection-time {
 					&::before {
-						.fa-icon("\f017");
+						@include fa-icon("\f017");
 					}
 				}
 
 				.inspection-client {
 					&::before {
-						.fa-icon("\f007");
+						@include fa-icon("\f007");
 					}
 				}
 
 				.inspection-realtor {
 					&::before {
-						.fa-icon("\f4d9");
+						@include fa-icon("\f4d9");
 					}
 				}
 			}
 
 			.inspection-id {
-				font-size: @font-size_xs;
+				font-size: $font-size_xs;
 				letter-spacing: 3px;
 				text-transform: uppercase;
-				background-color: @color_grey-1;
-				border: 1px solid @color_grey-3;
+				background-color: $color_grey-1;
+				border: 1px solid $color_grey-3;
 				border-radius: 2px;
 				padding: 0.5rem;
 				position: absolute;
@@ -283,7 +283,7 @@
 				flex-direction: column;
 				min-width: 180px;
 				position: relative;
-				border: 2px solid @color_grey-3;
+				border: 2px solid $color_grey-3;
 				border-radius: 5px;
 				padding-top: 2rem;
 
@@ -297,7 +297,7 @@
 					font-family: "Font Awesome 5 Free";
 					font-weight: 900;
 					font-size: 1rem;
-					color: @color_white;
+					color: $color_white;
 					border-top-right-radius: 5px;
 					border-bottom-left-radius: 5px;
 					text-align: center;
@@ -308,35 +308,35 @@
 				&[data-status-state="incomplete"] {
 					&::before {
 						content: '\f00d';
-						background-color: @color_red;
+						background-color: $color_red;
 					}
 				}
 
 				&[data-status-state="pending"] {
 					&::before {
 						content: '\f1ce';
-						background-color: @color_yellow;
+						background-color: $color_yellow;
 					}
 				}
 
 				&[data-status-state="complete"] {
 					&::before {
 						content: '\f00c';
-						background-color: @color_green;
+						background-color: $color_green;
 					}
 				}
 
 				&[data-status-state="pending"],
 				&[data-status-state="incomplete"] {
 					.inspection-status-value .inspection-status-value-primary {
-						font-weight: @font-weight_bold;
+						font-weight: $font-weight_bold;
 					}
 				}
 
 				.inspection-status-key {
-					font-size: @font-size_sm;
+					font-size: $font-size_sm;
 					text-transform: uppercase;
-					color: @color_grey-6;
+					color: $color_grey-6;
 					position: absolute;
 					top: 0.2rem;
 					left: 0.5rem;
@@ -350,14 +350,14 @@
 					justify-content: center;
 
 					.inspection-status-value-primary {
-						font-weight: @font-weight_semibold;
-						font-size: @font-size_lg;
+						font-weight: $font-weight_semibold;
+						font-size: $font-size_lg;
 						text-transform: uppercase;
 						letter-spacing: 2px;
 					}
 
 					.inspection-status-value-secondary {
-						font-size: @font-size_sm;
+						font-size: $font-size_sm;
 						font-style: italic;
 					}
 				}

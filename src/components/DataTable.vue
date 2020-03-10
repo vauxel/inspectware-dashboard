@@ -84,19 +84,19 @@
 	}
 </script>
 
-<style scoped lang="less">
-	@import "../less/include.less";
+<style scoped lang="scss">
+	@import "@/scss/include.scss";
 
 	.datatable {
 		margin-bottom: 2rem;
-		background-color: @color_white;
-		border: 1px solid @color_grey-4;
+		background-color: $color_white;
+		border: 1px solid $color_grey-4;
 		border-radius: 5px;
 		overflow: hidden;
 	
 		.datatable-head {
-			border-bottom: 1px solid @color_grey-4;
-			background-color: @color_white-1;
+			border-bottom: 1px solid $color_grey-4;
+			background-color: $color_white-1;
 			padding: 1rem;
 
 			.datatable-querystring {
@@ -110,16 +110,16 @@
 
 		.datatable-footer {
 			padding: 0.5rem;
-			background-color: @color_white-4;
-			border-top: 1px solid @color_grey-4;
+			background-color: $color_white-4;
+			border-top: 1px solid $color_grey-4;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 
 			.datatable-resultcount {
 				text-transform: uppercase;
-				font-size: @font-size_sm;
-				color: @color_grey-5;
+				font-size: $font-size_sm;
+				color: $color_grey-5;
 				float: right;
 			}
 

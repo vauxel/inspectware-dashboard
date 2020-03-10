@@ -42,8 +42,8 @@
 	}
 </script>
 
-<style lang="less">
-	@import "less/include.less";
+<style lang="scss">
+	@import "@/scss/include.scss";
 
 	@import "~@fortawesome/fontawesome-free/css/fontawesome.min.css";
 	@import "~@fortawesome/fontawesome-free/css/solid.min.css";
@@ -54,8 +54,8 @@
 	}
 
 	body {
-		font-size: @font-size_base !important;
-		color: @font_color_dark !important;
+		font-size: $font-size_base !important;
+		color: $font_color_dark !important;
 	}
 	
 	html, body {
@@ -78,7 +78,7 @@
 			flex-grow: 1;
 			overflow-y: auto;
 			overflow-x: hidden;
-			background-color: @color_grey-1;
+			background-color: $color_grey-1;
 
 			#content {
 				padding: 2rem;

@@ -8,8 +8,8 @@
     }
 }
 
-.fa-icon(@icon-code) {
-    content: @icon-code;
+@mixin fa-icon($icon-code) {
+    content: $icon-code;
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
 }
