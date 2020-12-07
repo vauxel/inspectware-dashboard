@@ -16,12 +16,64 @@
 		},
 	})
 	export default class extends Vue {
+		private noticeDuration: number = 5.0;
+		private messageDuration: number = 2.5;
+
 		public mounted(): void {
 			this.$store.dispatch("readAuthToken");
 
 			if (this.isLoggedIn) {
 				this.$router.push(`/${this.getAffiliation}`);
 			}
+
+			this.$store.subscribe((mutation, state) => {
+				if (mutation.type === "DISPLAY_NOTICE") {
+					switch (mutation.payload.level) {
+						case "info":
+							this.$Notice.info({
+								title: mutation.payload.title,
+								desc: mutation.payload.desc,
+								duration: this.noticeDuration
+							});
+							break;
+						case "success":
+							this.$Notice.success({
+								title: mutation.payload.title,
+								desc: mutation.payload.desc,
+								duration: this.noticeDuration
+							});
+							break;
+						case "warning":
+							this.$Notice.warning({
+								title: mutation.payload.title,
+								desc: mutation.payload.desc,
+								duration: this.noticeDuration
+							});
+							break;
+						case "error":
+							this.$Notice.error({
+								title: mutation.payload.title,
+								desc: mutation.payload.desc,
+								duration: this.noticeDuration
+							});
+							break;
+						default:
+							break;
+					}
+				} else if (mutation.type === "DISPLAY_MESSAGE") {
+					this.$Message[mutation.payload.level]({
+						background: true,
+						content: mutation.payload.text,
+						duration: this.messageDuration
+					});
+				} else if (mutation.type === "START_LOADING") {
+					this.$Loading.start();
+				} else if (mutation.type === "STOP_LOADING") {
+					this.$Loading.stop();
+				} else if (mutation.type === "ERROR_LOADING") {
+					this.$Loading.error();
+				}
+			});
 		}
 
 		private get isLoggedIn(): boolean {

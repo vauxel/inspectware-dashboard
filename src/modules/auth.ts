@@ -5,7 +5,6 @@ import HTTP from "../classes/http";
 @Module
 export default class AuthModule extends VuexModule {
 	private loggedIn: boolean = !!localStorage.getItem("auth_token");
-	private loginFailure: string = "";
 
 	private affiliation: string = "";
 	private userId: string = "";
@@ -15,10 +14,6 @@ export default class AuthModule extends VuexModule {
 
 	public get isLoggedIn(): boolean {
 		return this.loggedIn;
-	}
-
-	public get getLoginFailure(): string {
-		return this.loginFailure;
 	}
 
 	public get getAffiliation(): string {
@@ -64,11 +59,6 @@ export default class AuthModule extends VuexModule {
 	}
 
 	@Mutation
-	public LOGIN_FAILURE(data: string) {
-		this.loginFailure = data;
-	}
-
-	@Mutation
 	public UPDATE_BASE_INFO(data: {
 		affiliation: string,
 		userId: string,
@@ -108,7 +98,6 @@ export default class AuthModule extends VuexModule {
 		loginName: string,
 		password: string
 	}) {
-		this.context.commit("LOGIN_FAILURE", "");
 		let result;
 
 		try {
@@ -118,19 +107,20 @@ export default class AuthModule extends VuexModule {
 				password: data.password,
 			});
 		} catch (error) {
-			this.context.commit("LOGIN_FAILURE", error.response.status + ": " + error.response.statusText);
+			this.context.dispatch("pushMessage", {
+				text: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+				level: "error"
+			});
 			return;
 		}
 
-		if (result.data.status != 200) {
-			this.context.commit("LOGIN_FAILURE", result.data.error.message);
-		} else {
+		if (result.data.status == 200) {
 			localStorage.setItem("auth_token", result.data.data.token);
 
 			this.context.dispatch("readAuthToken");
 			this.context.commit("LOGIN");
-			this.context.dispatch("addNotification", {
-				message: "You have been successfully logged in! Welcome, " + this.name + ".",
+			this.context.dispatch("pushMessage", {
+				text: "You have been successfully logged in! Welcome, " + this.name + ".",
 				level: "success"
 			});
 
@@ -139,16 +129,27 @@ export default class AuthModule extends VuexModule {
 	}
 
 	@Action
-	public logout(data: {
-		message: string,
-		compulsory: boolean
-	}) {
+	public logout() {
 		localStorage.removeItem("auth_token");
 		this.context.commit("LOGOUT");
-		Router.push("/");
-		this.context.dispatch("addNotification", {
-			message: data.message ? data.message : "You have been successfully logged out!",
-			level: !data.compulsory ? "success" : "warning"
+		this.context.dispatch("pushMessage", {
+			text: "You have been successfully logged out!",
+			level: "success"
 		});
+		Router.push("/");
+	}
+
+	@Action
+	public restrictedRedirect() {
+		if (this.isLoggedIn) {
+			localStorage.removeItem("auth_token");
+			this.context.commit("LOGOUT");
+		}
+
+		this.context.dispatch("pushMessage", {
+			text: "You are unauthorized to make that request without sufficient authentication.",
+			level: "warning"
+		});
+		Router.push("/");
 	}
 }
