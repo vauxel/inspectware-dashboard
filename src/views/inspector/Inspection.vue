@@ -106,6 +106,12 @@
 										<div class="inspection-report-date">02/21/2020</div>
 										<a href="#" class="inspection-report-view"></a>
 									</div>
+									<div class="inspection-report">
+										<div class="inspection-report-title">Final Report</div>
+										<div class="inspection-report-author">Austin Villee</div>
+										<div class="inspection-report-date">02/21/2020</div>
+										<a href="#" class="inspection-report-view"></a>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -118,8 +124,20 @@
 							</div>
 							<div class="panel-body">
 								<div class="inspection-documents">
-									<div class="inspection-document">
-										
+									<div class="inspection-document" data-type="generic">
+										<a href="#" class="inspection-document-download"></a>
+										<div class="inspection-document-name">Test Report</div>
+										<div class="inspection-document-date">1/1/2020</div>
+									</div>
+									<div class="inspection-document" data-type="invoice">
+										<a href="#" class="inspection-document-download"></a>
+										<div class="inspection-document-name">Test Report</div>
+										<div class="inspection-document-date">1/1/2020</div>
+									</div>
+									<div class="inspection-document" data-type="contract">
+										<a href="#" class="inspection-document-download"></a>
+										<div class="inspection-document-name">Test Report</div>
+										<div class="inspection-document-date">1/1/2020</div>
 									</div>
 								</div>
 							</div>
@@ -131,8 +149,14 @@
 									Payment
 								</div>
 							</div>
-							<div class="panel-body">
-								
+							<div class="panel-body inspection-payment-container">
+								<div class="inspection-payment-text payment-invoiced">Invoiced</div>
+								<div class="inspection-payment-value payment-invoiced">$1000</div>
+								<div class="inspection-payment-text payment-paid">Paid</div>
+								<div class="inspection-payment-value payment-paid">$700</div>
+								<div class="inspection-payment-divider"></div>
+								<div class="inspection-payment-text payment-due">Due</div>
+								<div class="inspection-payment-value payment-due">$300</div>
 							</div>
 						</div>
 					</div>
@@ -168,7 +192,7 @@
 		private previewImage = "https://photos.zillowstatic.com/cc_ft_768/ISni89iuad9ntt1000000000.webp";
 
 		mounted() {
-			this.getGeneralInfo();
+			this.getInfo();
 
 			Mapbox.accessToken = this.accessToken;
 
@@ -195,7 +219,7 @@
 			return "//www.google.com/maps/dir//" + this.address.replace(/\ /g, "+");
 		}
 
-		private async getGeneralInfo() {
+		private async getInfo() {
 			try {
 				const result = await HTTP.get("/inspection/general_info", {
 					params: { id: this.$route.params.id }
@@ -497,6 +521,10 @@
 			padding: 1rem;
 			position: relative;
 
+			&:not(:last-child) {
+				margin-bottom: 1rem;
+			}
+
 			.inspection-report-title {
 				font-size: $font-size_lg;
 				font-weight: $font-weight_semibold;
@@ -512,11 +540,153 @@
 				position: absolute;
 				top: 1rem;
 				right: 1rem;
+				width: 2.5rem;
+				height: 2.5rem;
+				background-color: $color_grey-3;
+				text-align: center;
+				border-radius: 25%;
 
 				&::before {
 					@include fa-icon("\f06e");
 					text-decoration: none;
+					line-height: 2.5rem;
+					color: $color_grey-6;
 				}
+
+				&:hover {
+					&::before {
+						color: $color_grey-7;
+					}
+				}
+			}
+		}
+	}
+
+	.inspection-documents {
+		.inspection-document {
+			position: relative;
+
+			&::after {
+				content: '';
+				clear: both;
+				display: table;
+			}
+
+			&:not(:last-child) {
+				border-bottom: 1px solid $color_grey-3;
+				margin-bottom: 1rem;
+				padding-bottom: 1rem;
+			}
+
+			&[data-type="generic"] {
+				.inspection-document-download {
+					&::before {
+						@include fa-icon("\f15c");
+					}
+				}
+			}
+
+			&[data-type="invoice"] {
+				.inspection-document-download {
+					&::before {
+						@include fa-icon("\f571");
+					}
+				}
+			}
+
+			&[data-type="contract"] {
+				.inspection-document-download {
+					&::before {
+						@include fa-icon("\f56c");
+					}
+				}
+			}
+
+			.inspection-document-download {
+				position: absolute;
+				top: 0;
+				left: 0;
+
+				&::before {
+					font-size: $font-size_4xl;
+					color: $color_primary;
+				}
+
+				&:hover {
+					&::before {
+						@include fa-icon("\f56d");
+						color: $color_primary-darker;
+					}
+				}
+			}
+
+			.inspection-document-name {
+				float: right;
+				font-weight: $font-weight_semibold;
+			}
+
+			.inspection-document-date {
+				clear: right;
+				float: right;
+				font-size: $font-size_sm;
+				color: $color_grey-6;
+			}
+		}
+	}
+
+	.inspection-payment-container {
+		&::after {
+			content: '';
+			clear: both;
+			display: table;
+		}
+
+		.inspection-payment-divider {
+			clear: both;
+			float: left;
+			width: 100%;
+			margin-bottom: 0.5rem;
+
+			&::before {
+				content: '';
+				display: block;
+				border-bottom: 1px solid $color_grey-4;
+			}
+		}
+
+		.inspection-payment-text {
+			clear: both;
+			float: left;
+
+			&.payment-invoiced {
+				margin-bottom: 0.5rem;
+				color: $color-grey-6;
+			}
+
+			&.payment-paid {
+				margin-bottom: 1rem;
+				color: $color-grey-6;
+			}
+
+			&.payment-due {
+				font-size: $font-size_xl;
+				font-weight: $font-weight_semibold;
+			}
+		}
+
+		.inspection-payment-value {
+			float: right;
+
+			&.payment-paid {
+				&::before {
+					content: '-';
+					margin-right: 0.5rem;
+				}
+			}
+
+			&.payment-due {
+				font-size: $font-size_xl;
+				font-weight: $font-weight_semibold;
 			}
 		}
 	}
