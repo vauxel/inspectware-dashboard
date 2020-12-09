@@ -4,7 +4,7 @@
 			<div class="inspection-header">
 				<img class="inspection-property-preview" :src="previewImage">
 				<div class="inspection-overview">
-					<div class="inspection-address">{{ address }}</div>
+					<div class="inspection-address">{{ fullPropertyAddress }}</div>
 					<div class="inspection-details">
 						<div class="inspection-detail">
 							<span class="inspection-detail-key">Inspection ID</span>
@@ -33,6 +33,158 @@
 					<div class="inspection-status" data-status-state="complete">Invoice Paid</div>
 					<div class="inspection-status" data-status-state="complete">Invoice Paid</div>
 					<div class="inspection-status" data-status-state="complete">Invoice Paid</div>
+				</div>
+			</div>
+			<div class="flex-row flex-gutter-2">
+				<div class="panel flex-grow">
+					<div class="panel-head">
+						<div class="panel-title">
+							<i class="fas fa-fw fa-home"></i>
+							Property Details
+						</div>
+						<div class="panel-options">
+							<Button type="warning" size="small" @click="showEditPropertyDetailsModal">
+								<i class="fas fa-fw fa-edit"></i>
+								Edit
+							</Button>
+							<Modal
+								v-model="editPropertyDetailsModal"
+								title="Edit Property Details"
+								:loading="editPropertyDetailsLoading"
+								@on-ok="editPropertyDetails">
+								<Form ref="editPropertyDetailsForm" :model="editProperty" label-position="top">
+									<FormItem label="Street Address 1" prop="address1">
+										<Input v-model="editProperty.address1" placeholder="Enter the primary address"></Input>
+									</FormItem>
+									<FormItem label="Street Address 2" prop="address2">
+										<Input v-model="editProperty.address2" placeholder="Optional secondary address"></Input>
+									</FormItem>
+									<FormItem label="City" prop="city">
+										<Input v-model="editProperty.city" placeholder="Enter the city"></Input>
+									</FormItem>
+									<FormItem label="State" prop="state">
+										<masked-input
+											type="text"
+											class="ivu-input"
+											v-model="editProperty.state"
+											:mask="[/[A-Za-z]/, /[A-Za-z]/]"
+											:guide="false"
+											placeholder="Enter the state abbreviation">
+										</masked-input>
+									</FormItem>
+									<FormItem label="ZIP Code" prop="zip">
+										<masked-input
+											type="text"
+											class="ivu-input"
+											v-model="editProperty.zip"
+											:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
+											:guide="false"
+											placeholder="Enter the digit zip code">
+										</masked-input>
+									</FormItem>
+									<FormItem label="Square Footage" prop="sqft">
+										<masked-input
+											type="text"
+											class="ivu-input"
+											v-model="editProperty.sqft"
+											:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
+											:guide="false"
+											placeholder="Enter the whole-number square footage">
+										</masked-input>
+									</FormItem>
+									<FormItem label="Year Built" prop="year_built">
+										<masked-input
+											type="text"
+											class="ivu-input"
+											v-model="editProperty.year_built"
+											:mask="[/\d/, /\d/, /\d/, /\d/]"
+											:guide="false"
+											placeholder="Enter the year the home was built">
+										</masked-input>
+									</FormItem>
+									<FormItem label="Foundation Type" prop="foundation">
+										<Select v-model="editProperty.foundation" placeholder="Choose the foundation type">
+											<Option value="slab">Slab</Option>
+											<Option value="crawlspace">Crawlspace</Option>
+											<Option value="basement">Basement</Option>
+										</Select>
+									</FormItem>
+								</Form>
+								<p class="inspection-property-details-edit-message">Any field left blank, except for "Street Address 2", will not be updated.</p>
+							</Modal>
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="inspection-property-details">
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">Street Address <span v-if="property.address2">1</span></span>
+								<span class="inspection-detail-value">{{ property.address1 }}</span>
+							</div>
+							<div class="inspection-detail" v-if="property.address2">
+								<span class="inspection-detail-key">Street Address 2</span>
+								<span class="inspection-detail-value">{{ property.address2 }}</span>
+							</div>
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">City</span>
+								<span class="inspection-detail-value">{{ property.city }}</span>
+							</div>
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">State</span>
+								<span class="inspection-detail-value">{{ property.state }}</span>
+							</div>
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">ZIP Code</span>
+								<span class="inspection-detail-value">{{ property.zip }}</span>
+							</div>
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">Square Footage</span>
+								<span class="inspection-detail-value">{{ property.sqft }}</span>
+							</div>
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">Year Built</span>
+								<span class="inspection-detail-value">{{ property.year_built }}</span>
+							</div>
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">Foundation Type</span>
+								<span class="inspection-detail-value">{{ property.foundation.toUpperCase() }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel">
+					<div class="panel-head">
+						<div class="panel-title">
+							<i class="fas fa-fw fa-toolbox"></i>
+							Services Requested
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="inspection-services">
+							<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
+							<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
+							<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel">
+					<div class="panel-head">
+						<div class="panel-title">
+							<i class="fas fa-fw fa-calendar-day"></i>
+							Appointment Details
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="inspection-appointment-details">
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">Date</span>
+								<span class="inspection-detail-value">{{ formatDate(date) }}</span>
+							</div>
+							<div class="inspection-detail">
+								<span class="inspection-detail-key">Time</span>
+								<span class="inspection-detail-value">{{ formatTime(time) }}</span>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="flex-row flex-gutter-2">
@@ -142,11 +294,17 @@
 								</div>
 							</div>
 						</div>
-						<div class="panel flex-grow">
+						<div class="panel">
 							<div class="panel-head">
 								<div class="panel-title">
 									<i class="fas fa-fw fa-money-bill-wave"></i>
 									Payment
+								</div>
+								<div class="panel-options">
+									<Button type="primary" size="small" @click="generateSendInvoice">
+										<i class="fas fa-fw fa-file-export"></i>
+										Generate & Send Invoice
+									</Button>
 								</div>
 							</div>
 							<div class="panel-body inspection-payment-container">
@@ -169,16 +327,33 @@
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
 	import Mapbox from "mapbox-gl";
+	import MaskedInput from "vue-text-mask";
 	import HTTP from "@/classes/http";
 
-	@Component({})
+	@Component({
+		components: {
+			MaskedInput
+		}
+	})
 	export default class Inspection extends Vue {
 		private accessToken = "pk.eyJ1IjoiaW5zcGVjdHdhcmUiLCJhIjoiY2p5dDBkZjJ1MDByZzNvbWZmMDV4NnI2MiJ9.HYKSg6GlZrG7xz15KxwaIQ";
 		private mapStyle = "mapbox://styles/mapbox/streets-v11";
-		private mapCenter = {lat: 35.700064, lng: -78.755007 };
+		private mapCenter = { lat: -1, lng: -1 };
 		private map: Mapbox.Map | undefined;
+		private mapPinContainer: Mapbox.Marker | undefined = undefined;
+		private mapPinPulse: Mapbox.Marker | undefined = undefined;
 
-		private address = "";
+		private property = {
+			address1: "",
+			address2: "",
+			city: "",
+			state: "",
+			zip: -1,
+			sqft: -1,
+			year_built: -1,
+			foundation: ""
+		};
+		private services = [];
 		private id = "";
 		private client1 = {
 			name: ""
@@ -189,12 +364,31 @@
 		private realtor = {
 			name: ""
 		};
+		private date = "";
+		private time = -1;
+		private scheduled = -1;
 		private previewImage = "https://photos.zillowstatic.com/cc_ft_768/ISni89iuad9ntt1000000000.webp";
+
+		private editPropertyDetailsModal = false;
+		private editPropertyDetailsLoading = true;
+		private editProperty = {
+			address1: "",
+			address2: "",
+			city: "",
+			state: "",
+			zip: -1,
+			sqft: -1,
+			year_built: -1,
+			foundation: ""
+		};
 
 		mounted() {
 			this.getInfo();
-
 			Mapbox.accessToken = this.accessToken;
+		}
+
+		private async initMap() {
+			await this.setMapCenter();
 
 			this.map = new Mapbox.Map({
 				container: "map",
@@ -208,35 +402,147 @@
 			let pinContainer = document.createElement("div");
 			pinContainer.className = "map-pin-container";
 			pinContainer.appendChild(pin);
-			new Mapbox.Marker(pinContainer).setLngLat(this.mapCenter).addTo(this.map);
+			this.mapPinContainer = new Mapbox.Marker(pinContainer).setLngLat(this.mapCenter).addTo(this.map);
 
 			let pinPulse = document.createElement("div");
 			pinPulse.className = "map-pulse";
-			new Mapbox.Marker(pinPulse).setLngLat(this.mapCenter).addTo(this.map);
+			this.mapPinPulse = new Mapbox.Marker(pinPulse).setLngLat(this.mapCenter).addTo(this.map);
+		}
+
+		private destroyMap() {
+			if (this.map && this.mapPinContainer && this.mapPinPulse) {
+				this.mapPinContainer.remove();
+				this.mapPinPulse.remove();
+				this.mapPinContainer = undefined;
+				this.mapPinPulse = undefined;
+				this.map.remove();
+				this.map = undefined;
+			}
+		}
+
+		private async setMapCenter() {
+			const result = await HTTP.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(this.fullPropertyAddress)}.json?access_token=${this.accessToken}`);
+			if (result.status == 200) {
+				if (result.data.features.length != 0) {
+					if (result.data.features[0].relevance < 0.8) {
+						this.destroyMap();
+					} else {
+						this.mapCenter.lng = result.data.features[0].center[0];
+						this.mapCenter.lat = result.data.features[0].center[1];
+					}
+				}
+			}
+		}
+
+		private updateMap() {
+			if (this.mapPinContainer && this.mapPinPulse && this.map) {
+				this.mapPinContainer.setLngLat(this.mapCenter);
+				this.mapPinPulse.setLngLat(this.mapCenter);
+				this.map.panTo(this.mapCenter);
+			}
 		}
 
 		private get gMapsLink(): string {
-			return "//www.google.com/maps/dir//" + this.address.replace(/\ /g, "+");
+			return "//www.google.com/maps/dir//" + this.fullPropertyAddress.replace(/\ /g, "+");
+		}
+
+		private get fullPropertyAddress(): string {
+			return `${this.property.address1}${this.property.address2 ? " " + this.property.address2 : ""}, ${this.property.city}, ${this.property.state} ${this.property.zip}`;
 		}
 
 		private async getInfo() {
 			try {
-				const result = await HTTP.get("/inspection/general_info", {
+				const result = await HTTP.get("/inspection/info", {
 					params: { id: this.$route.params.id }
 				});
 
-				console.log(result);
-
 				this.id = result.data.data.id;
-				this.address = result.data.data.address;
+				this.property.address1 = result.data.data.property.address1;
+				this.property.address2 = result.data.data.property.address2;
+				this.property.city = result.data.data.property.city;
+				this.property.state = result.data.data.property.state;
+				this.property.zip = result.data.data.property.zip;
+				this.property.sqft = result.data.data.property.sqft;
+				this.property.year_built = result.data.data.property.year_built;
+				this.property.foundation = result.data.data.property.foundation;
+				this.services = result.data.data.services;
 				this.client1 = result.data.data.client1;
 				this.client2 = result.data.data.client2;
 				this.realtor = result.data.data.realtor;
+				this.date = result.data.data.date;
+				this.time = result.data.data.time;
+				this.scheduled = result.data.data.scheduled;
+
+				this.initMap();
 			} catch (e) {
 				// TODO: push "inspection not found" notification
 				//this.$router.push("/");
 				console.error(e);
 			}
+		}
+
+		private showEditPropertyDetailsModal() {
+			this.editProperty.address1 = this.property.address1;
+			this.editProperty.address2 = this.property.address2;
+			this.editProperty.city = this.property.city;
+			this.editProperty.state = this.property.state;
+			this.editProperty.zip = this.property.zip;
+			this.editProperty.sqft = this.property.sqft;
+			this.editProperty.year_built = this.property.year_built;
+			this.editProperty.foundation = this.property.foundation;
+			this.editPropertyDetailsModal = true;
+		}
+
+		private async editPropertyDetails() {
+			try {
+				const result = await HTTP.post("/inspection/property_info", {
+					id: this.id,
+					address1: this.editProperty.address1 ? this.editProperty.address1 : undefined,
+					address2: this.editProperty.address2,
+					city: this.editProperty.city ? this.editProperty.city : undefined,
+					state: this.editProperty.state ? this.editProperty.state.toUpperCase() : undefined,
+					zip: this.editProperty.zip ? this.editProperty.zip : undefined,
+					sqft: this.editProperty.sqft ? this.editProperty.sqft : undefined,
+					year_built: this.editProperty.year_built ? this.editProperty.year_built : undefined,
+					foundation: this.editProperty.foundation ? this.editProperty.foundation : undefined
+				});
+
+				if (result.data.status == 200) {
+					this.property.address1 = !!this.editProperty.address1 ? this.editProperty.address1 : this.property.address1;
+					this.property.address2 = this.editProperty.address2;
+					this.property.city = !!this.editProperty.city ? this.editProperty.city : this.property.city;
+					this.property.state = !!this.editProperty.state ? this.editProperty.state.toUpperCase() : this.property.state;
+					this.property.zip = !!this.editProperty.zip ? this.editProperty.zip : this.property.zip;
+					this.property.sqft = !!this.editProperty.sqft ? this.editProperty.sqft : this.property.sqft;
+					this.property.year_built = !!this.editProperty.year_built ? this.editProperty.year_built : this.property.year_built;
+					this.property.foundation = !!this.editProperty.foundation ? this.editProperty.foundation : this.property.foundation;
+
+					if (!this.map) {
+						await this.initMap();
+					}
+
+					await this.setMapCenter();
+					this.updateMap();
+				} else {
+					this.$store.dispatch("pushNotice", {
+						title: "Update Property Details Failed",
+						desc: result.data.message,
+						level: "error"
+					});
+				}
+			} catch (error) {
+				this.$store.dispatch("pushNotice", {
+					title: "Update Property Details Failed",
+					desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+					level: "error"
+				});
+			}
+
+			this.editPropertyDetailsModal = false;
+		}
+
+		private async generateSendInvoice() {
+			alert("sent");
 		}
 	}
 </script>
@@ -392,6 +698,52 @@
 					content: '\f00c';
 					background-color: $color_green;
 				}
+			}
+		}
+	}
+
+	.inspection-property-details,
+	.inspection-appointment-details {
+		line-height: 1.75;
+
+		.inspection-detail {
+			&:not(:last-child) {
+				border-bottom: 1px dotted $color_grey-5;
+			}
+
+			.inspection-detail-key {
+				font-size: $font-size_sm;
+				font-weight: $font-weight_bold;
+				text-transform: uppercase;
+			}
+
+			.inspection-detail-value {
+				float: right;
+			}
+		}
+	}
+
+	.inspection-property-details-edit-message {
+		text-align: center;
+		font-style: italic;
+	}
+
+	.inspection-services {
+		.inspection-service {
+			font-size: $font-size_lg;
+
+			&:not(:last-child) {
+				margin-bottom: 1rem;
+			}
+
+			&::before {
+				content: '';
+				display: inline-block;
+				vertical-align: middle;
+				width: 0.5rem;
+				height: 0.5rem;
+				background-color: $color_primary;
+				margin-right: 0.75rem;
 			}
 		}
 	}
@@ -695,9 +1047,13 @@
 <style lang="scss">
 	@import "@/scss/include.scss";
 
+	.mapboxgl-control-container {
+		display: none;
+	}
+
 	.map-pin-container {
-		position: relative;
-		bottom: 10px;
+		position: absolute;
+		top: -5px;
 		width: 40px;
 		height: 40px;
 		z-index: 1;
@@ -709,7 +1065,7 @@
 		border-radius: 50% 50% 10% 50%;
 		background-color: $color_primary;
 		rotate: 45deg;
-		transform: rotate(45deg);
+		transform: rotate(0);
 
 		&:after {
 			@include fa-icon('\f015');
@@ -731,8 +1087,8 @@
 		border-radius: 50%;
 		height: 14px;
 		width: 14px;
-		position: relative;
-		top: -20px;
+		position: absolute;
+		top: 20px;
 
 		&:after {
 			content: "";

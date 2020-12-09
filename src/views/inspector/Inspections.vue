@@ -283,7 +283,7 @@
 				flex-direction: column;
 				min-width: 180px;
 				position: relative;
-				border: 2px solid $color_grey-3;
+				border: 1px solid $color_grey-3;
 				border-radius: 5px;
 				padding-top: 2rem;
 
@@ -306,6 +306,8 @@
 				}
 
 				&[data-status-state="incomplete"] {
+					border-color: $color_red;
+
 					&::before {
 						content: '\f00d';
 						background-color: $color_red;
@@ -313,6 +315,8 @@
 				}
 
 				&[data-status-state="pending"] {
+					border-color: $color_yellow;
+
 					&::before {
 						content: '\f1ce';
 						background-color: $color_yellow;
@@ -320,6 +324,8 @@
 				}
 
 				&[data-status-state="complete"] {
+					border-color: $color_green;
+
 					&::before {
 						content: '\f00c';
 						background-color: $color_green;
