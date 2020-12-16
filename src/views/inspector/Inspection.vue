@@ -42,7 +42,7 @@
 							<i class="fas fa-fw fa-home"></i>
 							Property Details
 						</div>
-						<div class="panel-options">
+						<div class="panel-options" v-if="!detailsLocked">
 							<Button type="warning" size="small" @click="showEditPropertyDetailsModal">
 								<i class="fas fa-fw fa-edit"></i>
 								Edit
@@ -157,11 +157,15 @@
 							<i class="fas fa-fw fa-toolbox"></i>
 							Services Requested
 						</div>
+						<div class="panel-options" v-if="!detailsLocked">
+							<Button type="warning" size="small" @click="showEditServicesModal">
+								<i class="fas fa-fw fa-edit"></i>
+								Edit
+							</Button>
+						</div>
 					</div>
 					<div class="panel-body">
 						<div class="inspection-services">
-							<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
-							<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
 							<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
 						</div>
 					</div>
@@ -171,6 +175,26 @@
 						<div class="panel-title">
 							<i class="fas fa-fw fa-calendar-day"></i>
 							Appointment Details
+						</div>
+						<div class="panel-options" v-if="!detailsLocked">
+							<Button type="warning" size="small" @click="showEditAppointmentModal">
+								<i class="fas fa-fw fa-edit"></i>
+								Edit
+							</Button>
+							<Modal
+								v-model="editAppointmentModal"
+								title="Edit Appointment Date/Time"
+								:loading="editAppointmentLoading"
+								@on-ok="editAppointment">
+								<Form ref="editAppointmentForm" :model="editAppointment" label-position="top">
+									<FormItem label="Appointment Date" prop="date">
+										<DatePicker type="date" placeholder="Select new appointment date"></DatePicker>
+									</FormItem>
+									<FormItem label="Appointment Time" prop="time">
+										<TimePicker type="time" format="" placeholder="Select new appointment time"></TimePicker>
+									</FormItem>
+								</Form>
+							</Modal>
 						</div>
 					</div>
 					<div class="panel-body">
@@ -300,7 +324,7 @@
 									<i class="fas fa-fw fa-money-bill-wave"></i>
 									Payment
 								</div>
-								<div class="panel-options">
+								<div class="panel-options" v-if="!payment.invoice_sent">
 									<Button type="primary" size="small" @click="generateSendInvoice">
 										<i class="fas fa-fw fa-file-export"></i>
 										Generate & Send Invoice
@@ -308,13 +332,31 @@
 								</div>
 							</div>
 							<div class="panel-body inspection-payment-container">
-								<div class="inspection-payment-text payment-invoiced">Invoiced</div>
-								<div class="inspection-payment-value payment-invoiced">$1000</div>
-								<div class="inspection-payment-text payment-paid">Paid</div>
-								<div class="inspection-payment-value payment-paid">$700</div>
-								<div class="inspection-payment-divider"></div>
-								<div class="inspection-payment-text payment-due">Due</div>
-								<div class="inspection-payment-value payment-due">$300</div>
+								<div class="inspection-payment-item payment-subsidiary" v-for="item in payment.details.items" :key="item" :value="item">
+									<div class="inspection-payment-text">{{ item.name }}</div>
+									<div class="inspection-payment-value">${{ item.price }}</div>
+								</div>
+								<div class="inspection-payment-item">
+									<div class="inspection-payment-text">Subtotal</div>
+									<div class="inspection-payment-value">${{ payment.details.subtotal }}</div>
+								</div>
+								<div class="inspection-payment-item payment-subsidiary">
+									<div class="inspection-payment-text">Tax ({{ payment.details.tax_percent }}%)</div>
+									<div class="inspection-payment-value">${{ payment.details.tax }}</div>
+								</div>
+								<div class="inspection-payment-item payment-total">
+									<div class="inspection-payment-text">{{ payment.invoice_sent ? "Invoiced" : "Total" }}</div>
+									<div class="inspection-payment-value">${{ payment.invoice_sent ? payment.invoiced : payment.details.total }}</div>
+								</div>
+								<div class="inspection-payment-item payment-paid" v-if="payment.invoice_sent">
+									<div class="inspection-payment-text">Paid</div>
+									<div class="inspection-payment-value">${{ payment.invoiced - payment.balance }}</div>
+								</div>
+								<div class="inspection-payment-divider" v-if="payment.invoice_sent"></div>
+								<div class="inspection-payment-item payment-due" v-if="payment.invoice_sent">
+									<div class="inspection-payment-text">Due</div>
+									<div class="inspection-payment-value">${{ payment.balance }}</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -369,6 +411,8 @@
 		private scheduled = -1;
 		private previewImage = "https://photos.zillowstatic.com/cc_ft_768/ISni89iuad9ntt1000000000.webp";
 
+		private detailsLocked = false;
+
 		private editPropertyDetailsModal = false;
 		private editPropertyDetailsLoading = true;
 		private editProperty = {
@@ -382,8 +426,30 @@
 			foundation: ""
 		};
 
+		private editAppointmentModal = false;
+		private editAppointmentLoading = true;
+		private editAppointment = {
+			date: "",
+			time: -1
+		}
+
+		private payment = {
+			invoice_sent: false,
+			invoiced: 0,
+			balance: 0,
+			payments: [],
+			details: {
+				items: [],
+				subtotal: 0,
+				tax: 0,
+				tax_percent: 0,
+				total: 0
+			}
+		}
+
 		mounted() {
 			this.getInfo();
+			this.getPaymentInfo();
 			Mapbox.accessToken = this.accessToken;
 		}
 
@@ -472,12 +538,31 @@
 				this.date = result.data.data.date;
 				this.time = result.data.data.time;
 				this.scheduled = result.data.data.scheduled;
+				this.detailsLocked = result.data.data.details_locked;
 
 				this.initMap();
-			} catch (e) {
-				// TODO: push "inspection not found" notification
-				//this.$router.push("/");
-				console.error(e);
+			} catch (error) {
+				this.$store.dispatch("pushNotice", {
+					title: "Get Inspection Info Failed",
+					desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+					level: "error"
+				});
+			}
+		}
+
+		private async getPaymentInfo() {
+			try {
+				const result = await HTTP.get("/inspection/payment_info", {
+					params: { id: this.$route.params.id }
+				});
+
+				this.payment = result.data.data;
+			} catch (error) {
+				this.$store.dispatch("pushNotice", {
+					title: "Get Payment Info Failed",
+					desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+					level: "error"
+				});
 			}
 		}
 
@@ -491,6 +576,12 @@
 			this.editProperty.year_built = this.property.year_built;
 			this.editProperty.foundation = this.property.foundation;
 			this.editPropertyDetailsModal = true;
+		}
+
+		private showEditAppointmentModal() {
+			this.editAppointment.date = this.date;
+			this.editAppointment.time = this.time;
+			this.editAppointmentModal = true;
 		}
 
 		private async editPropertyDetails() {
@@ -542,7 +633,30 @@
 		}
 
 		private async generateSendInvoice() {
-			alert("sent");
+			this.$Modal.confirm({
+				title: "Confirm Generate & Send Invoice",
+				content: "<p>Are you sure you want to generate and send the invoice to the client(s)?</p><br><p><em>Doing so will irreversibly lock the inspection details from being edited.</em></p>",
+				okText: "Generate & Send",
+				loading: true,
+				onOk: async () => {
+					try {
+						const result = await HTTP.post("/inspection/gen_invoice", {
+							id: this.id
+						});
+
+						this.payment = result.data.data;
+						this.detailsLocked = true;
+						this.$Modal.remove();
+					} catch (error) {
+						this.$Modal.remove();
+						this.$store.dispatch("pushNotice", {
+							title: "Generate & Send Invoice Failed",
+							desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+							level: "error"
+						});
+					}
+				}
+			});
 		}
 	}
 </script>
@@ -998,6 +1112,7 @@
 			float: left;
 			width: 100%;
 			margin-bottom: 0.5rem;
+			margin-top: 0.5rem;
 
 			&::before {
 				content: '';
@@ -1006,39 +1121,44 @@
 			}
 		}
 
-		.inspection-payment-text {
-			clear: both;
-			float: left;
+		.inspection-payment-item {
+			margin-bottom: 0.5rem;
+			font-weight: $font-weight_semibold;
 
-			&.payment-invoiced {
-				margin-bottom: 0.5rem;
-				color: $color-grey-6;
+			&::after {
+				content: "";
+				clear: both;
+				display: table;
+			}
+			
+			&.payment-subsidiary {
+				font-weight: $font-weight_regular;
+
+				.inspection-payment-text {
+					color: $color-grey-6;
+				}
 			}
 
 			&.payment-paid {
-				margin-bottom: 1rem;
-				color: $color-grey-6;
-			}
-
-			&.payment-due {
-				font-size: $font-size_xl;
-				font-weight: $font-weight_semibold;
-			}
-		}
-
-		.inspection-payment-value {
-			float: right;
-
-			&.payment-paid {
-				&::before {
-					content: '-';
-					margin-right: 0.5rem;
+				.inspection-payment-value {
+					&::before {
+						content: '-';
+						margin-right: 0.5rem;
+					}
 				}
 			}
 
 			&.payment-due {
 				font-size: $font-size_xl;
 				font-weight: $font-weight_semibold;
+			}
+			
+			.inspection-payment-text {
+				float: left;
+			}
+
+			.inspection-payment-value {
+				float: right;
 			}
 		}
 	}
