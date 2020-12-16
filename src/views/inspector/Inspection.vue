@@ -300,20 +300,10 @@
 							</div>
 							<div class="panel-body">
 								<div class="inspection-documents">
-									<div class="inspection-document" data-type="generic">
-										<a href="#" class="inspection-document-download"></a>
-										<div class="inspection-document-name">Test Report</div>
-										<div class="inspection-document-date">1/1/2020</div>
-									</div>
-									<div class="inspection-document" data-type="invoice">
-										<a href="#" class="inspection-document-download"></a>
-										<div class="inspection-document-name">Test Report</div>
-										<div class="inspection-document-date">1/1/2020</div>
-									</div>
-									<div class="inspection-document" data-type="contract">
-										<a href="#" class="inspection-document-download"></a>
-										<div class="inspection-document-name">Test Report</div>
-										<div class="inspection-document-date">1/1/2020</div>
+									<div class="inspection-document" :data-type="doc.doctype" v-for="doc in documents" :key="doc">
+										<a :href="'/doc/' + doc.doctype.toLowerCase() + '/' + id + '?token=' + doc.token" class="inspection-document-download"></a>
+										<div class="inspection-document-name">{{ doc.name }}</div>
+										<div class="inspection-document-date">{{ timestampToDate(doc.created) }}</div>
 									</div>
 								</div>
 							</div>
@@ -332,7 +322,7 @@
 								</div>
 							</div>
 							<div class="panel-body inspection-payment-container">
-								<div class="inspection-payment-item payment-subsidiary" v-for="item in payment.details.items" :key="item" :value="item">
+								<div class="inspection-payment-item payment-subsidiary" v-for="item in payment.details.items" :key="item">
 									<div class="inspection-payment-text">{{ item.name }}</div>
 									<div class="inspection-payment-value">${{ item.price }}</div>
 								</div>
@@ -447,9 +437,12 @@
 			}
 		}
 
+		private documents = [];
+
 		mounted() {
 			this.getInfo();
 			this.getPaymentInfo();
+			this.getDocuments();
 			Mapbox.accessToken = this.accessToken;
 		}
 
@@ -657,6 +650,22 @@
 					}
 				}
 			});
+		}
+
+		private async getDocuments() {
+			try {
+				const result = await HTTP.get("/inspection/documents", {
+					params: { id: this.$route.params.id }
+				});
+
+				this.documents = result.data.data;
+			} catch (error) {
+				this.$store.dispatch("pushNotice", {
+					title: "Get Documents Failed",
+					desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+					level: "error"
+				});
+			}
 		}
 	}
 </script>
@@ -1044,7 +1053,7 @@
 				padding-bottom: 1rem;
 			}
 
-			&[data-type="generic"] {
+			&[data-type="OTHER"] {
 				.inspection-document-download {
 					&::before {
 						@include fa-icon("\f15c");
@@ -1052,7 +1061,7 @@
 				}
 			}
 
-			&[data-type="invoice"] {
+			&[data-type="INVOICE"] {
 				.inspection-document-download {
 					&::before {
 						@include fa-icon("\f571");
@@ -1060,7 +1069,7 @@
 				}
 			}
 
-			&[data-type="contract"] {
+			&[data-type="AGREEMENT"] {
 				.inspection-document-download {
 					&::before {
 						@include fa-icon("\f56c");

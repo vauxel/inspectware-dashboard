@@ -12,6 +12,10 @@ export default {
         
         formatDate(date: string): string {
             return moment(date, "YYYYMMDD", true).format("M/D/YYYY");
+        },
+
+        timestampToDate(timestamp: number): string {
+            return moment(timestamp).format("M/D/YYYY");
         }
     }
 };
