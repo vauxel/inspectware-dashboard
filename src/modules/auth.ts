@@ -11,6 +11,7 @@ export default class AuthModule extends VuexModule {
 	private loginName: string = "";
 	private name: string = "";
 	private accountId: string = "";
+	private isOwner: boolean = false;
 
 	public get isLoggedIn(): boolean {
 		return this.loggedIn;
@@ -48,6 +49,10 @@ export default class AuthModule extends VuexModule {
 		return this.accountId;
 	}
 
+	public get isOwnerInspector(): boolean {
+		return this.isOwner;
+	}
+
 	@Mutation
 	public LOGIN() {
 		this.loggedIn = true;
@@ -64,7 +69,8 @@ export default class AuthModule extends VuexModule {
 		userId: string,
 		loginName: string,
 		name: string,
-		accountId?: string
+		accountId?: string,
+		isOwner?: boolean
 	}) {
 		this.affiliation = data.affiliation;
 		this.userId = data.userId;
@@ -73,6 +79,10 @@ export default class AuthModule extends VuexModule {
 
 		if (data.accountId) {
 			this.accountId = data.accountId;
+		}
+
+		if (data.isOwner) {
+			this.isOwner = data.isOwner;
 		}
 	}
 
@@ -87,7 +97,8 @@ export default class AuthModule extends VuexModule {
 				userId: parsedToken.id,
 				loginName: parsedToken.loginName,
 				name: parsedToken.name,
-				accountId: parsedToken.accountId
+				accountId: parsedToken.accountId,
+				isOwner: parsedToken.isOwner
 			});
 		}
 	}

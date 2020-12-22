@@ -1,15 +1,14 @@
 .panel {
-    margin-bottom: 2rem;
-    background-color: $color_white;
     border: 1px solid $color_grey-4;
     border-radius: 5px;
-    overflow: hidden;
 
     .panel-head {
         border-bottom: 1px solid $color_grey-4;
         display: flex;
+        border-radius: 5px;
         background-color: $color_white-1;
         align-items: center;
+        overflow: hidden;
 
         .panel-title {
             padding: 1rem;
@@ -25,6 +24,9 @@
     }
 
     .panel-body {
+        background-color: $color_white;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
         padding: 1.5rem;
     }
 }

@@ -30,10 +30,16 @@
 						<router-link to="/inspector/realtors"><i class="fas fa-fw fa-sign"></i> Realtors</router-link>
 					</li>
 				</ul>
-				<div class="sidebar-label">Preferences</div>
+				<div class="sidebar-label">Personal Preferences</div>
 				<ul class="sidebar-section">
 					<li class="sidebar-item">
 						<router-link to="/inspector/availability"><i class="fas fa-fw fa-calendar-alt"></i> Availability</router-link>
+					</li>
+				</ul>
+				<div class="sidebar-label" v-if="isOwnerInspector">Account Preferences</div>
+				<ul class="sidebar-section" v-if="isOwnerInspector">
+					<li class="sidebar-item">
+						<router-link to="/inspector/mailing"><i class="fas fa-fw fa-mail-bulk"></i> Mailing</router-link>
 					</li>
 				</ul>
 			</div>
@@ -64,6 +70,10 @@
 
 		private get shouldCollapse(): boolean {
 			return this.isToggled || this.isSmallScreen;
+		}
+
+		private get isOwnerInspector(): boolean {
+			return this.$store.getters.isOwnerInspector;
 		}
 
 		private onResize() {

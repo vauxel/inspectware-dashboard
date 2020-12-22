@@ -6,6 +6,12 @@
     color: $color_grey-6;
 }
 
+.ivu-form-item {
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+}
+
 .ivu-form-item-required .ivu-form-item-label {
     &::before {
         content: '';
@@ -22,5 +28,11 @@
         font-weight: $font-weight_bold;
         margin-left: 0.5rem;
         vertical-align: middle;
+    }
+}
+
+.quill-editor {
+    .ql-image {
+        display: none !important;
     }
 }

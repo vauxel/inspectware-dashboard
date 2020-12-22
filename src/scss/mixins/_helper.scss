@@ -29,41 +29,89 @@
 }
 
 .flex-gutter-1 {
-    margin-left: -0.25rem;
-    margin-right: -0.25rem;
+    &.flex-row {
+        margin-left: -0.25rem;
+        margin-right: -0.25rem;
 
-    > * {
-        margin-left: 0.25rem;
-        margin-right: 0.25rem;
+        > * {
+            margin-left: 0.25rem;
+            margin-right: 0.25rem;
+        }
+    }
+
+    &.flex-column {
+        margin-top: -0.25rem;
+        margin-bottom: -0.25rem;
+
+        > * {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
     }
 }
 
 .flex-gutter-2 {
-    margin-left: -0.50rem;
-    margin-right: -0.50rem;
+    &.flex-row {
+        margin-left: -0.50rem;
+        margin-right: -0.50rem;
 
-    > * {
-        margin-left: 0.5rem;
-        margin-right: 0.50rem;
+        > * {
+            margin-left: 0.50rem;
+            margin-right: 0.50rem;
+        }
+    }
+
+    &.flex-column {
+        margin-top: -0.50rem;
+        margin-bottom: -0.50rem;
+
+        > * {
+            margin-top: 0.50rem;
+            margin-bottom: 0.50rem;
+        }
     }
 }
 
 .flex-gutter-3 {
-    margin-left: -0.75rem;
-    margin-right: -0.75rem;
+    &.flex-row {
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
 
-    > * {
-        margin-left: 0.75rem;
-        margin-right: 0.75rem;
+        > * {
+            margin-left: 0.75rem;
+            margin-right: 0.75rem;
+        }
+    }
+
+    &.flex-column {
+        margin-top: -0.75rem;
+        margin-bottom: -0.75rem;
+
+        > * {
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
     }
 }
 
 .flex-gutter-4 {
-    margin-left: -1.00rem;
-    margin-right: -1.00rem;
+    &.flex-row {
+        margin-left: -1.00rem;
+        margin-right: -1.00rem;
 
-    > * {
-        margin-left: 1.00rem;
-        margin-right: 1.00rem;
+        > * {
+            margin-left: 1.00rem;
+            margin-right: 1.00rem;
+        }
+    }
+
+    &.flex-column {
+        margin-top: -1.00rem;
+        margin-bottom: -1.00rem;
+
+        > * {
+            margin-top: 1.00rem;
+            margin-bottom: 1.00rem;
+        }
     }
 }

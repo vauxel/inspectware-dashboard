@@ -7,6 +7,7 @@ import InspectorSettings from "./views/inspector/Settings.vue";
 import InspectorInspections from "./views/inspector/Inspections.vue";
 import InspectorInspection from "./views/inspector/Inspection.vue";
 import InspectorAvailability from "./views/inspector/Availability.vue";
+import InspectorMailing from "./views/inspector/Mailing.vue";
 
 Vue.use(VueRouter);
 
@@ -47,6 +48,11 @@ const router = new VueRouter({
 					path: "availability",
 					name: "Availability",
 					component: InspectorAvailability,
+				},
+				{
+					path: "mailing",
+					name: "Mailing",
+					component: InspectorMailing,
 				}
 			]
 		}
