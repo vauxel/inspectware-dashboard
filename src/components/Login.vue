@@ -69,10 +69,21 @@
 			]
 		};
 
+		public mounted() {
+            if (location.hash === "#inspector") {
+				this.setHIAffiliation();
+			} else if (location.hash === "#client") {
+				this.setClientAffiliation();
+			} else if (location.hash === "#realtor") {
+				this.setREAAffiliation();
+			}
+		}
+
 		private clearAffiliation(): void {
 			this.affiliation = "";
 			this.affiliationName = "";
 			(this.$refs["loginForm"] as any).resetFields();
+			location.hash = "";
 		}
 
 		private setHIAffiliation(): void {
