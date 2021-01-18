@@ -16,6 +16,16 @@ export default {
 
         timestampToDate(timestamp: number): string {
             return moment(timestamp).format("M/D/YYYY");
+        },
+
+        formatPhoneNumber(raw: string): string {
+            var cleaned = ("" + raw).replace(/\D/g, "");
+            var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+            if (match) {
+                return "(" + match[1] + ") " + match[2] + "-" + match[3];
+            } else {
+                return "";
+            }
         }
     }
 };

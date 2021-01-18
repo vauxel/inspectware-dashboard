@@ -2,6 +2,16 @@
     border: 1px solid $color_grey-4;
     border-radius: 5px;
 
+    &.panel-grow {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .panel-body {
+            flex-grow: 1;
+        }
+    }
+
     .panel-head {
         border-bottom: 1px solid $color_grey-4;
         display: flex;

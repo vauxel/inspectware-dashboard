@@ -1,0 +1,10 @@
+@import "~flexboxgrid/src/css/flexboxgrid.css";
+
+:root {
+    --gutter-width: 1rem;
+    --outer-margin: 1rem;
+}
+
+.row {
+    margin-bottom: var(--gutter-width);
+}

@@ -22,198 +22,205 @@
 				</div>
 			</div>
 			<div class="inspection-actions">
-				<Button type="info" :to="gMapsLink" target="_blank">Get Directions</Button>
-				<Button type="info" :to="gMapsLink" target="_blank">Get Directions</Button>
-				<Button type="info" :to="gMapsLink" target="_blank">Get Directions</Button>
+				<Button type="info" :to="gMapsLink" target="_blank"><i class="fas fa-map-marked-alt"></i> Get Directions</Button>
 			</div>
 		</div>
 		<div class="main-content">
-			<div class="flex-row">
-				<div class="inspection-pulse">
-					<div class="inspection-status" data-status-state="complete">Invoice Paid</div>
-					<div class="inspection-status" data-status-state="complete">Invoice Paid</div>
-					<div class="inspection-status" data-status-state="complete">Invoice Paid</div>
-				</div>
-			</div>
-			<div class="flex-row flex-gutter-2">
-				<div class="panel flex-grow">
-					<div class="panel-head">
-						<div class="panel-title">
-							<i class="fas fa-fw fa-home"></i>
-							Property Details
-						</div>
-						<div class="panel-options" v-if="!detailsLocked">
-							<Button type="warning" size="small" @click="showEditPropertyDetailsModal">
-								<i class="fas fa-fw fa-edit"></i>
-								Edit
-							</Button>
-							<Modal
-								v-model="editPropertyDetailsModal"
-								title="Edit Property Details"
-								:loading="editPropertyDetailsLoading"
-								@on-ok="editPropertyDetails">
-								<Form ref="editPropertyDetailsForm" :model="editProperty" label-position="top">
-									<FormItem label="Street Address 1" prop="address1">
-										<Input v-model="editProperty.address1" placeholder="Enter the primary address"></Input>
-									</FormItem>
-									<FormItem label="Street Address 2" prop="address2">
-										<Input v-model="editProperty.address2" placeholder="Optional secondary address"></Input>
-									</FormItem>
-									<FormItem label="City" prop="city">
-										<Input v-model="editProperty.city" placeholder="Enter the city"></Input>
-									</FormItem>
-									<FormItem label="State" prop="state">
-										<masked-input
-											type="text"
-											class="ivu-input"
-											v-model="editProperty.state"
-											:mask="[/[A-Za-z]/, /[A-Za-z]/]"
-											:guide="false"
-											placeholder="Enter the state abbreviation">
-										</masked-input>
-									</FormItem>
-									<FormItem label="ZIP Code" prop="zip">
-										<masked-input
-											type="text"
-											class="ivu-input"
-											v-model="editProperty.zip"
-											:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
-											:guide="false"
-											placeholder="Enter the digit zip code">
-										</masked-input>
-									</FormItem>
-									<FormItem label="Square Footage" prop="sqft">
-										<masked-input
-											type="text"
-											class="ivu-input"
-											v-model="editProperty.sqft"
-											:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
-											:guide="false"
-											placeholder="Enter the whole-number square footage">
-										</masked-input>
-									</FormItem>
-									<FormItem label="Year Built" prop="year_built">
-										<masked-input
-											type="text"
-											class="ivu-input"
-											v-model="editProperty.year_built"
-											:mask="[/\d/, /\d/, /\d/, /\d/]"
-											:guide="false"
-											placeholder="Enter the year the home was built">
-										</masked-input>
-									</FormItem>
-									<FormItem label="Foundation Type" prop="foundation">
-										<Select v-model="editProperty.foundation" placeholder="Choose the foundation type">
-											<Option value="slab">Slab</Option>
-											<Option value="crawlspace">Crawlspace</Option>
-											<Option value="basement">Basement</Option>
-										</Select>
-									</FormItem>
-								</Form>
-								<p class="inspection-property-details-edit-message">Any field left blank, except for "Street Address 2", will not be updated.</p>
-							</Modal>
-						</div>
-					</div>
-					<div class="panel-body">
-						<div class="inspection-property-details">
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">Street Address <span v-if="property.address2">1</span></span>
-								<span class="inspection-detail-value">{{ property.address1 }}</span>
-							</div>
-							<div class="inspection-detail" v-if="property.address2">
-								<span class="inspection-detail-key">Street Address 2</span>
-								<span class="inspection-detail-value">{{ property.address2 }}</span>
-							</div>
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">City</span>
-								<span class="inspection-detail-value">{{ property.city }}</span>
-							</div>
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">State</span>
-								<span class="inspection-detail-value">{{ property.state }}</span>
-							</div>
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">ZIP Code</span>
-								<span class="inspection-detail-value">{{ property.zip }}</span>
-							</div>
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">Square Footage</span>
-								<span class="inspection-detail-value">{{ property.sqft }}</span>
-							</div>
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">Year Built</span>
-								<span class="inspection-detail-value">{{ property.year_built }}</span>
-							</div>
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">Foundation Type</span>
-								<span class="inspection-detail-value">{{ property.foundation.toUpperCase() }}</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="panel">
-					<div class="panel-head">
-						<div class="panel-title">
-							<i class="fas fa-fw fa-toolbox"></i>
-							Services Requested
-						</div>
-						<div class="panel-options" v-if="!detailsLocked">
-							<Button type="warning" size="small" @click="showEditServicesModal">
-								<i class="fas fa-fw fa-edit"></i>
-								Edit
-							</Button>
-						</div>
-					</div>
-					<div class="panel-body">
-						<div class="inspection-services">
-							<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
-						</div>
-					</div>
-				</div>
-				<div class="panel">
-					<div class="panel-head">
-						<div class="panel-title">
-							<i class="fas fa-fw fa-calendar-day"></i>
-							Appointment Details
-						</div>
-						<div class="panel-options" v-if="!detailsLocked">
-							<Button type="warning" size="small" @click="showEditAppointmentModal">
-								<i class="fas fa-fw fa-edit"></i>
-								Edit
-							</Button>
-							<Modal
-								v-model="editAppointmentModal"
-								title="Edit Appointment Date/Time"
-								:loading="editAppointmentLoading"
-								@on-ok="editAppointment">
-								<Form ref="editAppointmentForm" :model="editAppointment" label-position="top">
-									<FormItem label="Appointment Date" prop="date">
-										<DatePicker type="date" placeholder="Select new appointment date"></DatePicker>
-									</FormItem>
-									<FormItem label="Appointment Time" prop="time">
-										<TimePicker type="time" format="" placeholder="Select new appointment time"></TimePicker>
-									</FormItem>
-								</Form>
-							</Modal>
-						</div>
-					</div>
-					<div class="panel-body">
-						<div class="inspection-appointment-details">
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">Date</span>
-								<span class="inspection-detail-value">{{ formatDate(date) }}</span>
-							</div>
-							<div class="inspection-detail">
-								<span class="inspection-detail-key">Time</span>
-								<span class="inspection-detail-value">{{ formatTime(time) }}</span>
-							</div>
-						</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="inspection-pulse">
+						<div class="inspection-status" data-status-state="incomplete" v-if="!payment.invoice_sent">Invoice Not Sent</div>
+						<div class="inspection-status" data-status-state="complete" v-if="payment.invoice_sent">Invoice Sent</div>
+						<div class="inspection-status" data-status-state="incomplete" v-if="payment.invoice_sent && payment.balance !== 0">Invoice Unpaid</div>
+						<div class="inspection-status" data-status-state="complete" v-if="payment.invoice_sent && payment.balance === 0">Invoice Paid</div>
 					</div>
 				</div>
 			</div>
-			<div class="flex-row flex-gutter-2">
-				<div class="inspection-leftcol">
-					<div class="panel">
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="panel panel-grow">
+						<div class="panel-head">
+							<div class="panel-title">
+								<i class="fas fa-fw fa-home"></i>
+								Property Details
+							</div>
+							<div class="panel-options" v-if="!detailsLocked">
+								<Button type="warning" size="small" @click="showEditPropertyDetailsModal">
+									<i class="fas fa-fw fa-edit"></i>
+									Edit
+								</Button>
+								<Modal
+									v-model="editPropertyDetailsModal"
+									title="Edit Property Details"
+									:loading="editPropertyDetailsLoading"
+									@on-ok="editPropertyDetails">
+									<Form ref="editPropertyDetailsForm" :model="editProperty" label-position="top">
+										<FormItem label="Street Address 1" prop="address1">
+											<Input v-model="editProperty.address1" placeholder="Enter the primary address"></Input>
+										</FormItem>
+										<FormItem label="Street Address 2" prop="address2">
+											<Input v-model="editProperty.address2" placeholder="Optional secondary address"></Input>
+										</FormItem>
+										<FormItem label="City" prop="city">
+											<Input v-model="editProperty.city" placeholder="Enter the city"></Input>
+										</FormItem>
+										<FormItem label="State" prop="state">
+											<masked-input
+												type="text"
+												class="ivu-input"
+												v-model="editProperty.state"
+												:mask="[/[A-Za-z]/, /[A-Za-z]/]"
+												:guide="false"
+												placeholder="Enter the state abbreviation">
+											</masked-input>
+										</FormItem>
+										<FormItem label="ZIP Code" prop="zip">
+											<masked-input
+												type="text"
+												class="ivu-input"
+												v-model="editProperty.zip"
+												:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
+												:guide="false"
+												placeholder="Enter the digit zip code">
+											</masked-input>
+										</FormItem>
+										<FormItem label="Square Footage" prop="sqft">
+											<masked-input
+												type="text"
+												class="ivu-input"
+												v-model="editProperty.sqft"
+												:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
+												:guide="false"
+												placeholder="Enter the whole-number square footage">
+											</masked-input>
+										</FormItem>
+										<FormItem label="Year Built" prop="year_built">
+											<masked-input
+												type="text"
+												class="ivu-input"
+												v-model="editProperty.year_built"
+												:mask="[/\d/, /\d/, /\d/, /\d/]"
+												:guide="false"
+												placeholder="Enter the year the home was built">
+											</masked-input>
+										</FormItem>
+										<FormItem label="Foundation Type" prop="foundation">
+											<Select v-model="editProperty.foundation" placeholder="Choose the foundation type">
+												<Option value="slab">Slab</Option>
+												<Option value="crawlspace">Crawlspace</Option>
+												<Option value="basement">Basement</Option>
+											</Select>
+										</FormItem>
+									</Form>
+									<p class="inspection-property-details-edit-message">Any field left blank, except for "Street Address 2", will not be updated.</p>
+								</Modal>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="inspection-property-details">
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">Street Address <span v-if="property.address2">1</span></span>
+									<span class="inspection-detail-value">{{ property.address1 }}</span>
+								</div>
+								<div class="inspection-detail" v-if="property.address2">
+									<span class="inspection-detail-key">Street Address 2</span>
+									<span class="inspection-detail-value">{{ property.address2 }}</span>
+								</div>
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">City</span>
+									<span class="inspection-detail-value">{{ property.city }}</span>
+								</div>
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">State</span>
+									<span class="inspection-detail-value">{{ property.state }}</span>
+								</div>
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">ZIP Code</span>
+									<span class="inspection-detail-value">{{ property.zip }}</span>
+								</div>
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">Square Footage</span>
+									<span class="inspection-detail-value">{{ property.sqft }}</span>
+								</div>
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">Year Built</span>
+									<span class="inspection-detail-value">{{ property.year_built }}</span>
+								</div>
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">Foundation Type</span>
+									<span class="inspection-detail-value">{{ property.foundation.toUpperCase() }}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="panel panel-grow">
+						<div class="panel-head">
+							<div class="panel-title">
+								<i class="fas fa-fw fa-toolbox"></i>
+								Services Requested
+							</div>
+							<div class="panel-options" v-if="!detailsLocked">
+								<Button type="warning" size="small" @click="showEditServicesModal">
+									<i class="fas fa-fw fa-edit"></i>
+									Edit
+								</Button>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="inspection-services">
+								<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="panel panel-grow">
+						<div class="panel-head">
+							<div class="panel-title">
+								<i class="fas fa-fw fa-calendar-day"></i>
+								Appointment Details
+							</div>
+							<div class="panel-options" v-if="!detailsLocked">
+								<Button type="warning" size="small" @click="showEditAppointmentModal">
+									<i class="fas fa-fw fa-edit"></i>
+									Edit
+								</Button>
+								<Modal
+									v-model="editAppointmentModal"
+									title="Edit Appointment Date/Time"
+									:loading="editAppointmentLoading"
+									@on-ok="editAppointment">
+									<Form ref="editAppointmentForm" :model="editAppointment" label-position="top">
+										<FormItem label="Appointment Date" prop="date">
+											<DatePicker type="date" placeholder="Select new appointment date"></DatePicker>
+										</FormItem>
+										<FormItem label="Appointment Time" prop="time">
+											<TimePicker type="time" format="" placeholder="Select new appointment time"></TimePicker>
+										</FormItem>
+									</Form>
+								</Modal>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="inspection-appointment-details">
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">Date</span>
+									<span class="inspection-detail-value">{{ formatDate(date) }}</span>
+								</div>
+								<div class="inspection-detail">
+									<span class="inspection-detail-key">Time</span>
+									<span class="inspection-detail-value">{{ formatTime(time) }}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-2">
+					<div class="panel panel-grow">
 						<div class="panel-head">
 							<div class="panel-title">
 								<i class="fas fa-fw fa-users"></i>
@@ -224,129 +231,138 @@
 							<div class="inspection-people">
 								<div class="inspection-person" data-role="inspector">
 									<a href="#">
-										<div class="inspection-person-avatar">AV</div>
+										<div class="inspection-person-avatar">{{ getInitials(inspector.name) }}</div>
 										<div class="inspection-person-details">
-											<div class="inspection-person-name">Austin Villee</div>
+											<div class="inspection-person-name">{{ inspector.name }}</div>
 											<div class="inspection-person-role">Inspector</div>
 										</div>
 									</a>
 									<div class="inspection-person-contact">
-										<a class="inspection-person-email" href="mailto:fakeemail@gmail.com">fakeemail@gmail.com</a>
-										<a class="inspection-person-phone" href="tel:(919)999-9999">(919)999-9999</a>
+										<a class="inspection-person-email" :href="'mailto:' + inspector.email" v-if="inspector.email">{{ inspector.email }}</a>
+										<a class="inspection-person-phone" :href="'tel:' + formatPhoneNumber(inspector.phone)" v-if="inspector.email">{{ formatPhoneNumber(inspector.phone) }}</a>
 									</div>
 								</div>
-								<div class="inspection-person" data-role="client">
+								<div class="inspection-person" data-role="client" v-if="client1">
 									<a href="#">
-										<div class="inspection-person-avatar">JD</div>
+										<div class="inspection-person-avatar">{{ getInitials(client1.name) }}</div>
 										<div class="inspection-person-details">
-											<div class="inspection-person-name">John Doe</div>
-											<div class="inspection-person-role">Client</div>
+											<div class="inspection-person-name">{{ client1.name }}</div>
+											<div class="inspection-person-role">Client {{ client2 ? "1" : "" }}</div>
 										</div>
 									</a>
 									<div class="inspection-person-contact">
-										<a class="inspection-person-email" href="mailto:fakeemail@gmail.com">fakeemail@gmail.com</a>
-										<a class="inspection-person-phone" href="tel:(919)999-9999">(919)999-9999</a>
+										<a class="inspection-person-email" :href="'mailto:' + client1.email" v-if="client1.email">{{ client1.email }}</a>
+										<a class="inspection-person-phone" :href="'tel:' + formatPhoneNumber(client1.phone)" v-if="client1.email">{{ formatPhoneNumber(client1.phone) }}</a>
 									</div>
 								</div>
-								<div class="inspection-person" data-role="realtor">
+								<div class="inspection-person" data-role="client" v-if="client2">
 									<a href="#">
-										<div class="inspection-person-avatar">JS</div>
+										<div class="inspection-person-avatar">{{ getInitials(client2.name) }}</div>
 										<div class="inspection-person-details">
-											<div class="inspection-person-name">Jane Smith</div>
+											<div class="inspection-person-name">{{ client2.name }}</div>
+											<div class="inspection-person-role">Client 2</div>
+										</div>
+									</a>
+									<div class="inspection-person-contact">
+										<a class="inspection-person-email" :href="'mailto:' + client2.email" v-if="client2.email">{{ client2.email }}</a>
+										<a class="inspection-person-phone" :href="'tel:' + formatPhoneNumber(client2.phone)" v-if="client2.email">{{ formatPhoneNumber(client2.phone) }}</a>
+									</div>
+								</div>
+								<div class="inspection-person" data-role="realtor" v-if="realtor">
+									<a href="#">
+										<div class="inspection-person-avatar">{{ getInitials(realtor.name) }}</div>
+										<div class="inspection-person-details">
+											<div class="inspection-person-name">{{ realtor.name }}</div>
 											<div class="inspection-person-role">Realtor</div>
 										</div>
 									</a>
 									<div class="inspection-person-contact">
-										<a class="inspection-person-email" href="mailto:fakeemail@gmail.com">fakeemail@gmail.com</a>
-										<a class="inspection-person-phone" href="tel:919-999-9999">(919)999-9999</a>
+										<a class="inspection-person-email" :href="'mailto:' + realtor.email" v-if="realtor.email">{{ realtor.email }}</a>
+										<a class="inspection-person-phone" :href="'tel:' + formatPhoneNumber(realtor.phone)" v-if="realtor.phone">{{ formatPhoneNumber(realtor.phone) }}</a>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="inspection-rightcol flex-grow">
-					<div class="flex-row flex-gutter-2">
-						<div class="panel flex-grow">
-							<div class="panel-head">
-								<div class="panel-title">
-									<i class="fas fa-fw fa-paste"></i>
-									Reports
-								</div>
+				<div class="col-xs-3">
+					<div class="panel">
+						<div class="panel-head">
+							<div class="panel-title">
+								<i class="fas fa-fw fa-paste"></i>
+								Reports
 							</div>
-							<div class="panel-body">
-								<div class="inspection-reports">
-									<div class="inspection-report">
-										<div class="inspection-report-title">Final Report</div>
-										<div class="inspection-report-author">Austin Villee</div>
-										<div class="inspection-report-date">02/21/2020</div>
-										<a href="#" class="inspection-report-view"></a>
-									</div>
-									<div class="inspection-report">
-										<div class="inspection-report-title">Final Report</div>
-										<div class="inspection-report-author">Austin Villee</div>
-										<div class="inspection-report-date">02/21/2020</div>
-										<a href="#" class="inspection-report-view"></a>
-									</div>
+						</div>
+						<div class="panel-body">
+							<div class="inspection-reports">
+								<!--<div class="inspection-report">
+									<div class="inspection-report-title">Final Report</div>
+									<div class="inspection-report-author">Austin Villee</div>
+									<div class="inspection-report-date">02/21/2020</div>
+									<a href="#" class="inspection-report-view"></a>
+								</div>-->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="panel">
+						<div class="panel-head">
+							<div class="panel-title">
+								<i class="fas fa-fw fa-file-signature"></i>
+								Documents
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="inspection-documents">
+								<div class="inspection-document" :data-type="doc.doctype" v-for="doc in documents" :key="doc">
+									<a :href="'/doc/' + doc.doctype.toLowerCase() + '/' + id + '?token=' + doc.token" class="inspection-document-download"></a>
+									<div class="inspection-document-name">{{ doc.name }}</div>
+									<div class="inspection-document-date">{{ timestampToDate(doc.created) }}</div>
 								</div>
 							</div>
 						</div>
-						<div class="panel flex-grow">
-							<div class="panel-head">
-								<div class="panel-title">
-									<i class="fas fa-fw fa-file-signature"></i>
-									Documents
-								</div>
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="panel">
+						<div class="panel-head">
+							<div class="panel-title">
+								<i class="fas fa-fw fa-money-bill-wave"></i>
+								Payment
 							</div>
-							<div class="panel-body">
-								<div class="inspection-documents">
-									<div class="inspection-document" :data-type="doc.doctype" v-for="doc in documents" :key="doc">
-										<a :href="'/doc/' + doc.doctype.toLowerCase() + '/' + id + '?token=' + doc.token" class="inspection-document-download"></a>
-										<div class="inspection-document-name">{{ doc.name }}</div>
-										<div class="inspection-document-date">{{ timestampToDate(doc.created) }}</div>
-									</div>
-								</div>
+							<div class="panel-options" v-if="!payment.invoice_sent">
+								<Button type="primary" size="small" @click="generateSendInvoice">
+									<i class="fas fa-fw fa-file-export"></i>
+									Generate & Send Invoice
+								</Button>
 							</div>
 						</div>
-						<div class="panel">
-							<div class="panel-head">
-								<div class="panel-title">
-									<i class="fas fa-fw fa-money-bill-wave"></i>
-									Payment
-								</div>
-								<div class="panel-options" v-if="!payment.invoice_sent">
-									<Button type="primary" size="small" @click="generateSendInvoice">
-										<i class="fas fa-fw fa-file-export"></i>
-										Generate & Send Invoice
-									</Button>
-								</div>
+						<div class="panel-body inspection-payment-container">
+							<div class="inspection-payment-item payment-subsidiary" v-for="item in payment.details.items" :key="item">
+								<div class="inspection-payment-text">{{ item.name }}</div>
+								<div class="inspection-payment-value">${{ item.price }}</div>
 							</div>
-							<div class="panel-body inspection-payment-container">
-								<div class="inspection-payment-item payment-subsidiary" v-for="item in payment.details.items" :key="item">
-									<div class="inspection-payment-text">{{ item.name }}</div>
-									<div class="inspection-payment-value">${{ item.price }}</div>
-								</div>
-								<div class="inspection-payment-item">
-									<div class="inspection-payment-text">Subtotal</div>
-									<div class="inspection-payment-value">${{ payment.details.subtotal }}</div>
-								</div>
-								<div class="inspection-payment-item payment-subsidiary">
-									<div class="inspection-payment-text">Tax ({{ payment.details.tax_percent }}%)</div>
-									<div class="inspection-payment-value">${{ payment.details.tax }}</div>
-								</div>
-								<div class="inspection-payment-item payment-total">
-									<div class="inspection-payment-text">{{ payment.invoice_sent ? "Invoiced" : "Total" }}</div>
-									<div class="inspection-payment-value">${{ payment.invoice_sent ? payment.invoiced : payment.details.total }}</div>
-								</div>
-								<div class="inspection-payment-item payment-paid" v-if="payment.invoice_sent">
-									<div class="inspection-payment-text">Paid</div>
-									<div class="inspection-payment-value">${{ payment.invoiced - payment.balance }}</div>
-								</div>
-								<div class="inspection-payment-divider" v-if="payment.invoice_sent"></div>
-								<div class="inspection-payment-item payment-due" v-if="payment.invoice_sent">
-									<div class="inspection-payment-text">Due</div>
-									<div class="inspection-payment-value">${{ payment.balance }}</div>
-								</div>
+							<div class="inspection-payment-item">
+								<div class="inspection-payment-text">Subtotal</div>
+								<div class="inspection-payment-value">${{ payment.details.subtotal }}</div>
+							</div>
+							<div class="inspection-payment-item payment-subsidiary">
+								<div class="inspection-payment-text">Tax ({{ payment.details.tax_percent }}%)</div>
+								<div class="inspection-payment-value">${{ payment.details.tax }}</div>
+							</div>
+							<div class="inspection-payment-item payment-total">
+								<div class="inspection-payment-text">{{ payment.invoice_sent ? "Invoiced" : "Total" }}</div>
+								<div class="inspection-payment-value">${{ payment.invoice_sent ? payment.invoiced : payment.details.total }}</div>
+							</div>
+							<div class="inspection-payment-item payment-paid" v-if="payment.invoice_sent">
+								<div class="inspection-payment-text">Paid</div>
+								<div class="inspection-payment-value">${{ payment.invoiced - payment.balance }}</div>
+							</div>
+							<div class="inspection-payment-divider" v-if="payment.invoice_sent"></div>
+							<div class="inspection-payment-item payment-due" v-if="payment.invoice_sent">
+								<div class="inspection-payment-text">Due</div>
+								<div class="inspection-payment-value">${{ payment.balance }}</div>
 							</div>
 						</div>
 					</div>
@@ -387,14 +403,29 @@
 		};
 		private services = [];
 		private id = "";
+		private inspector = {
+			id: "",
+			name: "",
+			email: "",
+			phone: ""
+		};
 		private client1 = {
-			name: ""
+			id: "",
+			name: "",
+			email: "",
+			phone: ""
 		};
 		private client2 = {
-			name: ""
+			id: "",
+			name: "",
+			email: "",
+			phone: ""
 		};
 		private realtor = {
-			name: ""
+			id: "",
+			name: "",
+			email: "",
+			phone: ""
 		};
 		private date = "";
 		private time = -1;
@@ -525,6 +556,7 @@
 				this.property.year_built = result.data.data.property.year_built;
 				this.property.foundation = result.data.data.property.foundation;
 				this.services = result.data.data.services;
+				this.inspector = result.data.data.inspector;
 				this.client1 = result.data.data.client1;
 				this.client2 = result.data.data.client2;
 				this.realtor = result.data.data.realtor;
@@ -628,7 +660,7 @@
 		private async generateSendInvoice() {
 			this.$Modal.confirm({
 				title: "Confirm Generate & Send Invoice",
-				content: "<p>Are you sure you want to generate and send the invoice to the client(s)?</p><br><p><em>Doing so will irreversibly lock the inspection details from being edited.</em></p>",
+				content: "<p>Are you sure you want to generate and send the invoice to the client(s)?</p><br><p><strong>Doing so will irreversibly lock the inspection details from being edited.</strong></p>",
 				okText: "Generate & Send",
 				loading: true,
 				onOk: async () => {
@@ -666,6 +698,11 @@
 					level: "error"
 				});
 			}
+		}
+
+		private getInitials(name: string) {
+			let split = name.split(" ");
+			return split[0].charAt(0).toUpperCase() + (split.length >= 2 ? split[1].charAt(0).toUpperCase() : "");
 		}
 	}
 </script>
@@ -776,7 +813,7 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
 		padding: 1rem;
 		background-color: $color_primary;
 		box-shadow: $shadow-1;
@@ -784,21 +821,21 @@
 
 		.inspection-status {
 			position: relative;
-			min-width: 180px;
 			margin: 0 0.5rem;
-			padding: 0.5rem 0.5rem 0.5rem 1rem;
-			background-color: $color_primary-darker;
+			padding: 0.5rem 1rem 0.5rem 0.5rem;
+			background: $color_primary-darker;
 			border-radius: 5px;
 			color: $color_white;
 			line-height: 3rem;
 			font-weight: $font-weight_semibold;
 
-			&::after {
+			&::before {
 				content: '';
 				display: block;
-				float: right;
+				float: left;
 				width: 3rem;
 				height: 3rem;
+				margin-right: 1rem;
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
 				font-size: 1.5rem;
@@ -810,14 +847,14 @@
 			}
 
 			&[data-status-state="incomplete"] {
-				&::after {
+				&::before {
 					content: '\f00d';
 					background-color: $color_red;
 				}
 			}
 
 			&[data-status-state="complete"] {
-				&::after {
+				&::before {
 					content: '\f00c';
 					background-color: $color_green;
 				}
