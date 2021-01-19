@@ -1,5 +1,5 @@
 <template>
-	<div id="inspections">
+	<div id="page-inspections">
 		<data-table :data="inspectionsData" :pageRows=5 rowClass="inspection-row">
 			<template scope="row">
 				<div class="inspection-details">

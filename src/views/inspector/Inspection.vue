@@ -1,5 +1,5 @@
 <template>
-	<div class="expand-content">
+	<div id="page-inspection" class="expand-content">
 		<div id="map">
 			<div class="inspection-header">
 				<img class="inspection-property-preview" :src="previewImage">

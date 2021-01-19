@@ -1,63 +1,78 @@
 <template>
-	<div class="container-fluid">
-		<Card>
-			<p slot="title">
-				<i class="fas fa-fw fa-stream"></i>
-				Available Timeslots
-			</p>
-			<div class="available-days">
-				<div class="available-day" v-for="(day, weekday) in timeslots" :key="weekday">
-					<div class="available-day-header">{{ weekday }}</div>
-					<div class="day-timeslot" v-for="time in sortDay(day)" :key="time">
-						<i class="fas fa-fw fa-clock"></i> {{ formatTime(time) }}
-						<button class="timeslot-delete" @click="deleteAvailTimeslotHelper(weekday, time)"><i class="far fa-trash-alt"></i></button>
-					</div>
-					<Poptip placement="bottom" :width="225">
-						<Button type="dashed" long style="margin-top: 5px;"><i class="far fa-plus-square"></i> Add Timeslot</Button>
-						<div slot="content">
-							<Row :gutter="5">
-								<Col span="8">
-									<Select v-model="newTimeslot.hour" placeholder="Hour">
-										<Option v-for="hour in 12" :key="hour" :value="hour">{{ hour }}</Option>
-									</Select>
-								</Col>
-								<Col span="8">
-									<Select v-model="newTimeslot.minute" placeholder="Minute">
-										<Option v-for="minute in minutes" :key="minute" :value="minute">{{ ('' + minute).padStart(2, '0') }}</Option>
-									</Select>
-								</Col>
-								<Col span="8">
-									<Select v-model="newTimeslot.period" placeholder="Half">
-										<Option value="AM">AM</Option>
-										<Option value="PM">PM</Option>
-									</Select>
-								</Col>
-							</Row>
-							<Button type="success" long size="small" @click="addAvailTimeslot(weekday)" style="margin-top: 10px;">Add</Button>
+	<div id="page-availability">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="panel">
+					<div class="panel-head">
+						<div class="panel-title">
+							<i class="fas fa-fw fa-stream"></i>
+							Available Timeslots
 						</div>
-					</Poptip>
-				</div>
-			</div>
-		</Card>
-		<br>
-		<Card>
-			<p slot="title">
-				<i class="fas fa-fw fa-business-time"></i>
-				Toggle Time Off
-			</p>
-			<div class="timeoff-days">
-				<div class="timeoff-day" v-for="(day, index) in timeoffDays" :key="index">
-					<div class="timeoff-day-date">{{ day.date.format("MMMM Do") }}</div>
-					<div class="timeoff-day-weekday">{{ day.date.format("dddd") }}</div>
-					<div class="timeoff-day-times">
-						<div class="day-timeslot timeoff-timeslot" v-for="(selected, time) in day.timeslots" :key="time" @click="toggleTimeoff(day.date, time, selected)">
-							<i class="fas fa-fw fa-clock"></i> {{ formatTime(time) }}
-							<div class="timeoff-indicator" :data-blocked="'' + selected"></div>
+					</div>
+					<div class="panel-body">
+						<div class="available-days">
+							<div class="available-day" v-for="(day, weekday) in timeslots" :key="weekday">
+								<div class="available-day-header">{{ weekday }}</div>
+								<div class="day-timeslot" v-for="time in sortDay(day)" :key="time">
+									<i class="fas fa-fw fa-clock"></i> {{ formatTime(time) }}
+									<button class="timeslot-delete" @click="deleteAvailTimeslotHelper(weekday, time)"><i class="fas fa-trash-alt"></i></button>
+								</div>
+								<Poptip placement="bottom" :width="225">
+									<Button type="dashed" long style="margin-top: 5px;"><i class="fas fa-plus-square"></i> Add Timeslot</Button>
+									<div slot="content">
+										<Row :gutter="5">
+											<Col span="8">
+												<Select v-model="newTimeslot.hour" placeholder="Hour">
+													<Option v-for="hour in 12" :key="hour" :value="hour">{{ hour }}</Option>
+												</Select>
+											</Col>
+											<Col span="8">
+												<Select v-model="newTimeslot.minute" placeholder="Minute">
+													<Option v-for="minute in minutes" :key="minute" :value="minute">{{ ('' + minute).padStart(2, '0') }}</Option>
+												</Select>
+											</Col>
+											<Col span="8">
+												<Select v-model="newTimeslot.period" placeholder="Half">
+													<Option value="AM">AM</Option>
+													<Option value="PM">PM</Option>
+												</Select>
+											</Col>
+										</Row>
+										<Button type="success" long size="small" @click="addAvailTimeslot(weekday)" style="margin-top: 10px;">Add</Button>
+									</div>
+								</Poptip>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</Card>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="panel">
+					<div class="panel-head">
+						<div class="panel-title">
+							<i class="fas fa-fw fa-business-time"></i>
+							Toggle Time Off
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="timeoff-days">
+							<div class="timeoff-day" v-for="(day, index) in timeoffDays" :key="index">
+								<div class="timeoff-day-date">{{ day.date.format("MMMM Do") }}</div>
+								<div class="timeoff-day-weekday">{{ day.date.format("dddd") }}</div>
+								<div class="timeoff-day-times">
+									<div class="day-timeslot timeoff-timeslot" v-for="(selected, time) in day.timeslots" :key="time" @click="toggleTimeoff(day.date, time, selected)">
+										<i class="fas fa-fw fa-clock"></i> {{ formatTime(time) }}
+										<div class="timeoff-indicator" :data-blocked="'' + selected"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -248,7 +263,10 @@
 		padding: 10px;
 
 		.timeslot-delete {
+			border: none;
+			cursor: pointer;
 			float: right;
+			color: $font_color_dark;
 
 			&:hover {
 				color: $color_red;
@@ -267,12 +285,14 @@
 			padding: 5px;
 
 			.timeoff-day-date {
+				padding-left: 0.5rem;
 				font-size: $font-size_lg;
 				font-weight: 600;
 				line-height: 1.25;
 			}
 
 			.timeoff-day-weekday {
+				padding-left: 0.5rem;
 				font-size: $font-size_sm;
 				color: $color_grey-6;
 			}
@@ -293,12 +313,12 @@
 					font-weight: 600;
 
 					&[data-blocked="true"]:after {
-						content: "UNAVAIL";
+						content: "UNAVAIL.";
 						color: $color_red;
 					}
 
 					&[data-blocked="false"]:after {
-						content: "AVAIL";
+						content: "AVAIL.";
 						color: $color_green;
 					}
 				}
