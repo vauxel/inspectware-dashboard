@@ -53,22 +53,22 @@
 									v-model="editPropertyDetailsModal"
 									title="Edit Property Details"
 									:loading="editPropertyDetailsLoading"
-									@on-ok="editPropertyDetails">
-									<Form ref="editPropertyDetailsForm" :model="editProperty" label-position="top">
+									@on-ok="doEditPropertyDetails">
+									<Form ref="editPropertyDetailsForm" :model="editPropertyDetails" label-position="top">
 										<FormItem label="Street Address 1" prop="address1">
-											<Input v-model="editProperty.address1" placeholder="Enter the primary address"></Input>
+											<Input v-model="editPropertyDetails.address1" placeholder="Enter the primary address"></Input>
 										</FormItem>
 										<FormItem label="Street Address 2" prop="address2">
-											<Input v-model="editProperty.address2" placeholder="Optional secondary address"></Input>
+											<Input v-model="editPropertyDetails.address2" placeholder="Optional secondary address"></Input>
 										</FormItem>
 										<FormItem label="City" prop="city">
-											<Input v-model="editProperty.city" placeholder="Enter the city"></Input>
+											<Input v-model="editPropertyDetails.city" placeholder="Enter the city"></Input>
 										</FormItem>
 										<FormItem label="State" prop="state">
 											<masked-input
 												type="text"
 												class="ivu-input"
-												v-model="editProperty.state"
+												v-model="editPropertyDetails.state"
 												:mask="[/[A-Za-z]/, /[A-Za-z]/]"
 												:guide="false"
 												placeholder="Enter the state abbreviation">
@@ -78,7 +78,7 @@
 											<masked-input
 												type="text"
 												class="ivu-input"
-												v-model="editProperty.zip"
+												v-model="editPropertyDetails.zip"
 												:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
 												:guide="false"
 												placeholder="Enter the digit zip code">
@@ -88,7 +88,7 @@
 											<masked-input
 												type="text"
 												class="ivu-input"
-												v-model="editProperty.sqft"
+												v-model="editPropertyDetails.sqft"
 												:mask="[/\d/, /\d/, /\d/, /\d/, /\d/]"
 												:guide="false"
 												placeholder="Enter the whole-number square footage">
@@ -98,14 +98,14 @@
 											<masked-input
 												type="text"
 												class="ivu-input"
-												v-model="editProperty.year_built"
+												v-model="editPropertyDetails.year_built"
 												:mask="[/\d/, /\d/, /\d/, /\d/]"
 												:guide="false"
 												placeholder="Enter the year the home was built">
 											</masked-input>
 										</FormItem>
 										<FormItem label="Foundation Type" prop="foundation">
-											<Select v-model="editProperty.foundation" placeholder="Choose the foundation type">
+											<Select v-model="editPropertyDetails.foundation" placeholder="Choose the foundation type">
 												<Option value="slab">Slab</Option>
 												<Option value="crawlspace">Crawlspace</Option>
 												<Option value="basement">Basement</Option>
@@ -191,13 +191,37 @@
 									v-model="editAppointmentModal"
 									title="Edit Appointment Date/Time"
 									:loading="editAppointmentLoading"
-									@on-ok="editAppointment">
+									@on-ok="doEditAppointment">
 									<Form ref="editAppointmentForm" :model="editAppointment" label-position="top">
 										<FormItem label="Appointment Date" prop="date">
-											<DatePicker type="date" placeholder="Select new appointment date"></DatePicker>
+											<DatePicker
+												type="date"
+												format="M/d/yyyy"
+												:options="editAppointmentDateOptions"
+												v-model="editAppointment.date"
+												style="width: 100%"
+												placeholder="Select new appointment date">
+											</DatePicker>
 										</FormItem>
 										<FormItem label="Appointment Time" prop="time">
-											<TimePicker type="time" format="" placeholder="Select new appointment time"></TimePicker>
+											<Row :gutter="5">
+												<Col span="8">
+													<Select v-model="editAppointment.time.hour" placeholder="Hour">
+														<Option v-for="hour in 12" :key="hour" :value="hour">{{ hour }}</Option>
+													</Select>
+												</Col>
+												<Col span="8">
+													<Select v-model="editAppointment.time.minute" placeholder="Minute">
+														<Option v-for="minute in minutes" :key="minute" :value="minute">{{ ('' + minute).padStart(2, '0') }}</Option>
+													</Select>
+												</Col>
+												<Col span="8">
+													<Select v-model="editAppointment.time.period" placeholder="Half">
+														<Option value="AM">AM</Option>
+														<Option value="PM">PM</Option>
+													</Select>
+												</Col>
+											</Row>
 										</FormItem>
 									</Form>
 								</Modal>
@@ -373,7 +397,8 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue } from "vue-property-decorator";
+	import { Component, Vue, Mixins } from "vue-property-decorator";
+	import { FormattingMixin } from "@/mixins";
 	import Mapbox from "mapbox-gl";
 	import MaskedInput from "vue-text-mask";
 	import HTTP from "@/classes/http";
@@ -383,7 +408,7 @@
 			MaskedInput
 		}
 	})
-	export default class Inspection extends Vue {
+	export default class Inspection extends Mixins(FormattingMixin) {
 		private accessToken = "pk.eyJ1IjoiaW5zcGVjdHdhcmUiLCJhIjoiY2p5dDBkZjJ1MDByZzNvbWZmMDV4NnI2MiJ9.HYKSg6GlZrG7xz15KxwaIQ";
 		private mapStyle = "mapbox://styles/mapbox/streets-v11";
 		private mapCenter = { lat: -1, lng: -1 };
@@ -436,7 +461,7 @@
 
 		private editPropertyDetailsModal = false;
 		private editPropertyDetailsLoading = true;
-		private editProperty = {
+		private editPropertyDetails = {
 			address1: "",
 			address2: "",
 			city: "",
@@ -447,12 +472,23 @@
 			foundation: ""
 		};
 
+		private minutes = [ 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60 ];
+
 		private editAppointmentModal = false;
 		private editAppointmentLoading = true;
 		private editAppointment = {
 			date: "",
-			time: -1
+			time: {
+				hour: 0,
+				minute: 0,
+				period: ""
+			}
 		}
+		private editAppointmentDateOptions = {
+			disabledDate(date: Date) {
+				return date && date.valueOf() < Date.now() - 86400000;
+			}
+		};
 
 		private payment = {
 			invoice_sent: false,
@@ -592,60 +628,60 @@
 		}
 
 		private showEditPropertyDetailsModal() {
-			this.editProperty.address1 = this.property.address1;
-			this.editProperty.address2 = this.property.address2;
-			this.editProperty.city = this.property.city;
-			this.editProperty.state = this.property.state;
-			this.editProperty.zip = this.property.zip;
-			this.editProperty.sqft = this.property.sqft;
-			this.editProperty.year_built = this.property.year_built;
-			this.editProperty.foundation = this.property.foundation;
+			this.editPropertyDetails.address1 = this.property.address1;
+			this.editPropertyDetails.address2 = this.property.address2;
+			this.editPropertyDetails.city = this.property.city;
+			this.editPropertyDetails.state = this.property.state;
+			this.editPropertyDetails.zip = this.property.zip;
+			this.editPropertyDetails.sqft = this.property.sqft;
+			this.editPropertyDetails.year_built = this.property.year_built;
+			this.editPropertyDetails.foundation = this.property.foundation;
 			this.editPropertyDetailsModal = true;
 		}
 
 		private showEditAppointmentModal() {
-			this.editAppointment.date = this.date;
-			this.editAppointment.time = this.time;
+			this.editAppointment.date = this.formatDate(this.date);
+			let formattedTimeParts = this.formatTimeParts(this.time);
+			this.editAppointment.time.hour = formattedTimeParts.hour;
+			this.editAppointment.time.minute = formattedTimeParts.minute;
+			this.editAppointment.time.period = formattedTimeParts.period;
 			this.editAppointmentModal = true;
 		}
 
-		private async editPropertyDetails() {
+		private async doEditPropertyDetails() {
 			try {
 				const result = await HTTP.post("/inspection/property_info", {
 					id: this.id,
-					address1: this.editProperty.address1 ? this.editProperty.address1 : undefined,
-					address2: this.editProperty.address2,
-					city: this.editProperty.city ? this.editProperty.city : undefined,
-					state: this.editProperty.state ? this.editProperty.state.toUpperCase() : undefined,
-					zip: this.editProperty.zip ? this.editProperty.zip : undefined,
-					sqft: this.editProperty.sqft ? this.editProperty.sqft : undefined,
-					year_built: this.editProperty.year_built ? this.editProperty.year_built : undefined,
-					foundation: this.editProperty.foundation ? this.editProperty.foundation : undefined
+					address1: this.editPropertyDetails.address1 ? this.editPropertyDetails.address1 : undefined,
+					address2: this.editPropertyDetails.address2,
+					city: this.editPropertyDetails.city ? this.editPropertyDetails.city : undefined,
+					state: this.editPropertyDetails.state ? this.editPropertyDetails.state.toUpperCase() : undefined,
+					zip: this.editPropertyDetails.zip ? this.editPropertyDetails.zip : undefined,
+					sqft: this.editPropertyDetails.sqft ? this.editPropertyDetails.sqft : undefined,
+					year_built: this.editPropertyDetails.year_built ? this.editPropertyDetails.year_built : undefined,
+					foundation: this.editPropertyDetails.foundation ? this.editPropertyDetails.foundation : undefined
 				});
 
-				if (result.data.status == 200) {
-					this.property.address1 = !!this.editProperty.address1 ? this.editProperty.address1 : this.property.address1;
-					this.property.address2 = this.editProperty.address2;
-					this.property.city = !!this.editProperty.city ? this.editProperty.city : this.property.city;
-					this.property.state = !!this.editProperty.state ? this.editProperty.state.toUpperCase() : this.property.state;
-					this.property.zip = !!this.editProperty.zip ? this.editProperty.zip : this.property.zip;
-					this.property.sqft = !!this.editProperty.sqft ? this.editProperty.sqft : this.property.sqft;
-					this.property.year_built = !!this.editProperty.year_built ? this.editProperty.year_built : this.property.year_built;
-					this.property.foundation = !!this.editProperty.foundation ? this.editProperty.foundation : this.property.foundation;
+				this.property.address1 = !!this.editPropertyDetails.address1 ? this.editPropertyDetails.address1 : this.property.address1;
+				this.property.address2 = this.editPropertyDetails.address2;
+				this.property.city = !!this.editPropertyDetails.city ? this.editPropertyDetails.city : this.property.city;
+				this.property.state = !!this.editPropertyDetails.state ? this.editPropertyDetails.state.toUpperCase() : this.property.state;
+				this.property.zip = !!this.editPropertyDetails.zip ? this.editPropertyDetails.zip : this.property.zip;
+				this.property.sqft = !!this.editPropertyDetails.sqft ? this.editPropertyDetails.sqft : this.property.sqft;
+				this.property.year_built = !!this.editPropertyDetails.year_built ? this.editPropertyDetails.year_built : this.property.year_built;
+				this.property.foundation = !!this.editPropertyDetails.foundation ? this.editPropertyDetails.foundation : this.property.foundation;
 
-					if (!this.map) {
-						await this.initMap();
-					}
-
-					await this.setMapCenter();
-					this.updateMap();
-				} else {
-					this.$store.dispatch("pushNotice", {
-						title: "Update Property Details Failed",
-						desc: result.data.message,
-						level: "error"
-					});
+				if (!this.map) {
+					await this.initMap();
 				}
+
+				await this.setMapCenter();
+				this.updateMap();
+
+				this.$store.dispatch("pushMessage", {
+					text: "Successfully updated property details",
+					level: "success"
+				});
 			} catch (error) {
 				this.$store.dispatch("pushNotice", {
 					title: "Update Property Details Failed",
@@ -655,6 +691,35 @@
 			}
 
 			this.editPropertyDetailsModal = false;
+		}
+
+		private async doEditAppointment() {
+			try {
+				let date = this.unformatDate(this.editAppointment.date);
+				let time = this.unformatTimeParts(this.editAppointment.time);
+
+				const result = await HTTP.post("/inspection/appointment", {
+					id: this.id,
+					date: date,
+					time: time
+				});
+
+				this.date = date;
+				this.time = time;
+
+				this.$store.dispatch("pushMessage", {
+					text: "Successfully updated appointment details",
+					level: "success"
+				});
+			} catch (error) {
+				this.$store.dispatch("pushNotice", {
+					title: "Update Appointment Failed",
+					desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+					level: "error"
+				});
+			}
+
+			this.editAppointmentModal = false;
 		}
 
 		private async generateSendInvoice() {
@@ -672,6 +737,10 @@
 						this.payment = result.data.data;
 						this.detailsLocked = true;
 						this.$Modal.remove();
+						this.$store.dispatch("pushMessage", {
+							text: "Successfully generated and sent invoice",
+							level: "success"
+						});
 					} catch (error) {
 						this.$Modal.remove();
 						this.$store.dispatch("pushNotice", {

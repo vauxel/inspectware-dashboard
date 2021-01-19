@@ -45,7 +45,8 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue } from "vue-property-decorator";
+	import { Component, Vue, Mixins } from "vue-property-decorator";
+	import { FormattingMixin } from "@/mixins";
 	import DataTable from "@/components/DataTable.vue";
 	import HTTP from "@/classes/http";
 	import moment from "moment";
@@ -55,7 +56,7 @@
 			DataTable
 		},
 	})
-	export default class Inspections extends Vue {
+	export default class Inspections extends Mixins(FormattingMixin) {
 		private inspectionsData: object[] = [];
 
 		public mounted() {
@@ -91,16 +92,8 @@
 			}
 		}
 
-		private formatDate(date: string) {
+		public formatDate(date: string) {
 			return moment(date).format("MMM Do, YYYY");
-		}
-
-		private formatTime(time: number) {
-			let hour = Math.floor(time / 60);
-			let minute = time % 60;
-			let period = hour < 12 || hour == 24 ? "AM" : "PM";
-			hour = hour % 12 || 12;
-			return `${("" + hour).padStart(2, '0')}:${("" + minute).padStart(2, '0')} ${period}`;
 		}
 	}
 </script>

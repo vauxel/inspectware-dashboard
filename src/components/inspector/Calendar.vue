@@ -47,10 +47,11 @@
 </template>
 
 <script lang="ts">
-	import { Component, Prop, Vue } from "vue-property-decorator";
+	import { Component, Prop, Vue, Mixins } from "vue-property-decorator";
+	import { FormattingMixin } from "@/mixins";
 
 	@Component
-	export default class Calendar extends Vue {
+	export default class Calendar extends Mixins(FormattingMixin) {
 		@Prop(Object) readonly events: any;
 
 		private year = 1970;
@@ -205,14 +206,6 @@
 			let newDate = new Date(this.year, this.month + 1, 1);
 			this.month = newDate.getMonth();
 			this.year = newDate.getFullYear();
-		}
-
-		private formatTime(time: number) {
-			let hour = Math.floor(time / 60);
-			let minute = time % 60;
-			let period = hour < 12 || hour == 24 ? "AM" : "PM";
-			hour = hour % 12 || 12;
-			return `${("" + hour).padStart(2, '0')}:${("" + minute).padStart(2, '0')} ${period}`;
 		}
 	}
 </script>

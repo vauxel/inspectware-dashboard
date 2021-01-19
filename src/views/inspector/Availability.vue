@@ -63,11 +63,12 @@
 
 <script lang="ts">
 	import moment from "moment";
-	import { Component, Vue } from "vue-property-decorator";
+	import { Component, Vue, Mixins } from "vue-property-decorator";
+	import { FormattingMixin } from "@/mixins";
 	import HTTP from "@/classes/http";
 
 	@Component({})
-	export default class Availability extends Vue {
+	export default class Availability extends Mixins(FormattingMixin) {
 		private newTimeslot = {
 			hour: "",
 			minute: "",
@@ -137,14 +138,6 @@
 		private async getTimeoff() {
 			const result = await HTTP.get("/inspector/timeoff");
 			this.timeoff = result.data.data;
-		}
-
-		private formatTime(time: number): string {
-			let hour = Math.floor(time / 60);
-			let minute = time % 60;
-			let period = hour < 12 || hour == 24 ? "AM" : "PM";
-			hour = hour % 12 || 12;
-			return `${("" + hour).padStart(2, '0')}:${("" + minute).padStart(2, '0')} ${period}`;
 		}
 
 		private async addAvailTimeslot(weekday: string) {
