@@ -76,11 +76,15 @@
 			}
 		}
 
-		private paymentSubtext(payment: { balance: number, timestamp: number }): string {
-			if (payment.balance == 0) {
-				return "Paid on " + moment(payment.timestamp, "x").format("M/D/Y");
+		private paymentSubtext(payment: { invoice_sent: boolean, balance: number, timestamp: number }): string {
+			if (payment.invoice_sent) {
+				if (payment.balance == 0) {
+					return "Paid on " + moment(payment.timestamp, "x").format("M/D/Y");
+				} else {
+					return `Payment due of $${payment.balance}`;
+				}
 			} else {
-				return `Payment due of $${payment.balance}`;
+				return "Invoice not yet sent";
 			}
 		}
 

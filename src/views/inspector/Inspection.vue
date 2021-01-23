@@ -23,16 +23,21 @@
 			</div>
 			<div class="inspection-actions">
 				<Button type="info" :to="gMapsLink" target="_blank"><i class="fas fa-map-marked-alt"></i> Get Directions</Button>
+				<Button type="warning" @click="confirmDetails" v-if="!detailsConfirmed"><i class="fas fa-check-circle"></i> Confirm Details</Button>
 			</div>
 		</div>
 		<div class="main-content">
 			<div class="row">
 				<div class="col-xs-12">
 					<div class="inspection-pulse">
-						<div class="inspection-status" data-status-state="incomplete" v-if="!payment.invoice_sent">Invoice Not Sent</div>
-						<div class="inspection-status" data-status-state="complete" v-if="payment.invoice_sent">Invoice Sent</div>
-						<div class="inspection-status" data-status-state="incomplete" v-if="payment.invoice_sent && payment.balance !== 0">Invoice Unpaid</div>
-						<div class="inspection-status" data-status-state="complete" v-if="payment.invoice_sent && payment.balance === 0">Invoice Paid</div>
+						<div class="inspection-status" data-status-state="incomplete" v-if="!detailsConfirmed">Details Unconfirmed</div>
+						<div class="inspection-status" data-status-state="complete" v-if="detailsConfirmed">Details Confirmed</div>
+						<div class="inspection-status" data-status-state="incomplete" v-if="detailsConfirmed && !agreementSent">Agreement Not Sent</div>
+						<div class="inspection-status" data-status-state="complete" v-if="detailsConfirmed && agreementSent">Agreement Sent</div>
+						<div class="inspection-status" data-status-state="incomplete" v-if="detailsConfirmed && !payment.invoice_sent">Invoice Not Sent</div>
+						<div class="inspection-status" data-status-state="complete" v-if="detailsConfirmed && payment.invoice_sent">Invoice Sent</div>
+						<div class="inspection-status" data-status-state="incomplete" v-if="detailsConfirmed && payment.invoice_sent && payment.balance !== 0">Invoice Unpaid</div>
+						<div class="inspection-status" data-status-state="complete" v-if="detailsConfirmed && payment.invoice_sent && payment.balance === 0">Invoice Paid</div>
 					</div>
 				</div>
 			</div>
@@ -44,7 +49,7 @@
 								<i class="fas fa-fw fa-home"></i>
 								Property Details
 							</div>
-							<div class="panel-options" v-if="!detailsLocked">
+							<div class="panel-options" v-if="!detailsConfirmed">
 								<Button type="warning" size="small" @click="showEditPropertyDetailsModal">
 									<i class="fas fa-fw fa-edit"></i>
 									Edit
@@ -161,7 +166,7 @@
 								<i class="fas fa-fw fa-toolbox"></i>
 								Services Requested
 							</div>
-							<div class="panel-options" v-if="!detailsLocked">
+							<div class="panel-options" v-if="!detailsConfirmed">
 								<Button type="warning" size="small" @click="showEditServicesModal">
 									<i class="fas fa-fw fa-edit"></i>
 									Edit
@@ -182,7 +187,7 @@
 								<i class="fas fa-fw fa-calendar-day"></i>
 								Appointment Details
 							</div>
-							<div class="panel-options" v-if="!detailsLocked">
+							<div class="panel-options" v-if="!detailsConfirmed">
 								<Button type="warning" size="small" @click="showEditAppointmentModal">
 									<i class="fas fa-fw fa-edit"></i>
 									Edit
@@ -336,6 +341,14 @@
 								<i class="fas fa-fw fa-file-signature"></i>
 								Documents
 							</div>
+							<div class="panel-options" v-if="!agreementSent">
+								<Tooltip content="You first need to confirm the inspection details" placement="top" :disabled="detailsConfirmed">
+									<Button type="primary" size="small" @click="sendAgreement" :disabled="!detailsConfirmed">
+										<i class="fas fa-fw fa-file-contract"></i>
+										Send Agreement
+									</Button>
+								</Tooltip>
+							</div>
 						</div>
 						<div class="panel-body">
 							<div class="inspection-documents">
@@ -356,10 +369,12 @@
 								Payment
 							</div>
 							<div class="panel-options" v-if="!payment.invoice_sent">
-								<Button type="primary" size="small" @click="generateSendInvoice">
-									<i class="fas fa-fw fa-file-export"></i>
-									Generate & Send Invoice
-								</Button>
+								<Tooltip content="You first need to confirm the inspection details" placement="top" :disabled="detailsConfirmed">
+									<Button type="primary" size="small" @click="generateSendInvoice" :disabled="!detailsConfirmed">
+										<i class="fas fa-fw fa-file-export"></i>
+										Generate & Send Invoice
+									</Button>
+								</Tooltip>
 							</div>
 						</div>
 						<div class="panel-body inspection-payment-container">
@@ -457,7 +472,7 @@
 		private scheduled = -1;
 		private previewImage = "https://photos.zillowstatic.com/cc_ft_768/ISni89iuad9ntt1000000000.webp";
 
-		private detailsLocked = false;
+		private detailsConfirmed = false;
 
 		private editPropertyDetailsModal = false;
 		private editPropertyDetailsLoading = true;
@@ -503,6 +518,8 @@
 				total: 0
 			}
 		}
+
+		private agreementSent = false;
 
 		private documents = [];
 
@@ -599,7 +616,7 @@
 				this.date = result.data.data.date;
 				this.time = result.data.data.time;
 				this.scheduled = result.data.data.scheduled;
-				this.detailsLocked = result.data.data.details_locked;
+				this.detailsConfirmed = result.data.data.details_confirmed;
 
 				this.initMap();
 			} catch (error) {
@@ -677,6 +694,7 @@
 
 				await this.setMapCenter();
 				this.updateMap();
+				this.getPaymentInfo();
 
 				this.$store.dispatch("pushMessage", {
 					text: "Successfully updated property details",
@@ -722,10 +740,41 @@
 			this.editAppointmentModal = false;
 		}
 
+		private async confirmDetails() {
+			this.$Modal.confirm({
+				title: "Confirm Lock Inspection Details",
+				content: "<p>Are you sure you want to confirm the inspection details?</p><br><p><strong>Doing so is irreversible and will lock the inspection details from being further edited.</strong></p>",
+				okText: "Confirm Details",
+				loading: true,
+				onOk: async () => {
+					try {
+						const result = await HTTP.post("/inspection/confirm_details", {
+							id: this.id
+						});
+
+						this.detailsConfirmed = true;
+						this.getDocuments();
+						this.$Modal.remove();
+						this.$store.dispatch("pushMessage", {
+							text: "Successfully confirmed inspection details",
+							level: "success"
+						});
+					} catch (error) {
+						this.$Modal.remove();
+						this.$store.dispatch("pushNotice", {
+							title: "Confirm Inspection Details Failed",
+							desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+							level: "error"
+						});
+					}
+				}
+			});
+		}
+
 		private async generateSendInvoice() {
 			this.$Modal.confirm({
 				title: "Confirm Generate & Send Invoice",
-				content: "<p>Are you sure you want to generate and send the invoice to the client(s)?</p><br><p><strong>Doing so will irreversibly lock the inspection details from being edited.</strong></p>",
+				content: "<p>Are you sure you want to generate and send the invoice to the client(s)?</p>",
 				okText: "Generate & Send",
 				loading: true,
 				onOk: async () => {
@@ -735,7 +784,7 @@
 						});
 
 						this.payment = result.data.data;
-						this.detailsLocked = true;
+						this.getDocuments();
 						this.$Modal.remove();
 						this.$store.dispatch("pushMessage", {
 							text: "Successfully generated and sent invoice",
@@ -745,6 +794,35 @@
 						this.$Modal.remove();
 						this.$store.dispatch("pushNotice", {
 							title: "Generate & Send Invoice Failed",
+							desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+							level: "error"
+						});
+					}
+				}
+			});
+		}
+
+		private async sendAgreement() {
+			this.$Modal.confirm({
+				title: "Confirm Send Agreement",
+				content: "<p>Are you sure you want to send the inspection agreement to the client(s)?</p>",
+				okText: "Send",
+				loading: true,
+				onOk: async () => {
+					try {
+						const result = await HTTP.post("/inspection/send_agreement", {
+							id: this.id
+						});
+
+						this.$Modal.remove();
+						this.$store.dispatch("pushMessage", {
+							text: "Successfully sent the inspection agreement",
+							level: "success"
+						});
+					} catch (error) {
+						this.$Modal.remove();
+						this.$store.dispatch("pushNotice", {
+							title: "Send Agreement Failed",
 							desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
 							level: "error"
 						});
@@ -863,7 +941,7 @@
 		> a, button {
 			box-shadow: $shadow-2;
 
-			&:not(:last-of-type) {
+			&:not(:last-child) {
 				margin-bottom: 1.5rem;
 			}
 		}
