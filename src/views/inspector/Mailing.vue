@@ -204,9 +204,7 @@
 
 		private async getTemplates() {
 			try {
-				const result = await HTTP.get("/account/email_templates", {
-					params: { id: this.$route.params.id }
-				});
+				const result = await HTTP.get("/account/email_templates");
 
 				this.headerTemplate.body = result.data.data.header;
 				this.footerTemplate.body = result.data.data.footer;

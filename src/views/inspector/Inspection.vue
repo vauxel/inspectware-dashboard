@@ -171,11 +171,34 @@
 									<i class="fas fa-fw fa-edit"></i>
 									Edit
 								</Button>
+								<Modal
+									v-model="editServicesModal"
+									title="Edit Services"
+									:loading="editServicesLoading"
+									@on-ok="doEditServices">
+									<Form ref="editServicesForm" :model="editServices" label-position="top">
+										<FormItem label="Main Service">
+											<RadioGroup v-model="editServices.main" type="button" size="large">
+												<Radio v-for="service in allServices.main" :key="service.short" :label="service.short">
+													<span>{{ service.long }}</span>
+												</Radio>
+											</RadioGroup>
+										</FormItem>
+										<FormItem label="Additional Services">
+											<CheckboxGroup v-model="editServices.additional">
+												<Checkbox style="display: block" v-for="service in allServices.additional" :key="service.short" :label="service.short" size="large">
+													<span>{{ service.long }}</span>
+												</Checkbox>
+											</CheckboxGroup>
+										</FormItem>
+									</Form>
+								</Modal>
 							</div>
 						</div>
 						<div class="panel-body">
 							<div class="inspection-services">
-								<div class="inspection-service" v-for="service in services" :key="service" :value="service">{{ service }}</div>
+								<div class="inspection-service">{{ mainServiceResolved }}</div>
+								<div class="inspection-service" v-for="serviceLong in additionalServicesResolved" :key="serviceLong" :value="serviceLong">{{ serviceLong }}</div>
 							</div>
 						</div>
 					</div>
@@ -441,7 +464,10 @@
 			year_built: -1,
 			foundation: ""
 		};
-		private services = [];
+		private services = {
+			main: "",
+			additional: [""]
+		};
 		private id = "";
 		private inspector = {
 			id: "",
@@ -505,6 +531,18 @@
 			}
 		};
 
+		private allServices = {
+			main: [{short: "", long: ""}],
+			additional: [{short: "", long: ""}]
+		};
+
+		private editServicesModal = false;
+		private editServicesLoading = true;
+		private editServices = {
+			main: "",
+			additional: [""]
+		}
+
 		private payment = {
 			invoice_sent: false,
 			invoiced: 0,
@@ -524,6 +562,7 @@
 		private documents = [];
 
 		mounted() {
+			this.getAllServices();
 			this.getInfo();
 			this.getPaymentInfo();
 			this.getDocuments();
@@ -593,6 +632,30 @@
 			return `${this.property.address1}${this.property.address2 ? " " + this.property.address2 : ""}, ${this.property.city}, ${this.property.state} ${this.property.zip}`;
 		}
 
+		private get mainServiceResolved(): string {
+			let foundService = this.allServices.main.find((service: {long: string, short: string}) => service.short === this.services.main);
+			
+			if (foundService) {
+				return foundService.long;
+			} else {
+				return "";
+			}
+		}
+
+		private get additionalServicesResolved(): string[] {
+			let resolved: string[] = [];
+
+			for (let serviceShort of this.services.additional) {
+				let foundService = this.allServices.additional.find((service: {long: string, short: string}) => service.short === serviceShort);
+			
+				if (foundService) {
+					resolved.push(foundService.long);
+				}
+			}
+
+			return resolved;
+		}
+
 		private async getInfo() {
 			try {
 				const result = await HTTP.get("/inspection/info", {
@@ -644,6 +707,19 @@
 			}
 		}
 
+		private async getAllServices() {
+			try {
+				const result = await HTTP.get("/account/services");
+				this.allServices = result.data.data;
+			} catch (error) {
+				this.$store.dispatch("pushNotice", {
+					title: "Get Services Failed",
+					desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+					level: "error"
+				});
+			}
+		}
+
 		private showEditPropertyDetailsModal() {
 			this.editPropertyDetails.address1 = this.property.address1;
 			this.editPropertyDetails.address2 = this.property.address2;
@@ -654,6 +730,12 @@
 			this.editPropertyDetails.year_built = this.property.year_built;
 			this.editPropertyDetails.foundation = this.property.foundation;
 			this.editPropertyDetailsModal = true;
+		}
+
+		private async showEditServicesModal() {
+			this.editServices.main = this.services.main;
+			this.editServices.additional = this.services.additional;
+			this.editServicesModal = true;
 		}
 
 		private showEditAppointmentModal() {
@@ -709,6 +791,34 @@
 			}
 
 			this.editPropertyDetailsModal = false;
+		}
+
+		private async doEditServices() {
+			try {
+				const result = await HTTP.post("/inspection/services", {
+					id: this.id,
+					main: this.editServices.main,
+					additional: this.editServices.additional
+				});
+
+				this.services.main = this.editServices.main;
+				this.services.additional = this.editServices.additional;
+
+				this.getPaymentInfo();
+
+				this.$store.dispatch("pushMessage", {
+					text: "Successfully updated the services",
+					level: "success"
+				});
+			} catch (error) {
+				this.$store.dispatch("pushNotice", {
+					title: "Update Services Failed",
+					desc: error.response.data.message ? error.response.data.message : error.response.status + ": " + error.response.statusText,
+					level: "error"
+				});
+			}
+
+			this.editServicesModal = false;
 		}
 
 		private async doEditAppointment() {
