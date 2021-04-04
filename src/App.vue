@@ -69,7 +69,7 @@
 				} else if (mutation.type === "START_LOADING") {
 					this.$Loading.start();
 				} else if (mutation.type === "STOP_LOADING") {
-					this.$Loading.stop();
+					this.$Loading.finish();
 				} else if (mutation.type === "ERROR_LOADING") {
 					this.$Loading.error();
 				}
