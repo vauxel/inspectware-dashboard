@@ -86,7 +86,7 @@ export default class AuthModule extends VuexModule {
 		}
 	}
 
-	@Action
+	@Action({ rawError: true })
 	public readAuthToken() {
 		const authToken = localStorage.getItem("auth_token");
 
@@ -103,7 +103,7 @@ export default class AuthModule extends VuexModule {
 		}
 	}
 
-	@Action
+	@Action({ rawError: true })
 	public async attemptLogin(data: {
 		affiliation: string,
 		loginName: string,
@@ -139,7 +139,7 @@ export default class AuthModule extends VuexModule {
 		}
 	}
 
-	@Action
+	@Action({ rawError: true })
 	public logout() {
 		localStorage.removeItem("auth_token");
 		this.context.commit("LOGOUT");
@@ -150,7 +150,7 @@ export default class AuthModule extends VuexModule {
 		Router.push("/");
 	}
 
-	@Action
+	@Action({ rawError: true })
 	public restrictedRedirect() {
 		if (this.isLoggedIn) {
 			localStorage.removeItem("auth_token");
